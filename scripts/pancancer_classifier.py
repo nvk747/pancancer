@@ -69,6 +69,10 @@ sys.path.insert(0, os.path.join('scripts', 'util'))
 from tcga_util import get_args, get_threshold_metrics, integrate_copy_number
 from tcga_util import shuffle_columns
 
+RASOPATHY_GENES = set(['BRAF', 'CBL', 'HRAS', 'KRAS', 'MAP2K1', 'MAP2K2', 'NF1',
+                      'NRAS', 'PTPN11', 'RAF1', 'SHOC2', 'SOS1', 'SPRED1', 'RIT1'])
+
+
 # Load command arguments
 args = get_args()
 
@@ -145,9 +149,9 @@ if x_matrix == 'raw':
 else:
     expr_file = x_matrix
 
-mut_file = os.path.join('data', 'pancan_mutation_freeze.tsv.gz')
-mut_burden_file = os.path.join('data', 'mutation_burden_freeze.tsv')
-sample_freeze_file = os.path.join('data', 'sample_freeze.tsv')
+mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv.gz')
+mut_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
+sample_freeze_file = args.filename_sample or os.path.join('data', 'sample_freeze.tsv')
 
 rnaseq_full_df = pd.read_table(expr_file, index_col=0)
 mutation_df = pd.read_table(mut_file, index_col=0)
@@ -173,23 +177,27 @@ if drop:
         rnaseq_full_df.drop(common_genes, axis=1, inplace=True)
 
 if drop_rasopathy:
-    rasopathy_genes = set(['BRAF', 'CBL', 'HRAS', 'KRAS', 'MAP2K1', 'MAP2K2',
-                           'NF1', 'NRAS', 'PTPN11', 'RAF1', 'SHOC2', 'SOS1',
-                           'SPRED1', 'RIT1'])
-    rasopathy_drop = list(rasopathy_genes.intersection(rnaseq_full_df.columns))
-    rnaseq_full_df.drop(rasopathy_drop, axis=1, inplace=True)
+    # Drop rasopathy genes as defined by default
+    drop_x_genes = RASOPATHY_GENES
+else:
+    drop_x_genes = set()
+if args.drop_x_genes:
+    drop_x_genes = drop_x_genes.union( set( map( lambda x: x.strip(), args.drop_x_genes.split(',') ) ) )
+if drop_x_genes:
+    x_drop = list(drop_x_genes.intersection(rnaseq_full_df.columns))
+    rnaseq_full_df.drop(x_drop, axis=1, inplace=True)
 
 # Incorporate copy number for gene activation/inactivation
 if copy_number:
     # Load copy number matrices
-    copy_loss_file = os.path.join('data', 'copy_number_loss_status.tsv.gz')
+    copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv.gz')
     copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 
-    copy_gain_file = os.path.join('data', 'copy_number_gain_status.tsv.gz')
+    copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv.gz')
     copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 
     # Load cancer gene classification table
-    vogel_file = os.path.join('data', 'vogelstein_cancergenes.tsv')
+    vogel_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
     cancer_genes = pd.read_table(vogel_file)
 
     y = integrate_copy_number(y=y, cancer_genes_df=cancer_genes,
