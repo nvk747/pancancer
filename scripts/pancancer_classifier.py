@@ -144,8 +144,10 @@ alt_gene_summary_file = os.path.join(base_folder,
                                      '{}_summary.tsv'.format(alt_gene_base))
 
 # Load Datasets
+x_as_raw = args.x_as_raw
 if x_matrix == 'raw':
     expr_file = os.path.join('data', 'pancan_rnaseq_freeze.tsv.gz')
+    x_as_raw = True
 else:
     expr_file = x_matrix
 
@@ -160,7 +162,7 @@ mut_burden = pd.read_table(mut_burden_file)
 
 # Construct data for classifier
 common_genes = set(mutation_df.columns).intersection(genes)
-if x_matrix == 'raw':
+if x_as_raw:
     common_genes = list(common_genes.intersection(rnaseq_full_df.columns))
 else:
     common_genes = list(common_genes)
@@ -173,7 +175,7 @@ if len(common_genes) != len(genes):
                   'are {}'.format(missing_genes), category=Warning)
 
 if drop:
-    if x_matrix == 'raw':
+    if x_as_raw:
         rnaseq_full_df.drop(common_genes, axis=1, inplace=True)
 
 if drop_rasopathy:
@@ -251,7 +253,7 @@ strat = y_sub.str.cat(y_df.astype(str))
 x_df = rnaseq_df.loc[y_df.index, :]
 
 # Subset x matrix to MAD genes and scale
-if x_matrix == 'raw':
+if x_as_raw:
     med_dev = pd.DataFrame(mad(x_df), index=x_df.columns)
     mad_genes = med_dev.sort_values(by=0, ascending=False)\
                        .iloc[0:num_features_kept].index.tolist()
@@ -672,7 +674,7 @@ if alt_genes[0] is not 'None':
 
     # Process alternative x matrix
     x_alt_df = rnaseq_alt_df.loc[y_alt_df.index, :]
-    if x_matrix == 'raw':
+    if x_as_raw:
         x_alt_df = x_alt_df.loc[:, mad_genes]
 
     x_alt_df_update = pd.DataFrame(fitted_scaler.transform(x_alt_df),
