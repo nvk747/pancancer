@@ -55,6 +55,8 @@ import warnings
 import pandas as pd
 import csv
 import argparse
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
