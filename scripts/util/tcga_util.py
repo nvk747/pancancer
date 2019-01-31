@@ -53,6 +53,8 @@ def get_args():
                         help='Keep intermediate ROC values for plotting')
     parser.add_argument('-x', '--x_matrix', default='raw',
                         help='Filename of features to use in model')
+    parser.add_argument('--x_as_raw', action='store_true',
+                        help='Treat x_matrix as "raw"')
     parser.add_argument('-e', '--shuffled', action='store_true',
                         help='Shuffle the input gene exprs matrix alongside')
     parser.add_argument('--shuffled_before_training', action='store_true',
