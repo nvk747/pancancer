@@ -12,6 +12,7 @@ Usage: Run by dna_damage_repair_tp53exon.sh
 Output: Concatenated junction data with classifier decision scores
 """
 
+import argparse
 import os
 import pandas as pd
 
@@ -37,16 +38,42 @@ def get_rail_id(row):
             all_sample_ids.append(sample_id)
     return(all_sample_ids)
 
-# File paths
-sample_file = 'samples.tsv.gz'
-junction_file = 'tp53_junctions.txt.gz'
-mut_scores_file = os.path.join('..', '..', 'classifiers', 'TP53',
-                               'tables', 'mutation_classification_scores.tsv')
-out_junc_file = 'junctions_with_mutations.csv.gz'
+parser = argparse.ArgumentParser()
 
-samples = pd.read_table(sample_file, compression='gzip', low_memory=False)
+parser.add_argument('--sample_file', default=None,
+                    help='Filename of SNAPTRON samples')
+parser.add_argument( '--junction_file', default=None,
+                    help='Filename of SNAPTRON junctions')
+parser.add_argument( '--alt_folder', default=None,
+                    help='Folder containing classifier')
+parser.add_argument( '--output', default=None,
+                    help='Filename of output junctions')
+
+args = parser.parse_args()
+
+
+# File paths
+sample_file = args.sample_file or 'samples.tsv.gz'
+junction_file = args.junction_file or 'tp53_junctions.txt.gz'
+if args.alt_folder:
+    mut_scores_file = os.path.join(args.alt_folder,
+                                   'tables', 'mutation_classification_scores.tsv')
+else:
+    mut_scores_file = os.path.join('..', '..', 'classifiers', 'TP53',
+                                   'tables', 'mutation_classification_scores.tsv')
+out_junc_file = args.output or 'junctions_with_mutations.csv.gz'
+# FIXME: upgrading to pandas 0.24.0+ will give 'infer' for to_csv
+# currently at 0.23.0
+# Only care about gzip for now due to backwards compatibility
+if out_junc_file.endswith('.gz'):
+    compression_type = 'gzip'
+else:
+    compression_type = None
+
+
+samples = pd.read_table(sample_file, compression='infer', low_memory=False)
 dictionary = samples[['rail_id', 'gdc_cases.samples.submitter_id']]
-junc = pd.read_table(junction_file, compression='gzip')
+junc = pd.read_table(junction_file, compression='infer')
 mut_df = pd.read_table(mut_scores_file, index_col=0)
 
 # Process junction file
@@ -76,4 +103,4 @@ junc.drop(['level_13', 'gdc_cases.samples.submitter_id', 'rail_id'], axis=1,
 
 # Merge junctions and mutation classification file
 junctions_full = junc.merge(mut_df, left_on='tcga_id', right_index=True)
-junctions_full.to_csv(out_junc_file, compression='gzip')
+junctions_full.to_csv(out_junc_file, compression=compression_type)

@@ -31,6 +31,22 @@ parser.add_argument('-c', '--classifier',
                     help='folder location of classifier file')
 parser.add_argument('-u', '--copy_number', action='store_true',
                     help='Supplement Y matrix with copy number events')
+
+parser.add_argument('-x', '--x_matrix', default=None,
+                    help='Filename of features to use in model')
+parser.add_argument( '--filename_mut', default=None,
+                    help='Filename of sample/gene mutations to use in model')
+parser.add_argument( '--filename_mut_burden', default=None,
+                    help='Filename of sample mutation burden to use in model')
+parser.add_argument( '--filename_sample', default=None,
+                    help='Filename of patient/samples to use in model')
+parser.add_argument( '--filename_copy_loss', default=None,
+                    help='Filename of copy number loss')
+parser.add_argument( '--filename_copy_gain', default=None,
+                    help='Filename of copy number gain')
+parser.add_argument( '--filename_cancer_gene_classification', default=None,
+                    help='Filename of cancer gene classification table')
+
 args = parser.parse_args()
 
 # Load command arguments
@@ -38,13 +54,13 @@ classifier_file = os.path.join(args.classifier, 'classifier_summary.txt')
 copy_number = args.copy_number
 
 # Load Constants
-rnaseq_file = os.path.join('data', 'pancan_rnaseq_freeze.tsv')
-mut_file = os.path.join('data', 'pancan_mutation_freeze.tsv')
-sample_freeze_file = os.path.join('data', 'sample_freeze.tsv')
-cancer_gene_file = os.path.join('data', 'vogelstein_cancergenes.tsv')
-copy_loss_file = os.path.join('data', 'copy_number_loss_status.tsv')
-copy_gain_file = os.path.join('data', 'copy_number_gain_status.tsv')
-mutation_burden_file = os.path.join('data', 'mutation_burden_freeze.tsv')
+rnaseq_file = args.x_matrix or os.path.join('data', 'pancan_rnaseq_freeze.tsv')
+mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv')
+sample_freeze_file = args.filename_sample or os.path.join('data', 'sample_freeze.tsv')
+cancer_gene_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
+copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv')
+copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
+mutation_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
 
 # Generate filenames to save output plots
 output_base_file = os.path.dirname(classifier_file)
@@ -65,7 +81,11 @@ with open(classifier_file) as class_fh:
         if line[0] == 'Diseases:':
             diseases = line[1:]
         if line[0] == 'Coefficients:':
-            coef_df = pd.read_table(line[1])
+            coef_df = line[1]
+            # If file DNE (e.g. jobs executed with file staging), fallback to local copy
+            if not os.path.exists(coef_df):
+                coef_df = os.path.join(args.classifier, 'classifier_coefficients.tsv')
+            coef_df = pd.read_table(coef_df)
 
 # Subset matrix that indicates mutation status (y)
 common_genes = set(mutation_df.columns).intersection(genes)

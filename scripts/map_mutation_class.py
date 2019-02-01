@@ -33,6 +33,14 @@ parser.add_argument('-g', '--genes',
                     help='string of the genes to extract or genelist file')
 parser.add_argument('-c', '--copy_number', action='store_true',
                     help='optional flag to include copy number info in map')
+
+parser.add_argument( '--filename_copy_loss', default=None,
+                    help='Filename of copy number loss')
+parser.add_argument( '--filename_copy_gain', default=None,
+                    help='Filename of copy number gain')
+parser.add_argument( '--filename_raw_mut', default=None,
+                    help='Filename of raw mut MAF')
+
 args = parser.parse_args()
 
 scores = args.scores
@@ -53,7 +61,7 @@ if not os.path.exists(out_dir):
     os.makedirs(out_dir)
 
 out_file = os.path.join(out_dir, 'mutation_classification_scores.tsv')
-raw_mut_file = os.path.join('data', 'raw', 'mc3.v0.2.8.PUBLIC.maf')
+raw_mut_file = args.filename_raw_mut or os.path.join('data', 'raw', 'mc3.v0.2.8.PUBLIC.maf')
 
 pred_df = pd.read_table(prediction_file, index_col=0)
 mut_df = pd.read_table(raw_mut_file)
@@ -71,8 +79,8 @@ map_df['Variant_Classification'] = map_df['Variant_Classification']\
                                          .fillna('Wild-Type')
 if copy_number:
     # Load Copy Number info
-    copy_loss_file = os.path.join('data', 'copy_number_loss_status.tsv')
-    copy_gain_file = os.path.join('data', 'copy_number_gain_status.tsv')
+    copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv')
+    copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
 
     copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
     copy_gain_df = pd.read_table(copy_gain_file, index_col=0)

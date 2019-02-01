@@ -11,11 +11,49 @@
 # wildtype samples. Also a fishers exact test comparing enrichment of 200 bp
 # exon 4 truncation in mutated samples versus wildtype
 
+library(optparse)
 library(RColorBrewer)
+
+# parse options
+option_list = list(
+   make_option(
+    c("--version"),
+    action = "store_true",
+    default = FALSE,
+    help = "Print version and exit"
+   ),
+  make_option(
+    c("--snaptron_file"),
+    action = "store",
+    default = NA,
+    type = 'character',
+    help = "SNAPTRON junctions with mutations file"
+  ),
+  make_option(
+    c("--output_folder"),
+    action = "store",
+    default = '.',
+    type = 'character',
+    help = "Folder to store outputs"
+  )
+)
+
+opt <-parse_args(OptionParser(option_list = option_list))
+
+if (opt$version){
+  # print version and exit
+  cat(paste("PanCancer version", toString(packageVersion("pancancer"))), "\n")
+  quit()
+}
 
 set.seed(123)
 
-snaptron_file <- "tp53_junctions_with_mutations.csv.gz"
+if ( !is.na(opt$snaptron_file) ){
+  snaptron_file <- opt$snaptron_file
+} else {
+  snaptron_file <- "tp53_junctions_with_mutations.csv.gz"
+}
+
 junc_df <- readr::read_csv(snaptron_file)
 junc_df <- junc_df[, -1]
 junc_df <- junc_df[!duplicated(junc_df), ]
@@ -92,7 +130,7 @@ plot_exon_exon_junc <- function(exon_df, plot_range = x_range, row_add = 1.85) {
 }
 
 # Plot of c.375G>T mutations
-pdf("exon-exon_junctions_GtoT.pdf", height = 5, width = 5)
+pdf(file.path(opt$output_folder, "exon-exon_junctions_GtoT.pdf"), height = 5, width = 5)
 plot_exon_exon_junc(exon_df = silent_mutations)
 text(x = 7676325, y = 1.9, "Probability", font = 3, cex = 0.5)
 text(x = 7675237, y = 2, "Exon 5", font = 3, cex = 0.5)
@@ -106,7 +144,7 @@ segments(x = 7675237, x0 = 7675237, y = -45, y0 = 1, col = "black",
 dev.off()
 
 # Plots of WT samples
-pdf("exon-exon_junctions_wt_random.pdf", height = 5, width = 5)
+pdf(file.path(opt$output_folder, "exon-exon_junctions_wt_random.pdf"), height = 5, width = 5)
 plot_exon_exon_junc(wt_junc)
 text(x = 7676325, y = 1.9, "Probability", font = 3, cex = 0.5)
 text(x = 7675237, y = 2, "Exon 5", font = 3, cex = 0.5)
@@ -120,7 +158,7 @@ segments(x = 7675237, x0 = 7675237, y = -45, y0 = 1, col = "black",
 dev.off()
 
 # Plot of c.375G>A mutations
-pdf("exon-exon_junctions_GtoA.pdf", height = 5, width = 5)
+pdf(file.path(opt$output_folder, "exon-exon_junctions_GtoA.pdf"), height = 5, width = 5)
 plot_exon_exon_junc(exon_df = silent_mut_a, row_add = 2.5)
 text(x = 7676325, y = 1.9, "Probability", font = 3, cex = 0.5)
 text(x = 7675237, y = 2, "Exon 5", font = 3, cex = 0.5)
@@ -149,7 +187,7 @@ total_silent <- length(unique(c(silent_mutations$tcga_id,
                                 silent_mut_a$tcga_id)))
 
 f_test <- data.frame(c(silent_trunc, total_silent), c(wt_trunc, total_wt))
-sink("fishers_exon4_truncation_enrichment_in_c375G-T_mutations.txt")
+sink(file.path(opt$output_folder, "fishers_exon4_truncation_enrichment_in_c375G-T_mutations.txt"))
 print(f_test)
 fisher.test(f_test)
 sink()

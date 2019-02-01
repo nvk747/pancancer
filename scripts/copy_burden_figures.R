@@ -12,13 +12,57 @@
 # Output:
 # Two figures summarizing copy burden across TCGA Pan Can samples
 
+library(optparse)
 library(ggplot2)
 
+# parse options
+option_list = list(
+   make_option(
+    c("--version"),
+    action = "store_true",
+    default = FALSE,
+    help = "Print version and exit"
+   ),
+  make_option(
+    c("--alt_folder"),
+    action = "store",
+    default = NA,
+    type = 'character',
+    help = "Classifier base folder"
+  ),
+  make_option(
+    c("--junctions_with_mutations"),
+    action = "store",
+    default = NA,
+    type = 'character',
+    help = "junctions_with_mutations.csv.gz"
+  )
+)
+
+opt <-parse_args(OptionParser(option_list = option_list))
+
+if (opt$version){
+  # print version and exit
+  cat(paste("PanCancer version", toString(packageVersion("pancancer"))), "\n")
+  quit()
+}
+
+
 # Set File Names
-base_file <- file.path("classifiers", "TP53")
+if ( !is.na(opt$alt_folder) ){
+  base_file <- opt$alt_folder
+} else {
+  base_file <- file.path("classifiers", "TP53")
+}
 burden_file <- file.path(base_file, "tables", "copy_burden_predictions.tsv")
-snaptron_file <- file.path("scripts", "snaptron",
-                           "junctions_with_mutations.csv.gz")
+if ( !is.na(opt$alt_folder) ){
+  snaptron_file <- opt$junctions_with_mutations
+} else {
+  snaptron_file <- file.path("scripts", "snaptron",
+                             "junctions_with_mutations.csv.gz")
+}
+
+
 frac_alt_plot <- file.path(base_file, "figures", "fraction_altered_plot.pdf")
 violin_plot <- file.path(base_file, "figures", "seg_altered_violin_plot.pdf")
 

@@ -41,7 +41,30 @@ parser.add_argument('-v', '--remove_hyper', action='store_true',
 parser.add_argument('-f', '--alt_folder', default='Auto',
                     help='location to save')
 
+parser.add_argument('-x', '--x_matrix', default=None,
+                    help='Filename of features to use in model')
+parser.add_argument( '--filename_mut', default=None,
+                    help='Filename of sample/gene mutations to use in model')
+parser.add_argument( '--filename_mut_burden', default=None,
+                    help='Filename of sample mutation burden to use in model')
+parser.add_argument( '--filename_sample', default=None,
+                    help='Filename of patient/samples to use in model')
+parser.add_argument( '--filename_copy_loss', default=None,
+                    help='Filename of copy number loss')
+parser.add_argument( '--filename_copy_gain', default=None,
+                    help='Filename of copy number gain')
+parser.add_argument( '--filename_cancer_gene_classification', default=None,
+                    help='Filename of cancer gene classification table')
+
+
 args = parser.parse_args()
+
+# make it a little easier to pass forward filename args
+args_dict = vars(args)
+filename_arg_list = [ 'x_matrix' ]
+for k in args_dict.keys():
+    if k.startswith('filename_'):
+        filename_arg_list.append(k)
 
 # Load command arguments
 genes = args.genes
@@ -74,4 +97,9 @@ for acronym in disease_types:
                '--alt_folder', alt_folder, '--shuffled', '--keep_intermediate']
     if remove_hyper:
         command += ['--remove_hyper']
+    # Only set filename if it has been set
+    for fname_arg in filename_arg_list:
+        val = args_dict.get(fname_arg, None)
+        if val:
+            command += ['--%s' % (fname_arg), val]
     subprocess.call(command)

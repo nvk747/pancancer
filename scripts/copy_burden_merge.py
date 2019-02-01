@@ -22,11 +22,13 @@ import pandas as pd
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--classifier_folder',
                     help='string of the location of classifier data')
+parser.add_argument( '--filename_burden', default=None,
+                    help='Filename of burden')
 args = parser.parse_args()
 
 # Load command arguments
 pred_fild = os.path.join(args.classifier_folder, 'classifier_decisions.tsv')
-burden_file = os.path.join('data', 'seg_based_scores.tsv')
+burden_file = args.filename_burden or os.path.join('data', 'seg_based_scores.tsv')
 out_file = os.path.join(os.path.dirname(pred_fild), 'tables',
                         'copy_burden_predictions.tsv')
 

@@ -15,9 +15,41 @@
 library(dplyr)
 library(pheatmap)
 library(ggplot2)
+library(optparse)
 source(file.path("scripts", "util", "pancancer_util.R"))
 
-results_folder <- file.path("classifiers", "TP53")
+# parse options
+option_list = list(
+   make_option(
+    c("--version"),
+    action = "store_true",
+    default = FALSE,
+    help = "Print version and exit"
+   ),
+  make_option(
+    c("--alt_folder"),
+    action = "store",
+    default = NA,
+    type = 'character',
+    help = "Input Classifier folder"
+  )
+)
+
+opt <-parse_args(OptionParser(option_list = option_list))
+
+if (opt$version){
+  # print version and exit
+  cat(paste("PanCancer version", toString(packageVersion("pancancer"))), "\n")
+  quit()
+}
+
+# Check parameter values
+if ( !is.na(opt$alt_folder) ){
+  results_folder <- opt$alt_folder
+} else {
+  results_folder <- file.path("classifiers", "TP53")
+}
+
 results <- parse_summary(file.path(results_folder, "classifier_summary.txt"))
 
 # 1) Heatmap of the distribution of aberrant events across tumors
