@@ -16,6 +16,8 @@ Output:
 import os
 import argparse
 import pandas as pd
+import matplotlib
+matplotlib.use('agg')
 import seaborn as sns
 import matplotlib.pyplot as plt
 
