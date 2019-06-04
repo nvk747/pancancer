@@ -124,3 +124,4 @@ TSHR	thyroid stimulating hormone receptor	301	0.8646864686	0.00330033	Oncogene	P
 U2AF1	U2 small nuclear RNA auxiliary factor 1	96	0.9183673469	0.0102040816	Oncogene	Transcriptional Regulation	Cell Fate
 VHL	von Hippel-Lindau tumor suppressor	1287	0.2675018423	0.595431098	TSG	PI3K; RAS; STAT	Cell Survival
 WT1	Wilms tumor 1	312	0.101744186	0.7936046512	TSG	Chromatin Modification	Cell Fate
+INPP4B	inositol polyphosphate-4-phosphatase type II B				TSG	phosphatidylinositol signalling	Cell Fate
