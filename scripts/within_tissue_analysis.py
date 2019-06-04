@@ -28,10 +28,12 @@ import argparse
 import pandas as pd
 
 parser = argparse.ArgumentParser()
+#parser.add_argument('-g', '--genes',
+#                    help='Comma separated string of HUGO gene symbols')
 parser.add_argument('-g', '--genes',
-                    help='Comma separated string of HUGO gene symbols')
+                    help='string of the genes to extract or genelist file')
 parser.add_argument('-d', '--diseases', default='Auto',
-                    help='Comma separated string of disease types to consider')
+                    help='comma seperated diseases list in a file')
 parser.add_argument('-a', '--alphas', default='0.1,0.15,0.2,0.5,0.8,1',
                     help='the alphas for parameter sweep')
 parser.add_argument('-l', '--l1_ratios', default='0,0.1,0.15,0.18,0.2,0.3',
@@ -41,19 +43,53 @@ parser.add_argument('-v', '--remove_hyper', action='store_true',
 parser.add_argument('-f', '--alt_folder', default='Auto',
                     help='location to save')
 
+parser.add_argument('-x', '--x_matrix', default=None,
+                    help='Filename of features to use in model')
+parser.add_argument( '--filename_mut', default=None,
+                    help='Filename of sample/gene mutations to use in model')
+parser.add_argument( '--filename_mut_burden', default=None,
+                    help='Filename of sample mutation burden to use in model')
+parser.add_argument( '--filename_sample', default=None,
+                    help='Filename of patient/samples to use in model')
+parser.add_argument( '--filename_copy_loss', default=None,
+                    help='Filename of copy number loss')
+parser.add_argument( '--filename_copy_gain', default=None,
+                    help='Filename of copy number gain')
+parser.add_argument( '--filename_cancer_gene_classification', default=None,
+                    help='Filename of cancer gene classification table')
+
+
 args = parser.parse_args()
 
+# make it a little easier to pass forward filename args
+args_dict = vars(args)
+filename_arg_list = [ 'x_matrix' ]
+for k in args_dict.keys():
+    if k.startswith('filename_'):
+        filename_arg_list.append(k)
+
+print(filename_arg_list)
 # Load command arguments
+# if list of the genes provided by file or comma seperated values:
 genes = args.genes
-diseases = args.diseases.split(',')
+#genes_df = pd.read_table(genes)
+#genes = genes_df['genes'].tolist()
+
+#diseases = args.diseases.split(',')
+# if list of the diseases provided by file or comma seperated values:
+diseases = args.diseases
+diseases_df = pd.read_table(diseases)
+diseases = diseases_df['diseases'].tolist()
+
 folder = args.alt_folder
 alphas = args.alphas
 l1_ratios = args.l1_ratios
 remove_hyper = args.remove_hyper
 
+#base_folder = os.path.join('classifiers', 'within_disease',
+#                           genes.replace(',', '_'))
 base_folder = os.path.join('classifiers', 'within_disease',
-                           genes.replace(',', '_'))
-
+                           genes[0])
 if diseases == 'Auto':
     sample_freeze_file = os.path.join('data', 'sample_freeze.tsv')
     sample_freeze = pd.read_table(sample_freeze_file, index_col=0)
@@ -68,10 +104,18 @@ for acronym in disease_types:
         alt_folder = os.path.join(base_folder, acronym)
     else:
         alt_folder = os.path.join(folder, acronym)
+
     command = ['python', os.path.join('scripts', 'pancancer_classifier.py'),
-               '--genes', genes, '--diseases', acronym, '--drop',
+                 '--genes', genes, '--diseases', acronym, '--drop',
                '--copy_number', '--alphas', alphas, '--l1_ratios', l1_ratios,
                '--alt_folder', alt_folder, '--shuffled', '--keep_intermediate']
     if remove_hyper:
         command += ['--remove_hyper']
+
+    # Only set filename if it has been set
+    for fname_arg in filename_arg_list:
+        val = args_dict.get(fname_arg, None)   
+        if val:
+            command += ['--%s' % (fname_arg), val]
+    print(command)
     subprocess.call(command)
