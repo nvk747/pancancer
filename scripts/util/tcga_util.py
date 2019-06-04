@@ -14,10 +14,18 @@ def get_args():
     import argparse
     
     parser = argparse.ArgumentParser()
+    #parser.add_argument('-g', '--genes',
+    #                    help='Comma separated string of HUGO gene symbols')
     parser.add_argument('-g', '--genes',
-                        help='Comma separated string of HUGO gene symbols')
+                    help='string of the genes to extract or genelist file')
+    #parser.add_argument('-t', '--diseases', default='Auto',
+    #                    help='Comma sep string of TCGA disease acronyms. '
+    #                         'If no arguments are passed, filtering will '
+    #                         'default to options given in --filter_count and '
+    #                         '--filter_prop.')
     parser.add_argument('-t', '--diseases', default='Auto',
                         help='Comma sep string of TCGA disease acronyms. '
+                             'diseases_list_file'
                              'If no arguments are passed, filtering will '
                              'default to options given in --filter_count and '
                              '--filter_prop.')
@@ -37,9 +45,13 @@ def get_args():
                         help='the alphas for parameter sweep')
     parser.add_argument('-l', '--l1_ratios', default='0,0.1,0.15,0.18,0.2,0.3',
                         help='the l1 ratios for parameter sweep')
-    parser.add_argument('-b', '--alt_genes', default='None',
-                        help='alternative genes to test performance')
-    parser.add_argument('-s', '--alt_diseases', default="Auto",
+    #parser.add_argument('-b', '--alt_genes', default='None',
+    #                    help='alternative genes to test performance')
+    parser.add_argument('-b', '--alt_genes', default=None,
+                        help='string of the alt_genes to extract or alt_genelist file to test performance')
+    #parser.add_argument('-s', '--alt_diseases', default="Auto",
+    #                    help='The alternative diseases to test performance')
+    parser.add_argument('-s', '--alt_diseases', default=None,
                         help='The alternative diseases to test performance')
     parser.add_argument('-i', '--alt_filter_count', default=15, type=int,
                         help='Min number of mutations in disease to include')
@@ -64,7 +76,7 @@ def get_args():
     parser.add_argument('-z', '--drop_rasopathy', action='store_true',
                         help='Decision to drop rasopathy genes from X matrix')
     parser.add_argument( '--drop_x_genes', default=None,
-                        help='Comma separated list of genes to be dropped from X matrix')
+                        help='Comma separated list of genes to be dropped from X matrix, x_genelist file ')
     parser.add_argument('-q', '--drop_expression', action='store_true',
                         help='Decision to drop gene expression values from X')
     parser.add_argument('-j', '--drop_covariates', action='store_true',
