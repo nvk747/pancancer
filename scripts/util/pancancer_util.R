@@ -51,7 +51,9 @@ parse_summary <- function(summary_info) {
   # Output:
   #    a list of summarized classifier attributes and performance
 
+  base_dir <- NULL
   if (is.character(summary_info)) {
+    base_dir <- dirname(summary_info)
     summary_info <- readr::read_lines(summary_info)
   }
   summary_list <- list()
@@ -72,8 +74,12 @@ parse_summary <- function(summary_info) {
       next
     }
     if (line[1] == "Coefficients:") {
+      tmp_fn <- line[2]
+      if ( ! file.exists(tmp_fn)){
+        tmp_fn <- file.path( base_dir, 'classifier_coefficients.tsv' ) # maybe should use basename of not found file
+      }
       summary_list[[sub(":", "", line[1])]] <-
-        suppressMessages(readr::read_tsv(line[2]))
+        suppressMessages(readr::read_tsv(tmp_fn))
     } else if (line[1] == "") {
       disease_info <- line[2:length(line)]
       disease <- disease_info[1]
