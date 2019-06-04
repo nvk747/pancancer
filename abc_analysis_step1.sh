@@ -16,7 +16,7 @@
 #'PAAD,PRAD,READ,SARC,SKCM,STAD,UCEC'
 alphas='0.1,0.13,0.15,0.18,0.2,0.3,0.4,0.6,0.7'
 l1_mixing='0.1,0.125,0.15,0.2,0.25,0.3,0.35'
-abc_dir='classifiers/GAIN_LOSS_COMBO_MOD'
+abc_dir='classifiers/PI3K_TOTAL_MOD'
 
 ###############
 # Step 1. Pan Cancer ABC classification
