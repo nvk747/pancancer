@@ -79,6 +79,9 @@ silent_junc <- silent_junc[silent_junc$snaptron_id == "13945701", ]
 silent_junc <- silent_junc[silent_junc$TP53 %in% 0, ]
 silent_junc <- silent_junc[silent_junc$include %in% 1, ]
 
+#options for graphical changes
+options(repr.plot.width=10, repr.plot.height=10, repr.plot.res = 300)
+
 ggplot(copy_burden, aes(weight, frac_altered, color = factor(TP53))) +
   geom_point(alpha = 0.6, size = 0.3) + theme_bw() +
   xlab("TP53 Inactivation Probability") +

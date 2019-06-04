@@ -14,7 +14,7 @@ classifier_folder is a string pointing to the location of the classifier data
 Output:
 .tsv file of classifier scores merged with segment based copy number scores
 """
-
+print("copy_burden_merge process started")
 import os
 import argparse
 import pandas as pd
@@ -28,7 +28,7 @@ args = parser.parse_args()
 
 # Load command arguments
 pred_fild = os.path.join(args.classifier_folder, 'classifier_decisions.tsv')
-burden_file = args.filename_burden or os.path.join('data', 'seg_based_scores.tsv')
+burden_file = args.filename_burden 
 out_file = os.path.join(os.path.dirname(pred_fild), 'tables',
                         'copy_burden_predictions.tsv')
 
@@ -40,3 +40,4 @@ combined_df = classifier_df.merge(copy_burden_df, left_index=True,
                                   right_on='Sample')
 combined_df.index = combined_df['Sample']
 combined_df.to_csv(out_file, sep='\t')
+print("copy burden merge process done")

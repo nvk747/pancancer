@@ -78,8 +78,49 @@ RASOPATHY_GENES = set(['BRAF', 'CBL', 'HRAS', 'KRAS', 'MAP2K1', 'MAP2K2', 'NF1',
 # Load command arguments
 args = get_args()
 
-genes = args.genes.split(',')
-diseases = args.diseases.split(',')
+#genes = args.genes.split(',')
+
+# if list of the genes provided by file or comma seperated values:
+try:
+    genes = args.genes
+    genes_df = pd.read_table(genes)
+    genes = genes_df['genes'].tolist()
+except:
+    genes = args.genes.split(',')
+print(genes)
+# if list of the alt_genes provided by file or comma seperated values:
+try:
+    alt_genes = args.alt_genes
+    if alt_genes is not None:
+        alt_genes_df = pd.read_table(alt_genes)
+        alt_genes = alt_genes_df['alt_genes'].tolist()
+except:
+    alt_genes = args.alt_genes.split(',')
+print(alt_genes)
+# if list of the diseases provided by file or comma seperated values:
+try:
+    diseases = args.diseases
+    diseases_df = pd.read_table(diseases)
+    diseases = diseases_df['diseases'].tolist()
+except:
+    diseases = args.diseases.split(',')
+print(diseases)
+# if list of the alt_diseases provided by file or comma seperated values:
+try:
+    alt_diseases = args.alt_diseases
+    if alt_diseases is not None:
+        alt_diseases_df = pd.read_table(alt_diseases)
+        alt_diseases = alt_diseases_df['alt_diseases'].tolist()
+except:
+    alt_diseases = args.alt_diseases.split(',')
+print(alt_diseases)
+# if list of the genes provided by file or comma seperated values:
+drop_x_genes = args.drop_x_genes
+if drop_x_genes is not None:
+    drop_x_genes_df = pd.read_table(drop_x_genes)
+    drop_x_genes = patho_genes_df['drop_x_genes'].tolist()
+
+#diseases = args.diseases.split(',')
 folds = int(args.folds)
 drop = args.drop
 drop_rasopathy = args.drop_rasopathy
@@ -89,10 +130,10 @@ filter_prop = float(args.filter_prop)
 num_features_kept = args.num_features
 alphas = [float(x) for x in args.alphas.split(',')]
 l1_ratios = [float(x) for x in args.l1_ratios.split(',')]
-alt_genes = args.alt_genes.split(',')
+#alt_genes = args.alt_genes.split(',')
 alt_filter_count = int(args.alt_filter_count)
 alt_filter_prop = float(args.alt_filter_prop)
-alt_diseases = args.alt_diseases.split(',')
+#alt_diseases = args.alt_diseases.split(',')
 alt_folder = args.alt_folder
 remove_hyper = args.remove_hyper
 keep_inter = args.keep_intermediate
@@ -107,7 +148,8 @@ warnings.filterwarnings('ignore',
                         message='Changing the shape of non-C contiguous array')
 
 # Generate file names for output
-genes_folder = args.genes.replace(',', '_')
+#genes_folder = args.genes.replace(',', '_')
+genes_folder  = genes[0]+"_others"
 base_folder = os.path.join('classifiers', genes_folder)
 
 if alt_folder != 'Auto':
@@ -134,9 +176,11 @@ dis_summary_aupr_file = os.path.join(base_folder, 'disease_aupr.pdf')
 classifier_file = os.path.join(base_folder, 'classifier_coefficients.tsv')
 roc_results_file = os.path.join(base_folder, 'pancan_roc_results.tsv')
 
-alt_gene_base = 'alt_gene_{}_alt_disease_{}'.format(
-                args.alt_genes.replace(',', '_'),
-                args.alt_diseases.replace(',', '_'))
+#alt_gene_base = 'alt_gene_{}_alt_disease_{}'.format(
+#                args.alt_genes.replace(',', '_'),
+#                args.alt_diseases.replace(',', '_'))
+
+alt_gene_base = 'alt_gene_alt_disease'
 alt_count_table_file = os.path.join(base_folder, 'alt_summary_counts.csv')
 alt_gene_auroc_file = os.path.join(base_folder,
                                    '{}_auroc_bar.pdf'.format(alt_gene_base))
@@ -144,19 +188,17 @@ alt_gene_aupr_file = os.path.join(base_folder,
                                   '{}_aupr_bar.pdf'.format(alt_gene_base))
 alt_gene_summary_file = os.path.join(base_folder,
                                      '{}_summary.tsv'.format(alt_gene_base))
-
 # Load Datasets
 x_as_raw = args.x_as_raw
 if x_matrix == 'raw':
-    expr_file = os.path.join('data', 'pancan_rnaseq_freeze.tsv.gz')
+    expr_file = os.path.join('data', 'pancan_rnaseq_freeze.tsv')
     x_as_raw = True
 else:
     expr_file = x_matrix
 
-mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv.gz')
+mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv')
 mut_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
 sample_freeze_file = args.filename_sample or os.path.join('data', 'sample_freeze.tsv')
-
 rnaseq_full_df = pd.read_table(expr_file, index_col=0)
 mutation_df = pd.read_table(mut_file, index_col=0)
 sample_freeze = pd.read_table(sample_freeze_file, index_col=0)
@@ -194,14 +236,17 @@ if drop_x_genes:
 # Incorporate copy number for gene activation/inactivation
 if copy_number:
     # Load copy number matrices
-    copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv.gz')
+    #copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv.gz')
+    copy_loss_file = args.filename_copy_loss 
     copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 
-    copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv.gz')
+    #copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv.gz')
+    copy_gain_file = args.filename_copy_gain
     copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 
     # Load cancer gene classification table
-    vogel_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
+    #vogel_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
+    vogel_file = args.filename_cancer_gene_classification
     cancer_genes = pd.read_table(vogel_file)
 
     y = integrate_copy_number(y=y, cancer_genes_df=cancer_genes,
@@ -253,7 +298,8 @@ covar = covar.drop('total_status', axis=1)
 y_df = y_df.loc[y_sub.index]
 strat = y_sub.str.cat(y_df.astype(str))
 x_df = rnaseq_df.loc[y_df.index, :]
-
+print("strat")
+print(strat)
 # Subset x matrix to MAD genes and scale
 if x_as_raw:
     med_dev = pd.DataFrame(mad(x_df), index=x_df.columns)
@@ -314,6 +360,7 @@ cv_results = pd.concat([pd.DataFrame(cv_pipeline.cv_results_)
 cv_score_mat = pd.pivot_table(cv_results, values='mean_test_score',
                               index='classify__l1_ratio',
                               columns='classify__alpha')
+plt.figure(figsize = (10,10),dpi= 300)
 ax = sns.heatmap(cv_score_mat, annot=True, fmt='.1%')
 ax.set_xlabel('Regularization strength multiplier (alpha)')
 ax.set_ylabel('Elastic net mixing parameter (l1_ratio)')
@@ -370,6 +417,7 @@ if keep_inter:
 
 # Plot ROC
 sns.set_style("whitegrid")
+plt.figure(figsize = (10,10),dpi= 300)
 plt.figure(figsize=(3, 3))
 total_auroc = {}
 colors = ['blue', 'green', 'orange', 'grey']
@@ -408,6 +456,7 @@ plt.close()
 
 # Plot PR
 sns.set_style("whitegrid")
+plt.figure(figsize = (10,10),dpi= 300)
 plt.figure(figsize=(3, 3))
 total_aupr = {}
 colors = ['blue', 'green', 'orange', 'grey']
@@ -525,6 +574,7 @@ for disease, metrics_val in disease_metrics.items():
     disease_roc_sub_file = '{}_pred_{}.pdf'.format(disease_roc_file, disease)
 
     # Plot disease specific PR
+
     plt.figure(figsize=(3, 3))
     aupr = []
     idx = 0
@@ -622,7 +672,7 @@ if keep_inter:
     full_roc_df.to_csv(roc_results_file, sep='\t')
 
 # Apply the same classifier previously built to predict alternative genes
-if alt_genes[0] is not 'None':
+if alt_genes is not None:
     # Classifying alternative mutations
     y_alt = mutation_df[alt_genes]
 
@@ -768,8 +818,11 @@ with open(os.path.join(base_folder, 'classifier_summary.txt'), 'w') as sum_fh:
     summarywriter.writerow(['Parameters:'])
     summarywriter.writerow(['Genes:'] + genes)
     summarywriter.writerow(['Diseases:'] + diseases)
-    summarywriter.writerow(['Alternative Genes:'] + alt_genes)
-    summarywriter.writerow(['Alternative Diseases:'] + alt_diseases)
+    if alt_genes is not None:
+        summarywriter.writerow(['Alternative Genes:'] + alt_genes)
+    if alt_diseases is not None:
+        summarywriter.writerow(['Alternative Diseases:'] + alt_diseases)
+
     summarywriter.writerow(['Number of Features:', str(x_df.shape[1])])
     summarywriter.writerow(['Drop Gene:', drop])
     summarywriter.writerow(['Copy Number:', copy_number])
@@ -800,7 +853,7 @@ with open(os.path.join(base_folder, 'classifier_summary.txt'), 'w') as sum_fh:
         summarywriter.writerow(['', disease, 'Training AUPR:', aupr[0],
                                 'Testing AUPR:', aupr[1],
                                 'Cross Validation AUPR:', aupr[2]])
-    if alt_genes[0] is not 'None':
+    if alt_genes is not None:
         summarywriter.writerow(['Alternate gene performance:'] + alt_genes)
         summarywriter.writerow(['Alternative gene AUROC:',
                                 str(alt_metrics_cv['auroc'])])
