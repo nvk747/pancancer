@@ -1,0 +1,130 @@
+<tool id="pancancer_classifier" name="pancancer classifier" version="0.1.0" python_template_version="3.5">
+    <description>classifier for pathway aberrant activity</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+    <version_command>
+        <![CDATA['python /data/vijay/git/pancancer/scripts/pancancer_classifier.py' --version]]>
+    </version_command>
+    <command detect_errors="exit_code"><![CDATA[
+        python /data/vijay/git/pancancer/scripts/pancancer_classifier.py
+        #if $folds and $folds is not None:
+        --folds '$folds'
+        #end if
+        $drop
+        #if $filter_count and $filter_count is not None:
+        --filter_count '$filter_count'
+        #end if
+        #if $filter_prop and $filter_prop is not None:
+        --filter_prop '$filter_prop'
+        #end if
+        #if $num_features and $num_features is not None:
+        --num_features '$num_features'
+        #end if
+        @INPUTS_ALPHAS@
+        @INPUTS_L1_RATIOS@
+        #if $alt_genes and str($alt_genes) != '':
+        --alt_genes '$alt_genes'
+        #end if
+        #if $alt_diseases and str($alt_diseases) != '':
+        --alt_diseases '$alt_diseases'
+        #end if
+        #if $alt_filter_count and $alt_filter_count is not None:
+        --alt_filter_count '$alt_filter_count'
+        #end if
+        #if $alt_filter_prop and $alt_filter_prop is not None:
+        --alt_filter_prop '$alt_filter_prop'
+        #end if
+        @OUTPUT_ALT_FOLDER@
+        @INPUT_REMOVE_HYPER@
+        $keep_intermediate
+        @INPUTS_BASIC_RAW@
+        @INPUTS_GENES_DISEASES@
+        $drop
+        $shuffled
+        $shuffled_before_training
+        $no_mutation
+        $drop_rasopathy
+        #if str($drop_x_genes)
+        --drop_x_genes '$drop_x_genes'
+        #end if
+        $drop_expression
+        $drop_covariates
+        @INPUTS_COPY_NUMBER_CLASS_FILE_CONDITIONAL@
+        &&
+        @OUTPUT_ALT_FOLDER_HTML@
+        ]]>
+    </command>
+    <inputs>
+        <expand macro="inputs_basic_raw" />
+        <expand macro="inputs_genes_diseases" />
+        <param argument="--folds" label="Number of cross validation folds to perform" name="folds" optional="true" type="integer" value="5"/>
+        <param argument="--drop" checked="false" label="Decision to drop input genes from X matrix" name="drop" type="boolean" truevalue="--drop" falsevalue=""/>
+        <expand macro="inputs_copy_number_class_file_conditional" />
+        <param argument="--filter_count" label="Min number of mutations in diseases to include" name="filter_count" optional="true" type="integer" value="15"/>
+        <param argument="--filter_prop" label="Min proportion of positives to include disease" name="filter_prop" optional="true" type="float" value="0.05"/>
+        <param argument="--num_features" label="Number of MAD genes to include in classifier" name="num_features" optional="true" type="integer" value="8000"/>
+        <expand macro="input_alphas" />
+        <expand macro="input_l1_ratios" />
+        <param argument="--alt_genes" label="alternative genes to test performance" name="alt_genes" optional="true" type="text" />
+        <param argument="--alt_diseases" label="The alternative diseases to test performance" name="alt_diseases" optional="true" type="text" />
+        <param argument="--alt_filter_count" label="Min number of mutations in disease to include" name="alt_filter_count" optional="true" type="integer" value="15"/>
+        <param argument="--alt_filter_prop" label="Min proportion of positives to include disease" name="alt_filter_prop" optional="true" type="float" value="0.05"/>
+        <expand macro="input_remove_hyper" />
+        <param argument="--keep_intermediate" checked="false" label="Keep intermediate ROC values for plotting" name="keep_intermediate" type="boolean" truevalue="--keep_intermediate" falsevalue=""/>
+        <param argument="--shuffled" checked="false" label="Shuffle the input gene exprs matrix alongside" name="shuffled" type="boolean" truevalue="--shuffled" falsevalue=""/>
+        <param argument="--shuffled_before_training" checked="false" label="Shuffle the gene exprs matrix before training" name="shuffled_before_training" type="boolean" truevalue="--shuffled_before_training" falsevalue=""/>
+        <param argument="--no_mutation" checked="false" label="Remove mutation data from y matrix" name="no_mutation" type="boolean" truevalue="--no_mutation" falsevalue=""/>
+        <param argument="--drop_rasopathy" checked="false" label="Decision to drop rasopathy genes from X matrix" name="drop_rasopathy" type="boolean" truevalue="--drop_rasopathy" falsevalue="" help="drop: BRAF,CBL,HRAS,KRAS,MAP2K1,MAP2K2,NF1,NRAS,PTPN11,RAF1,SHOC2,SOS1,SPRED1,RIT1"/>
+        <param argument="--drop_x_genes" label="Comma separated list of genes to be dropped from X matrix" name="drop_x_genes" optional="true" type="text" value=""/>
+        <param argument="--drop_expression" checked="false" label="Decision to drop gene expression values from X" name="drop_expression" type="boolean" truevalue="--drop_expression" falsevalue=""/>
+        <param argument="--drop_covariates" checked="false" label="Decision to drop covariate information from X" name="drop_covariates" type="boolean" truevalue="--drop_covariates" falsevalue=""/>
+    </inputs>
+    <outputs>
+        <expand macro="output_alt_folder" />
+    </outputs>
+    <help><![CDATA[
+        Gregory Way 2017 PanCancer Classifier scripts/pancancer_classifier.py:
+
+        --genes             comma separated string of genes
+        --diseases          comma separated string of disease types for classifier
+                            default: Auto (will pick diseases from filter args)
+        --folds             number of cross validation folds
+                            default: 5
+        --drop              drop the input genes from the X matrix
+                            default: False if flag omitted
+        --copy_number       optional flag to supplement copy number to define Y
+                            default: False if flag omitted
+        --filter_count      int of low count of mutation to include disease
+                            default: 15
+        --filter_prop       float of low proportion of mutated samples per disease
+                            default: 0.05
+        --num_features      int of number of genes to include in classifier
+                            default: 8000
+        --alphas            comma separated string of alphas to test in pipeline
+                            default: '0.1,0.15,0.2,0.5,0.8,1'
+        --l1_ratios         comma separated string of l1 parameters to test
+                            default: '0,0.1,0.15,0.18,0.2,0.3'
+        --alt_genes         comma separated string of alternative genes to test
+                            default: None
+        --alt_diseases      comma separated string of alternative diseases to test
+                            default: Auto 
+        --alt_filter_count  int of low count of mutations to include alt_diseases
+                            default: 15
+        -alt_filter_prop    float of low proportion of mutated samples alt_disease
+                            default: 0.05
+        --alt_folder        string of where to save the classifier figures
+                            default: Auto
+        --remove_hyper      store_true: remove hypermutated samples
+                            default: False if flag omitted
+        --keep_intermediate store_true: keep intermediate roc curve items
+                            default: False if flag omitted
+        --x_matrix          string of which feature matrix to use
+                            default: raw
+        Output:
+        ROC curves, AUROC across diseases, and classifier coefficients
+        ]]>
+    </help>
+</tool>

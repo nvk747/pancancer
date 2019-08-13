@@ -53,9 +53,7 @@ copy_number = args.copy_number
 prediction_file = os.path.join(scores, 'classifier_decisions.tsv')
 
 try:
-    genes_df = pd.read_csv(path_genes)
-    print("path_genes_file")
-    print(genes_df)
+    genes_df = pd.read_table(path_genes)
     path_genes = genes_df['genes'].tolist()
     print(path_genes)
 except:

@@ -1,0 +1,27 @@
+<tool id="pancancer_copy_burden_merge" name="PanCancer copy burden merge" version="@VERSION@">
+  <description>copy burden merge</description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements"/>
+  <expand macro="stdio"/>
+  <version_command><![CDATA[python /data/vijay/git/pancancer/scripts/copy_burden_merge.py --version]]></version_command>
+  <command><![CDATA[
+    cp -R '$classifier_folder.extra_files_path' '${output_alt_folder.extra_files_path}'
+    &&
+    python /data/vijay/git/pancancer/scripts/copy_burden_merge.py 
+    --classifier_folder '${output_alt_folder.extra_files_path}'
+    @INPUT_FILENAME_BURDEN@
+    &&
+    @OUTPUT_ALT_FOLDER_HTML@
+    ]]>
+  </command>
+  <inputs>
+    <param argument="--classifier_folder" label="Classifier score data" name="classifier_folder" optional="false" type="data" format="html"/>
+    <expand macro="input_filename_burden" />
+  </inputs>
+  <outputs>
+    <expand macro="output_alt_folder" />
+  </outputs>
+  <help><![CDATA[TODO: Write help]]></help>
+</tool>

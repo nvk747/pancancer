@@ -1,0 +1,39 @@
+<tool id="pancancer_within_tissue_analysis" name="PanCancer Tissue" version="@VERSION@">
+  <description>within tissue analysis</description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements"/>
+  <expand macro="stdio"/>
+  <version_command><![CDATA[python /data/vijay/git/pancancer/scripts/within_tissue_analysis.py --version]]></version_command>
+  <command><![CDATA[
+@INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@
+&&
+##cd \$PANCANCER_DIR && 
+python /data/vijay/git/pancancer/scripts/within_tissue_analysis.py
+@INPUTS_ALPHAS@
+@INPUTS_L1_RATIOS@
+@OUTPUT_ALT_FOLDER_WITHIN_DISEASE@
+@INPUT_REMOVE_HYPER@
+@INPUTS_BASIC_RAW@
+@INPUTS_GENES_DISEASES@
+@INPUTS_COPY_NUMBER_CLASS_FILE_PREFIX@
+@INPUTS_COPY_NUMBER_CLASS_FILE@
+&&
+@OUTPUT_ALT_FOLDER_HTML@
+]]></command>
+  <inputs>
+    <expand macro="input_alt_folder" />
+    <expand macro="inputs_basic_raw" />
+    <expand macro="inputs_genes_diseases" />
+    <expand macro="inputs_copy_number_class_file" />
+    <expand macro="input_alphas" />
+    <expand macro="input_l1_ratios" />
+    <expand macro="input_remove_hyper" />
+  </inputs>
+  <outputs>
+    <expand macro="output_alt_folder" />
+  </outputs>
+  <help><![CDATA[TODO: Write help]]></help>
+</tool>
+

@@ -1,0 +1,44 @@
+<tool id="alternative_genes_pathwaymapper" name="PanCancer" version="@VERSION@">
+    <description>alternative genes pathwaymapper</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+    <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/targene_alternative_genes_pathwaymapper.py' --version]]>
+    </version_command>
+    <command><![CDATA[
+        cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}' 
+        && 
+        python /data/vijay/git/pancancer/scripts/targene_alternative_genes_pathwaymapper.py
+        --scores '${output_alt_folder.extra_files_path}'
+        #if $genes and str($genes):
+        --genes '$genes'
+        #end if
+        #if $path_genes and str($path_genes):
+        --path_genes '$path_genes'
+        #end if
+        #if $filename_mut and $filename_mut is not None:
+        --filename_mut '$filename_mut'
+        #end if
+        #if $filename_sample and $filename_sample is not None:
+        --filename_sample '$filename_sample'
+        #end if
+        @INPUTS_COPY_NUMBER_FILE_CONDITIONAL@
+        &&
+        @OUTPUT_ALT_FOLDER_HTML@
+        ]]>
+    </command>
+    <inputs>
+        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html"/>
+        <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
+        <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
+        <param argument="--filename_mut" label="Filename mutations" name="filename_mut" optional="true" type="data" format="tabular" help="data/pancan_mutation_freeze.tsv"/>
+        <param argument="--filename_sample" label="Filename of sample" name="filename_sample" optional="true" type="data" format="tabular" help="data/sample_freeze.tsv"/>
+        <expand macro="inputs_copy_number_file_conditional" />
+    </inputs>
+    <outputs>
+        <expand macro="output_alt_folder" />
+    </outputs>
+    <help><![CDATA[TODO: Write help]]></help>
+</tool>

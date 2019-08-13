@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
-
 import os
 import sys
 import pandas as pd
@@ -17,12 +11,14 @@ parser = argparse.ArgumentParser()
 #                    help='folder location of classifier file')
 #parser.add_argument('-u', '--copy_number', action='store_true',
 #                    help='Supplement Y matrix with copy number events')
-parser.add_argument('-g', '--genes',
-                    help='gene list file')
+parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
+                    help='string of the genes to extract or gene list file')
 parser.add_argument('-p', '--path_genes',
                     help='pathway gene list file')
-parser.add_argument('-o', '--alt_folder', default='Auto',
-                        help='Provide an alternative folder to save results')
+#parser.add_argument('-o', '--alt_folder', default='Auto',
+#                        help='Provide an alternative folder to save results')
+parser.add_argument('-s', '--scores',
+                    help='string of the location of classifier scores/alt_folder')
 parser.add_argument('-x', '--x_matrix', default=None,
                     help='Filename of features to use in model')
 parser.add_argument( '--filename_mut', default=None,
@@ -45,48 +41,39 @@ args = parser.parse_args()
 #copy_number = args.copy_number
 
 # Load Constants
-#rnaseq_file = args.x_matrix or os.path.join('data', 'pancan_rnaseq_freeze.tsv')
-#mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv')
-#sample_freeze_file = args.filename_sample or os.path.join('data', 'sample_freeze.tsv')
-#cancer_gene_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
-#copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv')
-#copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
-#mutation_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
 
-alt_folder = args.alt_folder
-rnaseq_file = args.x_matrix 
-mut_file = args.filename_mut 
-sample_freeze_file = args.filename_sample  
-cancer_gene_file = args.filename_cancer_gene_classification 
-copy_loss_file = args.filename_copy_loss 
-copy_gain_file = args.filename_copy_gain 
-mutation_burden_file = args.filename_mut_burden 
+alt_folder = args.scores
+rnaseq_file = args.x_matrix or os.path.join('data', 'pancan_rnaseq_freeze.tsv')
+mut_file = args.filename_mut or os.path.join('data', 'pancan_mutation_freeze.tsv')
+sample_freeze_file = args.filename_sample or os.path.join('data', 'sample_freeze.tsv')
+cancer_gene_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
+copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv')
+copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
+mutation_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
+
+# rnaseq_file = args.x_matrix 
+# mut_file = args.filename_mut 
+# sample_freeze_file = args.filename_sample  
+# cancer_gene_file = args.filename_cancer_gene_classification 
+# copy_loss_file = args.filename_copy_loss 
+# copy_gain_file = args.filename_copy_gain 
+# mutation_burden_file = args.filename_mut_burden 
 
 # In[2]:
 
 # Get the current working directory
-#cwd = os.getcwd()
+# cwd = os.getcwd()
 
 # Ensure that the path is starting in the scripts directory
-#if not cwd.split('/')[-1] == 'scripts':
+# if not cwd.split('/')[-1] == 'scripts':
 #    os.chdir(os.path.join(cwd, 'scripts'))
 
 # In[3]:
 
-#get_ipython().run_line_magic('matplotlib', 'inline')
-#plt.style.use('seaborn-notebook')
-
-# In[4]:
-
-# Load Datasets
-#mut_file = os.path.join('..', 'data', 'pancan_mutation_freeze.tsv.gz')
-#sample_freeze_file = os.path.join('..', 'data', 'sample_freeze.tsv')
-#copy_loss_file = os.path.join('..', 'data', 'copy_number_loss_status.tsv.gz')
-#copy_gain_file = os.path.join('..', 'data', 'copy_number_gain_status.tsv.gz')
-#cancer_genes_file = os.path.join('..', 'data', 'vogelstein_cancergenes.tsv')
+# get_ipython().run_line_magic('matplotlib', 'inline')
+# plt.style.use('seaborn-notebook')
 
 mutation_df = pd.read_table(mut_file, index_col=0)
-mutation_df.head()
 sample_freeze = pd.read_table(sample_freeze_file, index_col=0)
 copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
@@ -100,26 +87,28 @@ results_path = alt_folder
 
 # Load Ras Pathway Genes
 #genes_file = os.path.join('..', 'data', 'ras_genes.csv')
-genes_file = args.genes
-genes_df = pd.read_table(genes_file)
-genes = genes_df['genes'].tolist()
 
-pathgenes_file = args.path_genes
-pathgenes_df = pd.read_csv(pathgenes_file)
-print(pathgenes_df)
+try:
+    genes = args.genes
+    genes_df = pd.read_table(genes)
+    genes = genes_df['genes'].tolist()
+except:
+    genes = args.genes.split(',')
+
+# if list of pathway genes are provided in a file
+try:
+    path_genes = args.path_genes
+    pathgenes_df = pd.read_table(path_genes)
+    path_genes = pathgenes_df['genes'].tolist()
+    print(path_genes)
+except:
+    path_genes = path_genes.split(',')
 
 n = pathgenes_df['og_tsg'].tolist()
 n_OG = n.count('OG')
 n_TSG = n.count('TSG')
 print(n_OG)
 print(n_TSG)
-
-# In[6]:
-
-genes_df.head()
-pathgenes_df.head()
-
-# In[7]:
 
 # Subset mutation data
 mutation_sub_df = mutation_df.loc[:, pathgenes_df['genes']]
@@ -260,7 +249,7 @@ tum_sup_mult.index = summary_score_df.index
 
 summary_score_df = summary_score_df.mul(tum_sup_mult, axis=0)
 pathway_mapper_file = os.path.join(results_path, 'tables',
-                                   'pathwaymapper_percentages.txt')
+                                   'pathway_mapper_percentages.txt')
 summary_score_df.to_csv(pathway_mapper_file, sep='\t')
 
 # ## Output number of Ras events per sample
@@ -320,4 +309,4 @@ count_summary_file = os.path.join(results_path, 'tables',
                                   'path_events_per_sample.tsv')
 count_summary.to_csv(count_summary_file, sep='\t', index=False)
 
-print("abc_pathway_count_heatmaps_generated and done")
+print("targene_pathway_count_heatmaps_generated and done")

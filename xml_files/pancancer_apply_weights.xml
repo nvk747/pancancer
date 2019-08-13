@@ -1,0 +1,30 @@
+<tool id="pancancer_apply_weights" name="PanCancer Apply Weights" version="@VERSION@">
+  <description>apply weights</description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements"/>
+  <expand macro="stdio"/>
+  <version_command><![CDATA[cd $'python /data/vijay/git/pancancer/scripts/apply_weights.py' --version]]></version_command>
+  <command><![CDATA[
+cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}'
+&&
+python /data/vijay/git/pancancer/scripts/apply_weights.py 
+#if $classifier and $classifier is not None:
+--classifier '${output_alt_folder.extra_files_path}'
+#end if
+@INPUTS_BASIC@
+@INPUTS_COPY_NUMBER_CLASS_FILE_CONDITIONAL@
+&&
+@OUTPUT_ALT_FOLDER_HTML@
+]]></command>
+  <inputs>
+    <param argument="--classifier" label="Classifier data" name="classifier" optional="false" type="data" format="html"/>
+    <expand macro="inputs_basic" />
+    <expand macro="inputs_copy_number_class_file_conditional" />
+  </inputs>
+  <outputs>
+    <expand macro="output_alt_folder" />
+  </outputs>
+  <help><![CDATA[TODO: Write help]]></help>
+</tool>

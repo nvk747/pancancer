@@ -1,0 +1,34 @@
+<tool id="pancancer_map_mutation_class" name="PanCancer map mutation class" version="@VERSION@">
+  <description>map mutation class</description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements"/>
+  <expand macro="stdio"/>
+  <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/map_mutation_class.py' --version]]>
+  </version_command>
+  <command><![CDATA[
+      cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}'
+      && 
+      python /data/vijay/git/pancancer/scripts/map_mutation_class.py
+      --scores '${output_alt_folder.extra_files_path}'
+      #if $path_genes and str($path_genes):
+      --path_genes '$path_genes'
+      #end if
+      @INPUTS_COPY_NUMBER_FILE_CONDITIONAL@
+      @INPUT_FILENAME_RAW_MUT@
+      &&
+      @OUTPUT_ALT_FOLDER_HTML@
+    ]]> 
+  </command>
+  <inputs>
+    <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html"/>
+    <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" value="PIK3CA,PIK3CB,PIK3R2,AKT1,AKT2,AKT3,RHEB,RPTOR,RICTOR,MTOR,ERBB2,KRAS,HRAS,NRAS,NFE2L2,PTEN,PIK3R1,PIK3R3,INPP4B,STK11,PPP2R1A,TSC1,TSC2,NF1" />
+    <expand macro="inputs_copy_number_file_conditional" />
+    <expand macro="input_filename_raw_mut" />
+  </inputs>
+  <outputs>
+    <expand macro="output_alt_folder" />
+  </outputs>
+  <help><![CDATA[TODO: Write help]]></help>
+</tool>

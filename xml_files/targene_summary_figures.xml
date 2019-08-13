@@ -1,0 +1,25 @@
+<tool id="targene_summary_figures" name=" PanCancer " version="@VERSION@">
+  <description>Visualize targene summary</description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements"/>
+  <expand macro="stdio"/>
+  <version_command0><![CDATA[Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_summary_figures.R --version]]></version_command0>
+  <command><![CDATA[
+    cp -R '$classifier_folder.extra_files_path' '${output_alt_folder.extra_files_path}'
+    &&
+    Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_summary_figures.R
+    --classifier_folder '${output_alt_folder.extra_files_path}'
+    &&
+    @OUTPUT_ALT_FOLDER_HTML@
+    ]]>
+  </command>
+  <inputs>
+    <param argument="--classifier_folder" label="Classifier score data" name="classifier_folder" optional="false" type="data" format="html"/>
+  </inputs>
+  <outputs>
+    <expand macro="output_alt_folder" />
+  </outputs>
+  <help><![CDATA[TODO: Write help]]></help>
+</tool>

@@ -67,7 +67,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from statsmodels.robust.scale import mad
 
-sys.path.insert(0, os.path.join('scripts', 'util'))
+#sys.path.insert(0, os.path.join('scripts', 'util'))
+sys.path.insert(0, os.path.join(os.path.split(__file__)[0], 'util'))
 from tcga_util import get_args, get_threshold_metrics, integrate_copy_number
 from tcga_util import shuffle_columns
 
@@ -87,7 +88,7 @@ try:
     genes = genes_df['genes'].tolist()
 except:
     genes = args.genes.split(',')
-print(genes)
+    print(genes)
 # if list of the alt_genes provided by file or comma seperated values:
 try:
     alt_genes = args.alt_genes

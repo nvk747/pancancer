@@ -23,7 +23,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-sys.path.insert(0, os.path.join('scripts', 'util'))
+#sys.path.insert(0, os.path.join('scripts', 'util'))
+sys.path.insert(0, os.path.join(os.path.split(__file__)[0], 'util'))
 from tcga_util import integrate_copy_number
 
 parser = argparse.ArgumentParser()

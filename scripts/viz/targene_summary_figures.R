@@ -24,7 +24,7 @@ library(optparse)
 # parse options
 option_list = list(
   make_option(
-    c("--alt_folder"),
+    c("--classifier_folder"),
     action = "store",
     default = NA,
     type = 'character',
@@ -34,12 +34,12 @@ option_list = list(
 
 opt <-parse_args(OptionParser(option_list = option_list))
 
-source(file.path("scripts", "util", "pancancer_util.R"))
-
+#source(file.path("scripts", "util", "pancancer_util.R"))
+source("/data/vijay/git/pancancer/scripts/util/pancancer_util.R")
 set.seed(123)
 
 # results_folder <- file.path("classifiers", "RAS")
-results_folder <- opt$alt_folder
+results_folder <- opt$classifier_folder
 results <- parse_summary(file.path(results_folder, "classifier_summary.txt"))
 head(results)
 dir.create("figures")
@@ -48,8 +48,8 @@ dir.create("figures")
 #heatmap_plot_file <- file.path(results_folder, "figures", "ras_heatmap.pdf")
 #ras_heatmap_file <- file.path(results_folder, "figures", "all_ras_heatmap.pdf")
 
-heatmap_plot_file <- file.path(results_folder, "figures", "abc_heatmap.pdf")
-gene_heatmap_file <- file.path(results_folder, "figures", "all_abc_heatmap.pdf")
+heatmap_plot_file <- file.path(results_folder, "figures", "targene_heatmap.pdf")
+gene_heatmap_file <- file.path(results_folder, "figures", "all_targene_heatmap.pdf")
 
 heat_file <- file.path(results_folder, "summary_counts.csv")
 heat_df <- readr::read_csv(heat_file)
@@ -72,12 +72,12 @@ rownames(heat_comb_df) <- heat_df$DISEASE
 head(heat_comb_df)
 
 # All diseases that are used in building the classifier
-abc_dis <- results[["Diseases"]]
+targene_dis <- results[["Diseases"]]
 
 # Build a vector for heatmap labels
 classifier <- c()
 for (disease in rownames(heat_comb_df)) {
-  if (disease %in% abc_dis) {
+  if (disease %in% targene_dis) {
     classifier <- c(classifier, "Training")
   } else {
     classifier <- c(classifier, "Dropped")
@@ -91,34 +91,34 @@ classifier$classifier <- factor(classifier$classifier,
 prop_matrix <- heat_comb_df[names(sort(heat_comb_df[,3], decreasing = TRUE)), ]
 
 # Plot and save heatmap
-options(repr.plot.width=8, repr.plot.height=4, repr.plot.res = 300)
+options(repr.plot.width=8, repr.plot.height=2.5, repr.plot.res = 300)
 pheatmap(t(prop_matrix * 100), scale = "none", cluster_rows = FALSE,
          cluster_cols = FALSE,
          display_numbers = TRUE, number_format = "%.0f", fontsize_number = 8,
          number_color = "black", annotation_col = classifier,
          annotation_names_col = FALSE, legend = FALSE,
          filename = heatmap_plot_file,
-         width = 8, height = 2)
+         width = 8, height = 2.5)
 
 # Plot heatmap without collapsing Ras genes
-heat_abc_df <- as.matrix(cbind(gain,loss,prop))
-rownames(heat_abc_df) <- heat_df$DISEASE
+heat_targene_df <- as.matrix(cbind(gain,loss,prop))
+rownames(heat_targene_df) <- heat_df$DISEASE
 
-test_abc_df <- heat_abc_df[names(sort(heat_abc_df[,1], decreasing = TRUE)),]
+test_targene_df <- heat_targene_df[names(sort(heat_targene_df[,1], decreasing = TRUE)),]
 
-options(repr.plot.width=8, repr.plot.height=8, repr.plot.res = 300)
+options(repr.plot.width=8, repr.plot.height=12, repr.plot.res = 300)
 
 # Plot and save heatmap
-pheatmap(t(test_abc_df * 100), scale = "none", cluster_rows = FALSE,
-         cluster_cols = FALSE, sort = test_abc_df[,1],
+pheatmap(t(test_targene_df * 100), scale = "none", cluster_rows = FALSE,
+         cluster_cols = FALSE, sort = test_targene_df[,1],
          display_numbers = TRUE, number_format = "%.0f", fontsize_number = 8,
          number_color = "black", annotation_col = classifier,
          annotation_names_col = FALSE, legend = FALSE,
          filename = gene_heatmap_file,
-         width = 8, height = 4)
+         width = 8, height = 6)
 
 # 2) Coefficients contributing to the model
-coef_plot_file <- file.path(results_folder, "figures", "abc_coef_plot.pdf")
+coef_plot_file <- file.path(results_folder, "figures", "targene_coef_plot.pdf")
 coef_df <- results[["Coefficients"]]
 coef_df <- coef_df[, -1]
 coef_df <- coef_df[order(coef_df$weight, decreasing = FALSE), ]
@@ -182,12 +182,12 @@ b = mut_df[,grepl("_loss",colnames(mut_df))]
 b = b[,!grepl("copy_loss",colnames(b))]
 
 if (length(colnames(a))> 1){
-    abc_gain = as.matrix(max(a[,grepl("_gain",colnames(a))]))
-    mut_df <- mut_df %>% mutate(abc_gain)
+    targene_gain = as.matrix(max(a[,grepl("_gain",colnames(a))]))
+    mut_df <- mut_df %>% mutate(targene_gain)
 }
 if (length(colnames(b))> 1){
-    abc_loss = as.matrix(max(b[,grepl("_loss",colnames(b))]))
-    mut_df <- mut_df %>% mutate(abc_loss)
+    targene_loss = as.matrix(max(b[,grepl("_loss",colnames(b))]))
+    mut_df <- mut_df %>% mutate(targene_loss)
 }
 head(mut_df,3)
 
@@ -198,9 +198,9 @@ delet_df <- mut_df %>% filter(Variant_Classification %in% consider_mutations)
 mut_filtered_df <- dplyr::bind_rows(delet_df, silent_df)
 
 # Separate classes of mutations to summarize for abc_gain
-a = mut_df[,grepl("abc_gain",colnames(mut_df))]
+a = mut_df[,grepl("targene_gain",colnames(mut_df))]
 if (length(colnames(a))== 1) {
-   copy_num_df <- mut_df %>% filter(abc_gain == 1) %>%
+   copy_num_df <- mut_df %>% filter(targene_gain == 1) %>%
   filter(TP53 == 0) %>%
   select(Variant_Classification, Hugo_Symbol, DISEASE, weight, HGVSc, HGVSp) %>%
   mutate(classification = "Loss")
@@ -258,9 +258,9 @@ colnames(final_gain_df) <- c("ID", "Gene", "Disease", "Weight", "HGVSc", "HGVSp"
 
 # Separate classes of mutations to summarize for abc_loss
 
-b = mut_df[,grepl("abc_loss",colnames(mut_df))]
+b = mut_df[,grepl("targene_loss",colnames(mut_df))]
 if (length(colnames(b))== 1) {
-    copy_num_df <- mut_df %>% filter(abc_loss == 1) %>%
+    copy_num_df <- mut_df %>% filter(targene_loss == 1) %>%
   filter(TP53 == 0) %>%
   select(Variant_Classification, Hugo_Symbol, DISEASE, weight, HGVSc, HGVSp) %>%
   mutate(classification = "Loss")
@@ -317,7 +317,7 @@ colnames(final_loss_df) <- c("ID", "Gene", "Disease", "Weight", "HGVSc", "HGVSp"
 }
 
 # Plot summary distribution of variant classes prediction scores for gain
-a = mut_df[,grepl("abc_gain",colnames(mut_df))]
+a = mut_df[,grepl("targene_gain",colnames(mut_df))]
 colnames(a)
 if (length(colnames(a))== 1) {
   options(repr.plot.width=4, repr.plot.height=3.8, repr.plot.res = 300)
@@ -342,7 +342,7 @@ if (length(colnames(a))== 1) {
 }
 
 #Plot summary distribution of variant classes prediction scores for loss
-b = mut_df[,grepl("abc_loss",colnames(mut_df))]
+b = mut_df[,grepl("targene_loss",colnames(mut_df))]
 if (length(colnames(b))== 1) {
    options(repr.plot.width=4, repr.plot.height=3.8, repr.plot.res = 300)
 ggplot(final_loss_df, aes(Weight, ..count.., fill = Class)) +
@@ -394,33 +394,34 @@ write.table(nuc_df, file = file.path(results_folder, "tables",
                                      "nucleotide_mutation_scores.tsv"),
             sep = "\t", row.names = FALSE)
 
+
 # Plot summary distribution of variant classes prediction scores for gain
 
-a = mut_df[,grepl("abc_gain",colnames(mut_df))]
+a = mut_df[,grepl("targene_gain",colnames(mut_df))]
 if (length(colnames(a))== 1) {
  braf_gain_df <- final_gain_df[complete.cases(final_gain_df), ]
-braf_gain_df <- braf_gain_df[braf_gain_df$HGVSp == "p.Val600Glu", ]
-
-braf_gain_df$Disease <- dplyr::recode(braf_gain_df$Disease,
+ braf_gain_df <- braf_gain_df[braf_gain_df$HGVSp == "p.Val600Glu", ]
+ 
+ braf_gain_df$Disease <- dplyr::recode(braf_gain_df$Disease,
                                  "BLCA" = "Other", "CHOL" = "Other",
                                  "GBM" = "Other", "HNSC" = "Other",
                                  "KIRP" = "Other", "LGG" = "Other",
                                  "READ" = "Other")
-
-braf_gain_plot_file <- file.path(results_folder, "figures",
+ 
+ braf_gain_plot_file <- file.path(results_folder, "figures",
                             "brafv600e_gain_distribution.pdf")
-braf_gain_plot <- ggplot(braf_gain_df, aes(Weight, fill = Disease)) +
+ braf_gain_plot <- ggplot(braf_gain_df, aes(Weight, fill = Disease)) +
   geom_density(alpha = 0.4) + theme_bw() +
   ylab("Density") + xlab("BRAFV600E Classifier Score")
 
-pdf(braf_gain_plot_file, width = 4, height = 3)
-braf_gain_plot
-dev.off()   
+ pdf(braf_gain_plot_file, width = 4, height = 3)
+ braf_gain_plot
+ dev.off()   
 }
 
 # Plot summary distribution of variant classes prediction scores for loss
 
-b = mut_df[,grepl("abc_loss",colnames(mut_df))]
+b = mut_df[,grepl("targene_loss",colnames(mut_df))]
 if (length(colnames(b))== 1) {
  braf_loss_df <- final_loss_df[complete.cases(final_loss_df), ]
 braf_loss_df <- braf_loss_df[braf_loss_df$HGVSp == "p.Val600Glu", ]
@@ -444,34 +445,34 @@ dev.off()
 
 
 # 5) RAS Summary Counts Distribution
-abc_pathway_count_file <- file.path(results_folder, "tables",
+targene_pathway_count_file <- file.path(results_folder, "tables",
                             "path_events_per_sample.tsv")
-abc_pathway_summary_count_df <- readr::read_tsv(abc_pathway_count_file,
+targene_pathway_summary_count_df <- readr::read_tsv(targene_pathway_count_file,
                                         col_types = cols(.default = "c",
                                                          "weight" = "d",
                                                          "total_status" = "c"))
-abc_pathway_summary_count_df$copy_count <- factor(abc_pathway_summary_count_df$copy_count,
+targene_pathway_summary_count_df$copy_count <- factor(targene_pathway_summary_count_df$copy_count,
                                           levels = c("0", "1", "2", "3","4",
                                                      "5", "6", "7", "8", "9",
                                                      "10"))
-abc_pathway_summary_count_df$copy_count <-
-  dplyr::recode(abc_pathway_summary_count_df$copy_count, "6" = ">6", "7" = ">6",
+targene_pathway_summary_count_df$copy_count <-
+  dplyr::recode(targene_pathway_summary_count_df$copy_count, "6" = ">6", "7" = ">6",
                 "8" = ">6", "9" = ">6", "10" = ">6")
 
 # Get summary statistics for each comparison
-mut_abc_pathway_prop <- abc_pathway_summary_count_df %>% group_by(mutation_count) %>%
-  dplyr::summarize(mean_abc_pathway = round(mean(as.numeric(total_status)), 2))
-cop_abc_pathway_prop <- abc_pathway_summary_count_df %>% group_by(copy_count) %>%
-  dplyr::summarize(mean_abc_pathway = round(mean(as.numeric(total_status)), 2))
+mut_targene_pathway_prop <- targene_pathway_summary_count_df %>% group_by(mutation_count) %>%
+  dplyr::summarize(mean_targene_pathway = round(mean(as.numeric(total_status)), 2))
+cop_targene_pathway_prop <- targene_pathway_summary_count_df %>% group_by(copy_count) %>%
+  dplyr::summarize(mean_targene_pathway = round(mean(as.numeric(total_status)), 2))
 
-mut_abc_pathway_count <- abc_pathway_summary_count_df %>% group_by(mutation_count) %>% tally()
-cop_abc_pathway_count <- abc_pathway_summary_count_df %>% group_by(copy_count) %>% tally()
+mut_targene_pathway_count <- targene_pathway_summary_count_df %>% group_by(mutation_count) %>% tally()
+cop_targene_pathway_count <- targene_pathway_summary_count_df %>% group_by(copy_count) %>% tally()
 
 # Combine to get summary tables
-mut_sum <- dplyr::inner_join(mut_abc_pathway_count, mut_abc_pathway_prop, by = "mutation_count")
-cop_sum <- dplyr::inner_join(cop_abc_pathway_count, cop_abc_pathway_prop, by = "copy_count")
+mut_sum <- dplyr::inner_join(mut_targene_pathway_count, mut_targene_pathway_prop, by = "mutation_count")
+cop_sum <- dplyr::inner_join(cop_targene_pathway_count, cop_targene_pathway_prop, by = "copy_count")
 
-med_weight <- median(abc_pathway_summary_count_df$weight)
+med_weight <- median(targene_pathway_summary_count_df$weight)
 
 options(repr.plot.width=6.2, repr.plot.height=8.6, repr.plot.res = 300)
 classifier_count_theme <- base_theme +
@@ -485,30 +486,30 @@ classifier_count_theme <- base_theme +
         axis.title = element_text(size = rel(2)),
         axis.text = element_text(size = rel(1.5)),
         plot.margin = unit(c(0.2, 3.6, 0.2, 0.2), "cm"))
-mut <- ggplot(abc_pathway_summary_count_df, aes(x = mutation_count, y = weight)) +
+mut <- ggplot(targene_pathway_summary_count_df, aes(x = mutation_count, y = weight)) +
   geom_boxplot(aes(fill = total_status)) +
   geom_hline(yintercept = 0.5, linetype = "dashed") +
-  scale_fill_manual(name = "abc_pathway Status", values = c("#3B9AB2", "#F2300F"),
+  scale_fill_manual(name = "targene_pathway Status", values = c("#3B9AB2", "#F2300F"),
                     labels = c("0" = "Wild-Type", "1" = "Activated")) +
   geom_text(data = mut_sum, aes(x = mutation_count, y = 1.06,
-                                label = paste0(n, "\n", mean_abc_pathway))) +
+                                label = paste0(n, "\n", mean_targene_pathway))) +
   classifier_count_theme +
-  labs(list(x = "Number of Other abc_Pathway Mutations",
-            y = "abc_pathway Classifier Score"))
+  labs(list(x = "Number of Other targene_Pathway Mutations",
+            y = "targene_pathway Classifier Score"))
 
-cop <- ggplot(abc_pathway_summary_count_df, aes(x = copy_count, y = weight)) +
+cop <- ggplot(targene_pathway_summary_count_df, aes(x = copy_count, y = weight)) +
   geom_boxplot(aes(fill = total_status)) +
   geom_hline(yintercept = 0.5, linetype = "dashed") +
-  scale_fill_manual(name = "abc_pathway Status", values = c("#3B9AB2", "#F2300F"),
+  scale_fill_manual(name = "targene_pathway Status", values = c("#3B9AB2", "#F2300F"),
                     labels = c("0" = "Wild-Type", "1" = "Activated")) +
   geom_text(data = cop_sum, aes(x = copy_count, y = 1.06,
-                                label = paste0(n, "\n", mean_abc_pathway))) +
+                                label = paste0(n, "\n", mean_targene_pathway))) +
   classifier_count_theme +
   labs(list(x = "Number of other Pathway Copy Number Events",
-            y = "abc_pathway Classifier Score"))
+            y = "targene_pathway Classifier Score"))
 
-abc_pathway_counts_fig <- file.path(results_folder, "figures", "abc_pathway_events_counts.pdf")
-pdf(abc_pathway_counts_fig, width = 6.2, height = 8.6)
+targene_pathway_counts_fig <- file.path(results_folder, "figures", "targene_pathway_events_counts.pdf")
+pdf(targene_pathway_counts_fig, width = 6.2, height = 8.6)
 plot_grid(mut, cop, align = "v", nrow = 2)
 dev.off()
 
@@ -526,31 +527,31 @@ metric_ranks <- readr::read_tsv(perf_metric_file,
 # colnames(metric_ranks) <- c("Gene", "AUPR", "AUPR Rank", "ras", "AUROC",
 #                             "AUROC Rank")
 
-aupr_violin <- ggplot(metric_ranks, aes(y = AUPRC, x = paste(abc),
-                                        fill = paste(abc))) +
+aupr_violin <- ggplot(metric_ranks, aes(y = AUPRC, x = paste(targene),
+                                        fill = paste(targene))) +
   geom_violin() +
   theme(legend.position = "none") +
   xlab("") +
   ylab("AUPR") +
   scale_x_discrete(labels = c("0" = "Other\nGenes",
-                              "1" = "abc Pathway\nGenes")) +
+                              "1" = "targene Pathway\nGenes")) +
   theme(axis.line.x = element_line(),
         axis.line.y = element_line(),
         axis.ticks = element_line(),
         axis.title = element_text(size = rel(2)),
         axis.text = element_text(size = rel(1.5)))
 
-auroc_violin <- ggplot(metric_ranks, aes(y = AUROC, x = paste(abc),
-                                         fill = paste(abc))) +
+auroc_violin <- ggplot(metric_ranks, aes(y = AUROC, x = paste(targene),
+                                         fill = paste(targene))) +
   geom_violin() +
   theme(legend.position = "none") +
   geom_hline(yintercept = 0.5, linetype = "dashed") +
   xlab("") +
-  scale_x_discrete(labels = c("0" = "Other", "1" = "abc Pathway Genes"))
+  scale_x_discrete(labels = c("0" = "Other", "1" = "targene Pathway Genes"))
 
 aupr_plot <- ggplot(metric_ranks, aes(x = `AUPRC Rank`, y = AUPRC)) +
   geom_point(color = "darkgrey") +
-  geom_point(data = metric_ranks[metric_ranks$abc == 1, ], color = "red") +
+  geom_point(data = metric_ranks[metric_ranks$targene == 1, ], color = "red") +
   xlab("AUPRC Rank") +
   ylab("AUPRC") +
   theme(axis.line.x = element_line(),
@@ -562,7 +563,7 @@ aupr_plot <- ggplot(metric_ranks, aes(x = `AUPRC Rank`, y = AUPRC)) +
 auroc_plot <- ggplot(metric_ranks, aes(x = `AUROC Rank`, y = AUROC)) +
   geom_point(color = "darkgrey") +
   geom_hline(yintercept = 0.5, linetype = "dashed") +
-  geom_point(data = metric_ranks[metric_ranks$abc == 1, ], color = "red")
+  geom_point(data = metric_ranks[metric_ranks$targene == 1, ], color = "red")
 
 # Get the top genes by both metrics
 options(repr.plot.width=11.5, repr.plot.height=7.5, repr.plot.res = 300)
@@ -595,17 +596,17 @@ plot_grid(auroc_plot, auroc_violin, align = "h", ncol = 2)
 dev.off()
 
 # T-Test for AUPR between Ras pathway genes and Other genes
-abc_pathway_genes_aupr <- metric_ranks %>%
-  dplyr::filter(abc == 1) %>%
+targene_pathway_genes_aupr <- metric_ranks %>%
+  dplyr::filter(targene == 1) %>%
   dplyr::select(AUPRC)
 
 other_genes_aupr <- metric_ranks %>%
-  dplyr::filter(abc == 0) %>%
+  dplyr::filter(targene == 0) %>%
   dplyr::select(AUPRC)
 
 t_test_file <- file.path(results_folder, "tables",
-                         "abc_pathway_variant_AUPR_ttest.txt")
+                         "targene_pathway_variant_AUPR_ttest.txt")
 sink(t_test_file)
-t.test(abc_pathway_genes_aupr$AUPRC, other_genes_aupr$AUPRC, alternative = "greater")
+t.test(targene_pathway_genes_aupr$AUPRC, other_genes_aupr$AUPRC, alternative = "greater")
 sink()
-print("abc_summary figures done")
+print("targene_summary figures done")

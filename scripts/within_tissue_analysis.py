@@ -45,6 +45,8 @@ parser.add_argument('-f', '--alt_folder', default='Auto',
 
 parser.add_argument('-x', '--x_matrix', default=None,
                     help='Filename of features to use in model')
+parser.add_argument('--x_as_raw', action='store_true',
+                        help='Treat x_matrix as "raw"')
 parser.add_argument( '--filename_mut', default=None,
                     help='Filename of sample/gene mutations to use in model')
 parser.add_argument( '--filename_mut_burden', default=None,
@@ -67,8 +69,15 @@ filename_arg_list = [ 'x_matrix' ]
 for k in args_dict.keys():
     if k.startswith('filename_'):
         filename_arg_list.append(k)
+x_matrix = args.x_matrix
+x_as_raw = args.x_as_raw
 
-print(filename_arg_list)
+if x_matrix == 'raw':
+    expr_file = os.path.join('data', 'pancan_rnaseq_freeze.tsv')
+    x_as_raw = True
+else:
+    expr_file = x_matrix
+
 # Load command arguments
 # if list of the genes provided by file or comma seperated values:
 genes = args.genes
@@ -77,9 +86,12 @@ genes = args.genes
 
 #diseases = args.diseases.split(',')
 # if list of the diseases provided by file or comma seperated values:
-diseases = args.diseases
-diseases_df = pd.read_table(diseases)
-diseases = diseases_df['diseases'].tolist()
+try:
+    diseases = args.diseases
+    diseases_df = pd.read_table(diseases)
+    diseases = diseases_df['diseases'].tolist()
+except:
+    diseases = args.diseases.split(',')
 
 folder = args.alt_folder
 alphas = args.alphas
@@ -104,8 +116,10 @@ for acronym in disease_types:
         alt_folder = os.path.join(base_folder, acronym)
     else:
         alt_folder = os.path.join(folder, acronym)
+   
+#   command = ['python', os.path.join('scripts', 'pancancer_classifier.py'),
 
-    command = ['python', os.path.join('scripts', 'pancancer_classifier.py'),
+    command = ['python', '/data/vijay/git/pancancer/scripts/pancancer_classifier.py',
                  '--genes', genes, '--diseases', acronym, '--drop',
                '--copy_number', '--alphas', alphas, '--l1_ratios', l1_ratios,
                '--alt_folder', alt_folder, '--shuffled', '--keep_intermediate']

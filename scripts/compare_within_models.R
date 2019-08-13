@@ -21,7 +21,7 @@
 
 library(ggplot2)
 library(dplyr)
-source(file.path("scripts", "util", "pancancer_util.R"))
+#source(file.path("scripts", "util", "pancancer_util.R"))
 
 option_list <- list(optparse::make_option(c("-w", "--within_dir"),
                                           type = "character",
@@ -40,6 +40,8 @@ opt <- optparse::parse_args(opt_parser)
 within_dir <- opt$within_dir
 pan_summary_dir <- opt$pancan_summary
 alt_gene_dir <- opt$alt_gene
+
+source("/data/vijay/git/pancancer/scripts/util/pancancer_util.R")
 
 # Process PanCancer Classifier and summary files
 pan_summary <- file.path(pan_summary_dir, "classifier_summary.txt")

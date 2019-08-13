@@ -1,0 +1,50 @@
+<tool id="targene_ccle_cell_line_predictions" name="PanCancer targene ccle cell line predictions" version="@VERSION@">
+    <description>targene status in ccle cell lines </description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+    <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/viz/targene_cell_line_predictions.py' --version]]>
+    </version_command>
+    <command><![CDATA[
+        cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
+        && 
+        python /data/vijay/git/pancancer/scripts/viz/targene_cell_line_predictions.py
+        --classifier '${output_alt_folder.extra_files_path}'
+        #if $targenes and str($targenes):
+        --targenes '$targenes'
+        #end if
+        #if $path_genes and str($path_genes):
+        --path_genes '$path_genes'
+        #end if
+        #if $ccle_rnaseq and $ccle_rnaseq is not None:
+        --ccle_rnaseq '$ccle_rnaseq'
+        #end if
+        #if $ccle_mut and $ccle_mut is not None:
+        --ccle_mut '$ccle_mut'
+        #end if
+        #if $ccle_maf and $ccle_maf is not None:
+        --ccle_maf '$ccle_maf'
+        #end if
+        #if $phar_data and $phar_data is not None:
+        --phar_data '$phar_data'
+        #end if
+        &&
+        @OUTPUT_ALT_FOLDER_HTML@
+        ]]>
+    </command>
+    <inputs>
+        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html" />
+        <param argument="--targenes" label="Comma separated string of HUGO targene symbols" name="targenes" optional="False" type="text" value="KRAS_MUT,NRAS_MUT,HRAS_MUT"/>
+        <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
+        <param argument="--ccle_rnaseq" label="Filename ccle rnaseq data" name="ccle_rnaseq" optional="false" type="data" format="csv" help="data/ccle_rnaseq_genes_rpkm_20180929_mod.gct"/>
+        <param argument="--ccle_mut" label="Filename ccle mutational data" name="ccle_mut" optional="true" type="data" format="csv" help="data/CCLE_MUT_CNA_AMP_DEL_binary_Revealer.gct"/>
+        <param argument="--ccle_maf" label="Filename ccle variant data" name="ccle_maf"  optional="true" type="data" format="txt" help="data/CCLE_DepMap_18Q1_maf_20180207.txt" />
+        <param argument="----phar_data" label="Filename for ccle pharmacological data file" name="phar_data" optional="false" type="data" format="csv" help="data/CCLE_NP24.2009_Drug_data_2015.02.24.csv"/>
+    </inputs>
+    <outputs>
+        <expand macro="output_alt_folder" />
+    </outputs>
+    <help><![CDATA[TODO: Write help]]></help>
+</tool>
