@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 # Load command arguments
 pred_fild = os.path.join(args.classifier_folder, 'classifier_decisions.tsv')
-burden_file = args.filename_burden 
+burden_file = args.filename_burden os.path.join('data', 'seg_based_scores.tsv')
 out_file = os.path.join(os.path.dirname(pred_fild), 'tables',
                         'copy_burden_predictions.tsv')
 
