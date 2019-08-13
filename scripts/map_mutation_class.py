@@ -29,8 +29,6 @@ import pandas as pd
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--scores',
                     help='string of the location of classifier scores')
-#parser.add_argument('-g', '--genes',
-#                    help='string of the genes to extract or genelist file')
 parser.add_argument('-p', '--path_genes',
                     help='pathway gene list file')
 parser.add_argument('-c', '--copy_number', action='store_true',
@@ -113,4 +111,3 @@ if copy_number:
     map_df = map_df.merge(copy_df, left_on='ID', right_on='index', how='outer')
 
 map_df.to_csv(out_file, sep='\t')
-print("map_mutation class done")

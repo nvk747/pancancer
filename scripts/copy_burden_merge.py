@@ -14,7 +14,6 @@ classifier_folder is a string pointing to the location of the classifier data
 Output:
 .tsv file of classifier scores merged with segment based copy number scores
 """
-print("copy_burden_merge process started")
 import os
 import argparse
 import pandas as pd
@@ -40,4 +39,3 @@ combined_df = classifier_df.merge(copy_burden_df, left_index=True,
                                   right_on='Sample')
 combined_df.index = combined_df['Sample']
 combined_df.to_csv(out_file, sep='\t')
-print("copy burden merge process done")

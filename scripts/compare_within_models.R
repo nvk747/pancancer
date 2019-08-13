@@ -131,8 +131,7 @@ if (!is.null(alt_gene_dir)) {
                                                 perf_type = "AUROC")
   pancan_aupr_df <- process_classifier_summary(summary_list = pancan_alt_list,
                                                model_type = "Pan",
-                                               perf_type = "AUPR")
-  
+                                               perf_type = "AUPR") 
   # Process Within Cancer Results
   within_alt_folder <- file.path(alt_gene_dir, "within_disease")
   within_alt_disease_files <- list.files(within_alt_folder,

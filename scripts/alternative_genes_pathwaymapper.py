@@ -32,8 +32,6 @@ def get_gene_auprc(x, w):
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--scores',
                     help='string of the location of classifier scores/alt_folder')
-#parser.add_argument('-o', '--alt_folder', default='Auto',
-#                        help='Provide an alternative folder to save results')
 parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
                     help='string of the genes to extract or genelist file')
 parser.add_argument('-p', '--path_genes',
@@ -81,7 +79,7 @@ sample_freeze = pd.read_table(sample_freeze_file, index_col=0)
 copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 
-# Load pi3k Pathway Genes
+# Load Pathway Genes
 pathway_genes_file = args.path_genes or os.path.join('data', 'ras_genes.csv')
 pathway_genes_df = pd.read_table(pathway_genes_file)
 
@@ -131,7 +129,7 @@ full_auprc = (
     .apply(lambda x: get_gene_auprc(x, pathway_full_status_df['weight']))
     )
 
-# Remove pi3k positive samples, and recalculate metrics
+# Remove targene pathway positive samples, and recalculate metrics
 #drop targene genes:
 remove_targene_status = pathway_full_status_df[pathway_full_status_df['total_status'] == 0]
 remove_targene_status_df = remove_targene_status[pathway_genes_df['genes']]
@@ -139,7 +137,7 @@ remove_targene_status_df = remove_targene_status_df.drop(genes, axis=1)
 full_auroc_remove = remove_targene_status_df.apply(lambda x: get_gene_auroc(x, w=remove_targene_status['weight']))
 full_auprc_remove = remove_targene_status_df.apply(lambda x: get_gene_auprc(x, w=remove_targene_status['weight']))
 
-# Get output metrics for pi3k classification
+# Get output metrics for targene classification
 output_pathway_metrics = pd.concat([full_auroc, full_auroc_remove], axis=1, sort=False)
 output_pathway_metrics = output_pathway_metrics * 100  # To get percent
 output_pathway_metrics = output_pathway_metrics - 50  # Subtract 50 from AUROC only
@@ -149,7 +147,7 @@ output_pathway_metrics = pd.concat([output_pathway_metrics, full_auprc * 100,
                                 full_auprc_remove * 100], axis=1, sort=False)
 output_pathway_metrics.columns = ['pathway_auroc', 'no_targene_auroc', 'pathway_auprc', 'no_targene_auprc']
 
-# Fill removed pi3k metrics with included metrics
+# Fill removed targene metrics with included metrics
 output_pathway_metrics['no_targene_auroc'] = (
     output_pathway_metrics['no_targene_auroc'].fillna(output_pathway_metrics['pathway_auroc'])
     )
@@ -166,7 +164,7 @@ if not os.path.exists(tables_folder):
 pathway_metric_file = os.path.join(scores, 'tables', 'pathway_metrics_pathwaymapper.txt')
 output_pathway_metrics.to_csv(pathway_metric_file, sep='\t')
 
-# Display pi3k pathway metrics
+# Display targene pathway metrics
 all_samples_targene_pathway_status = pathway_full_status_df[pathway_genes_df['genes']].max(axis=1)
 print('targene Pathway Performance Summary: All pathway Genes')
 print('AUROC:')
@@ -225,6 +223,3 @@ all_genes_metrics_df = all_genes_auprc_df.reset_index().merge(all_genes_auroc_df
 
 all_genes_metrics_df.columns = ['Gene', 'AUPRC', 'AUPRC Rank', 'targene', 'AUROC', 'AUROC Rank']
 all_genes_metrics_df.to_csv(all_gene_metrics_file, sep='\t', index=False)
-
-print("all_gene_metric_ranks file generated")
-print("targene_alternative_genes_pathwaymapper done")

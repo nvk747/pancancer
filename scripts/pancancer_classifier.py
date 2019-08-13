@@ -237,17 +237,14 @@ if drop_x_genes:
 # Incorporate copy number for gene activation/inactivation
 if copy_number:
     # Load copy number matrices
-    #copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv.gz')
-    copy_loss_file = args.filename_copy_loss 
+    copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_loss_status.tsv.gz') 
     copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 
-    #copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv.gz')
-    copy_gain_file = args.filename_copy_gain
+    copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv.gz')
     copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 
     # Load cancer gene classification table
-    #vogel_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
-    vogel_file = args.filename_cancer_gene_classification
+    vogel_file = args.filename_cancer_gene_classification or os.path.join('data', 'vogelstein_cancergenes.tsv')
     cancer_genes = pd.read_table(vogel_file)
 
     y = integrate_copy_number(y=y, cancer_genes_df=cancer_genes,
@@ -299,8 +296,7 @@ covar = covar.drop('total_status', axis=1)
 y_df = y_df.loc[y_sub.index]
 strat = y_sub.str.cat(y_df.astype(str))
 x_df = rnaseq_df.loc[y_df.index, :]
-print("strat")
-print(strat)
+
 # Subset x matrix to MAD genes and scale
 if x_as_raw:
     med_dev = pd.DataFrame(mad(x_df), index=x_df.columns)

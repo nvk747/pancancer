@@ -7,16 +7,10 @@ import seaborn as sns
 
 parser = argparse.ArgumentParser()
 
-#parser.add_argument('-c', '--classifier', default=None,
-#                    help='folder location of classifier file')
-#parser.add_argument('-u', '--copy_number', action='store_true',
-#                    help='Supplement Y matrix with copy number events')
 parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
                     help='string of the genes to extract or gene list file')
 parser.add_argument('-p', '--path_genes',
                     help='pathway gene list file')
-#parser.add_argument('-o', '--alt_folder', default='Auto',
-#                        help='Provide an alternative folder to save results')
 parser.add_argument('-s', '--scores',
                     help='string of the location of classifier scores/alt_folder')
 parser.add_argument('-x', '--x_matrix', default=None,
@@ -36,10 +30,6 @@ parser.add_argument( '--filename_cancer_gene_classification', default=None,
 
 args = parser.parse_args()
 
-# Load command arguments
-#classifier_file = os.path.join(args.classifier, 'classifier_summary.txt')
-#copy_number = args.copy_number
-
 # Load Constants
 
 alt_folder = args.scores
@@ -51,24 +41,12 @@ copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_lo
 copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
 mutation_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
 
-# rnaseq_file = args.x_matrix 
-# mut_file = args.filename_mut 
-# sample_freeze_file = args.filename_sample  
-# cancer_gene_file = args.filename_cancer_gene_classification 
-# copy_loss_file = args.filename_copy_loss 
-# copy_gain_file = args.filename_copy_gain 
-# mutation_burden_file = args.filename_mut_burden 
-
-# In[2]:
-
 # Get the current working directory
 # cwd = os.getcwd()
 
 # Ensure that the path is starting in the scripts directory
 # if not cwd.split('/')[-1] == 'scripts':
 #    os.chdir(os.path.join(cwd, 'scripts'))
-
-# In[3]:
 
 # get_ipython().run_line_magic('matplotlib', 'inline')
 # plt.style.use('seaborn-notebook')
@@ -79,7 +57,6 @@ copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 cancer_genes_df = pd.read_table(cancer_gene_file)
 
-# In[5]:
 
 # Load Ras Pathway Genes
 #results_path = os.path.join('..', 'classifiers', 'RAS')
@@ -107,18 +84,12 @@ except:
 n = pathgenes_df['og_tsg'].tolist()
 n_OG = n.count('OG')
 n_TSG = n.count('TSG')
-print(n_OG)
-print(n_TSG)
 
 # Subset mutation data
 mutation_sub_df = mutation_df.loc[:, pathgenes_df['genes']]
 
-# In[8]:
-
 # Find if the input genes are in this master list
 genes_sub = cancer_genes_df[cancer_genes_df['Gene Symbol'].isin(pathgenes_df['genes'])]
-
-# In[9]:
 
 # Add status to the Y matrix depending on if the gene is a tumor suppressor
 # or an oncogene. An oncogene can be activated with copy number gains, but
@@ -132,23 +103,15 @@ copy_gain_sub_df = copy_gain_df[oncogene['genes']]
 
 # ## Output Mutation, Copy Number, and Total Heatmap (Gene by Cancer-type)
 
-# In[10]:
-
 mutation_sub_total_df = mutation_sub_df.assign(Total=mutation_sub_df.max(axis=1))
 mut_disease_df = mutation_sub_total_df.merge(sample_freeze, left_index=True,
                                              right_on='SAMPLE_BARCODE')
 mut_heatmap_df = mut_disease_df.groupby('DISEASE').mean()
 
-# In[11]:
-
 gene_avg = mut_disease_df.mean()
 gene_avg.name = 'Total'
 
-# In[12]:
-
 mut_heatmap_df = mut_heatmap_df.append(gene_avg)
-
-# In[13]:
 
 sns.set_style("whitegrid")
 plt.figure(figsize = (10,10),dpi= 300)
@@ -161,24 +124,16 @@ plt.xlabel('Pathway Genes', fontsize=16)
 plt.savefig(os.path.join(results_path, 'mut_df.pdf'))
 plt.savefig(os.path.join(results_path, 'mut_df.jpeg'))
 
-# In[14]:
-
 copy_df = pd.concat([copy_gain_sub_df, copy_loss_sub_df], axis=1)
 copy_total_df = copy_df.assign(Total=copy_df.max(axis=1))
 copy_disease_df = copy_total_df.merge(sample_freeze, left_index=True,
                                       right_on='SAMPLE_BARCODE')
 copy_heatmap_df = copy_disease_df.groupby('DISEASE').mean()
 
-# In[15]:
-
 copy_avg = copy_disease_df.mean()
 copy_avg.name = 'Total'
 
-# In[16]:
-
 copy_heatmap_df = copy_heatmap_df.append(copy_avg)
-
-# In[17]:
 
 sns.set_style("whitegrid")
 plt.figure(figsize = (10,10),dpi= 300)
@@ -191,28 +146,18 @@ plt.autoscale(enable=True, axis ='y', tight = True)
 plt.savefig(os.path.join(results_path, 'copy_df.pdf'))
 plt.savefig(os.path.join(results_path, 'copy_df.jpeg'))
 
-# In[18]:
-
 # Combined heatmap
 comb_heat = mutation_sub_df + copy_df
 comb_heat[comb_heat == 2] = 1  # Replace duplicates with just one
-
-# In[19]:
 
 comb_heat_df = comb_heat.merge(sample_freeze, left_index=True, right_on='SAMPLE_BARCODE')
 comb_heat_total_df = comb_heat_df.assign(Total=comb_heat_df.max(axis=1))
 comb_heatmap_df = comb_heat_total_df.groupby('DISEASE').mean()
 
-# In[20]:
-
 comb_avg = comb_heat_total_df.mean()
 comb_avg.name = 'Total'
 
-# In[21]:
-
 comb_heatmap_plot = comb_heatmap_df.append(comb_avg)
-
-# In[22]:
 
 sns.set_style("whitegrid")
 plt.figure(figsize = (10,10),dpi= 300)
@@ -228,8 +173,6 @@ plt.savefig(os.path.join(results_path, 'combined_df.jpeg'))
 
 # ## Generating Pathway Mapper Text Files
 
-# In[23]:
-
 summary_score_df = (
     pd.DataFrame(
         [mut_heatmap_df.loc['Total', :], copy_heatmap_df.loc['Total', :]]
@@ -240,12 +183,10 @@ summary_score_df.columns = ['mutation', 'copy_number']
 summary_score_df = summary_score_df * 100
 summary_score_df = summary_score_df.round(decimals = 1)
 
-# In[24]:
 # Create negative percentages for tumor suppressors in the Pathway
 tum_sup_mult = pd.Series([1] * n_OG + [-1] * n_TSG + [1])
 tum_sup_mult.index = summary_score_df.index
 
-# In[25]:
 
 summary_score_df = summary_score_df.mul(tum_sup_mult, axis=0)
 pathway_mapper_file = os.path.join(results_path, 'tables',
@@ -254,12 +195,10 @@ summary_score_df.to_csv(pathway_mapper_file, sep='\t')
 
 # ## Output number of Ras events per sample
 
-# In[26]:
 decision_file = os.path.join(results_path, 'classifier_decisions.tsv')
 decisions_df = pd.read_table(decision_file)
 decisions_df.head()
 
-# In[27]:
 #other_ras_df = mutation_sub_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
 #other_ras_copy_df = copy_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
 #other_ras_all_df = comb_heat_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
@@ -268,14 +207,12 @@ other_genes_df = mutation_sub_df.drop(genes, axis=1)
 other_genes_copy_df = copy_df.drop(genes, axis=1)
 other_genes_all_df = comb_heat_df.drop(genes, axis=1)
 
-# In[28]:
 
 total_genes_mutations = pd.DataFrame(other_genes_df.sum(axis=1), columns=['mutation_count'])
 total_genes_copy_events = pd.DataFrame(other_genes_copy_df.sum(axis=1), columns=['copy_count'])
 total_genes_all = pd.DataFrame(other_genes_all_df.sum(axis=1), columns=['all_count'])
 total_genes_all.index = comb_heat_df['SAMPLE_BARCODE']
 
-# In[29]:
 
 # Define output summary of mutation, copy, and total counts per sample by Ras pathway
 count_summary = (
@@ -287,11 +224,7 @@ count_summary.loc[count_summary['SAMPLE_BARCODE'].isin(hyper_samples),
                   'mutation_count'] = 'hyper'
 count_summary.head()
 
-# In[30]:
-
 count_summary['mutation_count'].value_counts()
-
-# In[31]:
 
 count_summary = total_genes_copy_events.merge(count_summary, left_index=True,
                                             right_on='SAMPLE_BARCODE')
@@ -303,10 +236,6 @@ count_summary = (
     )
 count_summary.head()
 
-# In[32]:
-
 count_summary_file = os.path.join(results_path, 'tables',
                                   'path_events_per_sample.tsv')
 count_summary.to_csv(count_summary_file, sep='\t', index=False)
-
-print("targene_pathway_count_heatmaps_generated and done")
