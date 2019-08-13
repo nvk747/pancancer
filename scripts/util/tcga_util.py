@@ -14,23 +14,16 @@ def get_args():
     import argparse
     
     parser = argparse.ArgumentParser()
-    #parser.add_argument('-g', '--genes',
-    #                    help='Comma separated string of HUGO gene symbols')
+
     parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
                         help='string of the genes to extract or genelist file')
-    # genes defaulted from auto to RAS genes 
-    #parser.add_argument('-t', '--diseases', default='Auto',
-    #                    help='Comma sep string of TCGA disease acronyms. '
-    #                         'If no arguments are passed, filtering will '
-    #                         'default to options given in --filter_count and '
-    #                         '--filter_prop.')
+    
     parser.add_argument('-t', '--diseases',default='BLCA,CESC,COAD,ESCA,HNSC,LUAD,LUSC,OV,PAAD,PCPG,READ,SKCM,STAD,TGCT,THCA,UCEC', 
                         help='Comma sep string of TCGA disease acronyms. '
                              'diseases_list_file'
                              'If no arguments are passed, filtering will '
                              'default to options given in --filter_count and '
                              '--filter_prop.')
-    # diseases default to RAS diseases
     parser.add_argument('-f', '--folds', default='5', type=int,
                         help='Number of cross validation folds to perform')
     parser.add_argument('-d', '--drop', action='store_true',
@@ -47,16 +40,10 @@ def get_args():
                         help='the alphas for parameter sweep')
     parser.add_argument('-l', '--l1_ratios', default='0,0.1,0.15,0.18,0.2,0.3',
                         help='the l1 ratios for parameter sweep')
-    #parser.add_argument('-b', '--alt_genes', default='None',
-    #                    help='alternative genes to test performance')
     parser.add_argument('-b', '--alt_genes', default=None,
                         help='string of the alt_genes to extract or alt_genelist file to test performance')
-    # alternative gene default to NF1
-    #parser.add_argument('-s', '--alt_diseases', default="Auto",
-    #                    help='The alternative diseases to test performance')
     parser.add_argument('-s', '--alt_diseases', default="Auto",
                         help='The alternative diseases to test performance')
-    # alternative diseases default to NF1 diseases
     parser.add_argument('-i', '--alt_filter_count', default=15, type=int,
                         help='Min number of mutations in disease to include')
     parser.add_argument('-r', '--alt_filter_prop', default=0.05, type=float,
