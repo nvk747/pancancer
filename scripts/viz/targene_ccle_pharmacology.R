@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript --vanilla
 
 suppressPackageStartupMessages({
     library(dplyr)
@@ -13,7 +14,6 @@ opt <- optparse::parse_args(opt_parser)
 
 classifier <- opt$classifier
 
-#pharm_file <- file.path("..","data", "pharmacology_predictions_ERBB2_PIK3CA_KRAS_AKT1_ccle.tsv")
 pharm_file <- file.path(classifier,"tables", "pharmacology_predictions_targene_ccle.tsv")
 pharm_full_df <- readr::read_tsv(pharm_file)
 head(pharm_full_df)
@@ -100,10 +100,12 @@ formula <- y ~ x
   return(p)
 }
 
+# drug responses with targene mutational effect
+
 focus_tissues <- c("CENTRAL NERVOUS SYSTEM", "SKIN", "BREAST", "HAEMATOPOIETIC AND LYMPHOID TISSUE", "LARGE INTESTINE",
                    "LUNG", "OVARY", "PANCREAS", "LIVER")
 
-pdf("./drug_response_1")
+pdf("./targene_all_drug_response.pdf")
 
 sel_fig <- plot_drug(pharm_full_df, "AZD6244", facet_tissue = FALSE, se = TRUE)
 sel_fig
@@ -175,12 +177,11 @@ p_fig_TKI258 <- plot_drug(pharm_full_df, "TKI258", facet_tissue = FALSE, se = TR
 p_fig_TKI258
 
 dev.off()
-#drug_response_1 = file.path(classifier,"figures","cell_line" "targene_all_drug_response.pdf")
 
+# drug responses with targene + braf mutational effect
 focus_tissues <- c("CENTRAL NERVOUS SYSTEM", "SKIN", "BREAST", "HAEMATOPOIETIC AND LYMPHOID TISSUE", "LARGE INTESTINE",
                    "LUNG", "OVARY", "PANCREAS", "LIVER")
-pdf("./drug_response_2")
-#pdf("/data/vijay/git/pancancer/figures/cell_line/targene_braf_all_drug_response.pdf")
+pdf("./targene_braf_all_drug_response.pdf")
 
 sel_fig <- plot_drug(pharm_full_df, "AZD6244", facet_tissue = FALSE, se = TRUE)
 sel_fig
@@ -252,14 +253,12 @@ p_fig_TKI258 <- plot_drug(pharm_full_df, "TKI258", facet_tissue = FALSE, include
 p_fig_TKI258
 
 dev.off()
-#drug_response_2 = file.path(classifier,"figures","cell_line" "targene_braf_all_drug_response.pdf")
 
+# Tissue responses targene mutational effect
 focus_tissues <- c("CENTRAL NERVOUS SYSTEM", "SKIN", "BREAST", "HAEMATOPOIETIC AND LYMPHOID TISSUE", "LARGE INTESTINE",
                    "LUNG", "OVARY", "PANCREAS", "LIVER")
 
-pdf("./drug_response_3")
-#pdf("/data/vijay/git/pancancer/figures/cell_line/pi3k_gain_tissue_response.pdf")
-
+pdf("./targene_selected_tissue_response.pdf")
 sel_fig <- plot_drug(pharm_full_df, "AZD6244",   tissues = focus_tissues)
 sel_fig
 
@@ -331,13 +330,11 @@ p_fig_TKI258
 
 dev.off()
 
-# drug_response_3 = file.path(classifier,"figures","cell_line" "targene_tissue_response.pdf")
-
+# Tissue responses with targene + braf mutational effect
 focus_tissues <- c("CENTRAL NERVOUS SYSTEM", "SKIN", "BREAST", "HAEMATOPOIETIC AND LYMPHOID TISSUE", "LARGE INTESTINE",
                    "LUNG", "OVARY", "PANCREAS", "LIVER")
 
-#pdf("/data/vijay/git/pancancer/figures/cell_line/pi3k_gain_braf_tissue_response.pdf")
-pdf("./drug_response_4")
+pdf("./targene_braf_selected_tissue_response.pdf")
 
 sel_fig <- plot_drug(pharm_full_df, "AZD6244",   tissues = focus_tissues)
 sel_fig
@@ -409,4 +406,3 @@ p_fig_TKI258 <- plot_drug(pharm_full_df, "TKI258",   include_braf = TRUE, tissue
 p_fig_TKI258
 
 dev.off()
-print("pharmacology_predictions_targene done")

@@ -1,13 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 # coding: utf-8
 
 # # Cell Line Analysis
 # 
 # We sought to validate the Ras classifier trained on TCGA pan-cancer data by generating predictions on cell line data. A good classifier should generalize to predicting Ras status in other samples. We apply the classifier on two datasets:
-# 
-# 1. [GSE94937](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE94937) from [Kim et al. 2017](http://doi.org/10.1016/j.cels.2017.08.002)
-#   * Illumina NextSeq 5000 of Human Small Airway Epithelial Cells expressing KRAS G12V and wild-type KRAS
-# 2. [Cancer Cell Line Encyclopedia (CCLE)](https://software.broadinstitute.org/software/cprg/?q=node/11) Gene Expression data.
+# [Cancer Cell Line Encyclopedia (CCLE)](https://software.broadinstitute.org/software/cprg/?q=node/11) Gene Expression data.
 #   * 737 cell lines with matching gene expression and mutation calls
 #   * Pharmacologic profiling of 24 drugs over 504 cell lines
 #   
@@ -34,7 +32,7 @@ aa = IUPACData.protein_letters_1to3_extended
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-t', '--targenes', default= 'KRAS_MUT,NRAS_MUT,HRAS_MUT',
-                    help='string of the genes to extract or gene list file')
+                    help='target gene names append with MUT')
 parser.add_argument('-p', '--path_genes',
                     help='pathway gene list file')
 parser.add_argument('-c', '--classifier', default= None,
@@ -49,7 +47,7 @@ parser.add_argument('-r', '--phar_data',
                     help='path for ccle pharmacological data file')
 args = parser.parse_args()
 
-# Load PI3K_gain Classifier Coefficients
+# Load Classifier Coefficients
 # classifier_file = os.path.join('..', 'classifiers', 'ERBB2_PIK3CA_KRAS_AKT1', 'classifier_summary.txt')
 # with open(classifier_file) as class_fh:
 #    for line in class_fh:
@@ -65,7 +63,7 @@ all_coef_df = pd.read_table(os.path.join( classifier , "classifier_coefficients.
 coef_df = all_coef_df[all_coef_df['abs'] > 0]
 coef_df.head(10)
 
-# ## Part 2: CCLE
+# Part 2: CCLE
 # 
 # Note - This data was also retrieved from the Onco-GPS paper analysis repository
 
@@ -258,7 +256,6 @@ ccle_fig_file2 = os.path.join(classifier, 'figures', 'cell_line', 'ccle_targene_
 pl.savefig(ccle_fig_file2)
 plt.close()
 
-
 # ### What percentage of correct classifications in CCLE data?
 
 # Assign a label to what the predictions are given classifier scores
@@ -435,13 +432,11 @@ protein_change_df = (
                             left_on=merge_on, right_on=merge_on)
     .merge(count_protein_data, left_on=merge_on, right_on=merge_on)
 )
-
 protein_change_df.sort_values('ccle_count').tail(5)
 
 # Convert amino acid to 3 letters
 protein_convert = [''.join([aa[x] if x in aa.keys() else x for x in y]) 
                    for y in protein_change_df['Protein_Change']]
-
 protein_change_df = protein_change_df.assign(conversion = protein_convert)
 
 #data_s5_file = os.path.join('..', 'classifiers', 'ERBB2_PIK3CA_KRAS_AKT1', 'tables',
@@ -475,14 +470,11 @@ updated_data_s5_df.to_csv(updated_data_s5_file, sep=',', index=False)
 pharm_file = args.phar_data or os.path.join('..', 'data', 'CCLE_NP24.2009_Drug_data_2015.02.24.csv')
 pharm_df = pd.read_csv(pharm_file, index_col=0)
 pharm_df = pharm_df.assign(tissue = [' '.join(x[1:]) for x in pharm_df.index.str.split('_')])
-
 pharm_full_df = pharm_df.merge(ccle_full_df, left_index=True, right_index=True)
-
 common_celllines_pharm = set(ccle_full_df.index).intersection(set(pharm_df.index))
 print('There are {} cell lines in common'.format(len(common_celllines_pharm)))
 
 pharm_full_df['Compound'].value_counts()
-
 pharm_full_df['tissue'].value_counts()
 
 # What is the cell line tissue representation?
@@ -498,12 +490,9 @@ gg.ggplot(compound_heatmap, gg.aes('factor(tissue)', 'factor(Compound)', fill='c
          panel_background=gg.element_rect(fill='white'))
 # p = os.path.join(classifier, 'figures', 'pharmacology_compound_heatmap.png')
 # plt.savefig(p)
+
 # Write out pharm_full_df to file to plot in ggplot2
 # plotnine does not include all the functionality required to create the plot
-#pharm_file = os.path.join('..', 'data', 'pharmacology_predictions_ERBB2_PIK3CA_KRAS_AKT1_ccle.tsv')
 
 pharm_file = os.path.join(classifier, 'tables', 'pharmacology_predictions_targene_ccle.tsv')
 pharm_full_df.to_csv(pharm_file, sep='\t')
-
-
-

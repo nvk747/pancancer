@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript --vanilla
+
 # Gregory Way 2017
 # PanCancer Classifier
 # scripts/viz/ras_summary_figures.R
@@ -34,8 +36,7 @@ option_list = list(
 
 opt <-parse_args(OptionParser(option_list = option_list))
 
-#source(file.path("scripts", "util", "pancancer_util.R"))
-source("/data/vijay/git/pancancer/scripts/util/pancancer_util.R")
+source(file.path("scripts", "util", "pancancer_util.R"))
 set.seed(123)
 
 # results_folder <- file.path("classifiers", "RAS")
@@ -45,8 +46,6 @@ head(results)
 dir.create("figures")
 
 # 1) Heatmap of the distribution of aberrant events across tumors
-#heatmap_plot_file <- file.path(results_folder, "figures", "ras_heatmap.pdf")
-#ras_heatmap_file <- file.path(results_folder, "figures", "all_ras_heatmap.pdf")
 
 heatmap_plot_file <- file.path(results_folder, "figures", "targene_heatmap.pdf")
 gene_heatmap_file <- file.path(results_folder, "figures", "all_targene_heatmap.pdf")
@@ -67,6 +66,7 @@ path_gain = as.data.frame(rowSums(gain))
 path_prop = as.data.frame(rowSums(prop))
 path_loss = as.data.frame(rowSums(loss))
 heat_comb_df <- as.matrix(cbind(path_gain,path_loss,path_prop),index = "DISEASE")
+
 colnames(heat_comb_df) <- c("Gain","Loss","Mutation")
 rownames(heat_comb_df) <- heat_df$DISEASE
 head(heat_comb_df)
@@ -444,7 +444,7 @@ dev.off()
 }
 
 
-# 5) RAS Summary Counts Distribution
+# 5) targene Summary Counts Distribution
 targene_pathway_count_file <- file.path(results_folder, "tables",
                             "path_events_per_sample.tsv")
 targene_pathway_summary_count_df <- readr::read_tsv(targene_pathway_count_file,
@@ -609,4 +609,3 @@ t_test_file <- file.path(results_folder, "tables",
 sink(t_test_file)
 t.test(targene_pathway_genes_aupr$AUPRC, other_genes_aupr$AUPRC, alternative = "greater")
 sink()
-print("targene_summary figures done")

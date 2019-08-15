@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import numpy as np
@@ -24,9 +24,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--classifier', default= None,
                     help='location of classifier_summary file')
 parser.add_argument('-e', '--ex_vlog',default= None,
-                    help='path for external sample expression data file')
+                    help='path for external sample expression data file[fpkm/rlog/vlog')
 parser.add_argument('-s', '--sign',
-                    help='assigned tumor or normal sample status')
+                    help='assigned tumor [1] or normal sample status[-1]')
 args = parser.parse_args()
 
 # load targene classifier summary file
@@ -45,7 +45,7 @@ all_coef_df = pd.read_table(os.path.join( classifier , "classifier_coefficients.
 coef_df = all_coef_df[all_coef_df['abs'] > 0]
 
 # load external sample gene expression data: vlog or rlog or fpkm values
-vlog_file = args.ex_vlog or open('/mnt/isilon/data/w_gmi/blanked2lab/vijay/HGDC_GSE69240/vlog_trans.csv')
+vlog_file = args.ex_vlog
 vlog_df = pd.read_csv(vlog_file, index_col= 0)
 
 # Determine the extent of coefficient overlap
@@ -82,7 +82,7 @@ result = result.sort_values(by='name')
 
 # load status of the external-sample tumors :+1 normal : -1
 from csv import reader
-opened_file = open(args.sign) or open('/mnt/isilon/data/w_gmi/blanked2lab/vijay/HGDC_GSE69240/sign.csv')
+opened_file = open(args.sign)
 s = reader(opened_file)
 status = list(s)
 f_status = []

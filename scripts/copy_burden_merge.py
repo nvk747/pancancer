@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Gregory Way 2017
 PanCancer Classifier
@@ -27,14 +28,13 @@ args = parser.parse_args()
 
 # Load command arguments
 pred_fild = os.path.join(args.classifier_folder, 'classifier_decisions.tsv')
-burden_file = args.filename_burden os.path.join('data', 'seg_based_scores.tsv')
+burden_file = args.filename_burden or os.path.join('data', 'seg_based_scores.tsv')
 out_file = os.path.join(os.path.dirname(pred_fild), 'tables',
                         'copy_burden_predictions.tsv')
 
 # Load and process data
 copy_burden_df = pd.read_table(burden_file)
 classifier_df = pd.read_table(pred_fild, index_col=0)
-
 combined_df = classifier_df.merge(copy_burden_df, left_index=True,
                                   right_on='Sample')
 combined_df.index = combined_df['Sample']

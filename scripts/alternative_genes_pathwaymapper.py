@@ -1,8 +1,5 @@
 
-# coding: utf-8
-
-# In[1]:
-
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -63,9 +60,7 @@ except:
 # if list of pathway genes are provided in a file
 try:
     genes_df = pd.read_table(path_genes)
-    print(gene_df)
     path_genes = genes_df['genes'].tolist()
-    print(path_genes)
 except:
     path_genes = path_genes.split(',')
 
@@ -105,7 +100,6 @@ pathway_copy_df = pd.concat([pathway_copy_gain_sub_df, pathway_copy_loss_sub_df]
 
 pathway_status_df = pathway_mutations_df + pathway_copy_df
 pathway_status_df[pathway_status_df == 2] = 1
-
 
 subset_columns = ['SAMPLE_BARCODE', 'DISEASE', 'weight', 'total_status', 'log10_mut',
                   'hypermutated', 'include']

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Gregory Way 2017
 PanCancer NF1/RAS Classifier
@@ -28,8 +30,6 @@ import argparse
 import pandas as pd
 
 parser = argparse.ArgumentParser()
-#parser.add_argument('-g', '--genes',
-#                    help='Comma separated string of HUGO gene symbols')
 parser.add_argument('-g', '--genes',
                     help='string of the genes to extract or genelist file')
 parser.add_argument('-d', '--diseases', default='Auto',
@@ -42,7 +42,6 @@ parser.add_argument('-v', '--remove_hyper', action='store_true',
                     help='Remove hypermutated samples')
 parser.add_argument('-f', '--alt_folder', default='Auto',
                     help='location to save')
-
 parser.add_argument('-x', '--x_matrix', default=None,
                     help='Filename of features to use in model')
 parser.add_argument('--x_as_raw', action='store_true',
@@ -59,7 +58,6 @@ parser.add_argument( '--filename_copy_gain', default=None,
                     help='Filename of copy number gain')
 parser.add_argument( '--filename_cancer_gene_classification', default=None,
                     help='Filename of cancer gene classification table')
-
 
 args = parser.parse_args()
 
@@ -80,9 +78,12 @@ else:
 
 # Load command arguments
 # if list of the genes provided by file or comma seperated values:
-genes = args.genes
-#genes_df = pd.read_table(genes)
-#genes = genes_df['genes'].tolist()
+try:
+    genes = args.genes
+    genes_df = pd.read_table(genes)
+    genes = genes_df['genes'].tolist()
+except:
+    genes = args.genes.split(',')
 
 #diseases = args.diseases.split(',')
 # if list of the diseases provided by file or comma seperated values:

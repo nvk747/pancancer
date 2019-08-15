@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript --vanilla
 # Gregory Way 2017
 # PanCancer Classifier
 # scripts/copy_burden_figures.R
@@ -47,7 +48,6 @@ if (opt$version){
   quit()
 }
 
-
 # Set File Names
 if ( !is.na(opt$alt_folder) ){
   base_file <- opt$alt_folder
@@ -61,7 +61,6 @@ if ( !is.na(opt$alt_folder) ){
   snaptron_file <- file.path("scripts", "snaptron",
                              "junctions_with_mutations.csv.gz")
 }
-
 
 frac_alt_plot <- file.path(base_file, "figures", "fraction_altered_plot.pdf")
 violin_plot <- file.path(base_file, "figures", "seg_altered_violin_plot.pdf")

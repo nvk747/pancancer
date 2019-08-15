@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Gregory Way 2017
 PanCancer Classifier

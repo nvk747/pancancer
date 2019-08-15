@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Gregory Way 2017
 PanCancer Classifier
@@ -75,11 +77,8 @@ from tcga_util import shuffle_columns
 RASOPATHY_GENES = set(['BRAF', 'CBL', 'HRAS', 'KRAS', 'MAP2K1', 'MAP2K2', 'NF1',
                       'NRAS', 'PTPN11', 'RAF1', 'SHOC2', 'SOS1', 'SPRED1', 'RIT1'])
 
-
 # Load command arguments
 args = get_args()
-
-#genes = args.genes.split(',')
 
 # if list of the genes provided by file or comma seperated values:
 try:
@@ -97,7 +96,7 @@ try:
         alt_genes = alt_genes_df['alt_genes'].tolist()
 except:
     alt_genes = args.alt_genes.split(',')
-print(alt_genes)
+
 # if list of the diseases provided by file or comma seperated values:
 try:
     diseases = args.diseases
@@ -105,7 +104,7 @@ try:
     diseases = diseases_df['diseases'].tolist()
 except:
     diseases = args.diseases.split(',')
-print(diseases)
+
 # if list of the alt_diseases provided by file or comma seperated values:
 try:
     alt_diseases = args.alt_diseases
@@ -114,7 +113,7 @@ try:
         alt_diseases = alt_diseases_df['alt_diseases'].tolist()
 except:
     alt_diseases = args.alt_diseases.split(',')
-print(alt_diseases)
+
 # if list of the genes provided by file or comma seperated values:
 drop_x_genes = args.drop_x_genes
 if drop_x_genes is not None:
@@ -131,10 +130,8 @@ filter_prop = float(args.filter_prop)
 num_features_kept = args.num_features
 alphas = [float(x) for x in args.alphas.split(',')]
 l1_ratios = [float(x) for x in args.l1_ratios.split(',')]
-#alt_genes = args.alt_genes.split(',')
 alt_filter_count = int(args.alt_filter_count)
 alt_filter_prop = float(args.alt_filter_prop)
-#alt_diseases = args.alt_diseases.split(',')
 alt_folder = args.alt_folder
 remove_hyper = args.remove_hyper
 keep_inter = args.keep_intermediate
@@ -148,8 +145,6 @@ drop_covariates = args.drop_covariates
 warnings.filterwarnings('ignore',
                         message='Changing the shape of non-C contiguous array')
 
-# Generate file names for output
-#genes_folder = args.genes.replace(',', '_')
 genes_folder  = genes[0]+"_others"
 base_folder = os.path.join('classifiers', genes_folder)
 
@@ -165,6 +160,8 @@ else:
 disease_folder = os.path.join(base_folder, 'disease')
 if not os.path.exists(disease_folder):
     os.makedirs(disease_folder)
+
+# Generate file names for output
 
 count_table_file = os.path.join(base_folder, 'summary_counts.csv')
 cv_heatmap_file = os.path.join(base_folder, 'cv_heatmap.pdf')
@@ -376,6 +373,7 @@ metrics_test = get_threshold_metrics(y_test, y_predict_test,
 # Rerun "cross validation" for the best hyperparameter set to define
 # cross-validation disease-specific performance. Each sample prediction is
 # based on the fold that the sample was in the testing partition
+
 y_cv = cross_val_predict(cv_pipeline.best_estimator_, X=x_train, y=y_train,
                          cv=folds, method='decision_function')
 metrics_cv = get_threshold_metrics(y_train, y_cv,
@@ -384,6 +382,7 @@ metrics_cv = get_threshold_metrics(y_train, y_cv,
 # Determine shuffled predictive ability of shuffled gene expression matrix
 # representing a test of inflation of ROC metrics. Be sure to only shuffle
 # gene names, retain covariate information (tissue type and log10 mutations)
+
 if shuffled:
     # Shuffle genes
     x_train_genes = x_train.iloc[:, range(num_features_kept)]
