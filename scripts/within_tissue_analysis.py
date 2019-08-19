@@ -81,9 +81,9 @@ else:
 try:
     genes = args.genes
     genes_df = pd.read_table(genes)
-    genes = genes_df['genes'].tolist()
+    genes = ','.join(genes_df['genes'].tolist())
 except:
-    genes = args.genes.split(',')
+    genes = args.genes
 
 #diseases = args.diseases.split(',')
 # if list of the diseases provided by file or comma seperated values:
