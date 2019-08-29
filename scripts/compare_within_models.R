@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript --vanilla
+#!/usr/bin/env Rscript
 
 # Gregory Way 2017
 # PanCancer Classifier
@@ -42,9 +42,21 @@ within_dir <- opt$within_dir
 pan_summary_dir <- opt$pancan_summary
 alt_gene_dir <- opt$alt_gene
 
-#source(file.path("util", "pancancer_util.R"))
-getwd()
-source(file.path(${PREFIX}/pancancer/scripts/util/pancancer_util.R))
+# This function returns the absolute path of the script file called by Rscript
+# Follows symlinks via normalizePath
+get_script_path <- function() {
+    cmdArgs <- commandArgs(trailingOnly = FALSE)
+    cmdArgsTrailing <- commandArgs(trailingOnly = TRUE)
+    cmdArgs <- cmdArgs[seq.int(from=1, length.out=length(cmdArgs) - length(cmdArgsTrailing))]
+    res <- gsub("^(?:--file=(.*)|.*)$", "\\1", cmdArgs)
+    res <- tail(res[res != ""], 1)
+    if (length(res) > 0)
+        return (normalizePath(res))
+    NULL
+}
+print(get_script_path())
+print(dirname(get_script_path()))
+source(file.path(dirname(get_script_path()),"util", "pancancer_util.R"))
 
 # Process PanCancer Classifier and summary files
 pan_summary <- file.path(pan_summary_dir, "classifier_summary.txt")

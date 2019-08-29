@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript --vanilla
+#!/usr/bin/env Rscript
 
 # Gregory Way 2017
 # PanCancer Classifier
@@ -36,7 +36,26 @@ option_list = list(
 
 opt <-parse_args(OptionParser(option_list = option_list))
 
-source(file.path("scripts", "util", "pancancer_util.R"))
+#source(file.path("scripts", "util", "pancancer_util.R"))
+
+# This function returns the absolute path of the script file called by Rscript
+# Follows symlinks via normalizePath
+get_script_path <- function() {
+    cmdArgs <- commandArgs(trailingOnly = FALSE)
+    cmdArgsTrailing <- commandArgs(trailingOnly = TRUE)
+    cmdArgs <- cmdArgs[seq.int(from=1, length.out=length(cmdArgs) - length(cmdArgsTrailing))]
+    res <- gsub("^(?:--file=(.*)|.*)$", "\\1", cmdArgs)
+    res <- tail(res[res != ""], 1)
+    if (length(res) > 0)
+        return (normalizePath(res))
+    NULL
+}
+print(get_script_path())
+print(dirname(get_script_path()))
+path = (dirname(get_script_path()))
+sp  <-  strsplit(path,'/viz')
+sp
+source(file.path(sp,"util","pancancer_util.R"))
 set.seed(123)
 
 # results_folder <- file.path("classifiers", "RAS")

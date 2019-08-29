@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript 
+
 # Gregory Way 2017
 # PanCancer Classifier
 # pancancer_util.R

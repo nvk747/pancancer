@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript --vanilla
+#!/usr/bin/env Rscript
 # Gregory Way 2017
 # PanCancer Classifier
 # scripts/copy_burden_figures.R
