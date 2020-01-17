@@ -34,11 +34,26 @@ option_list = list(
 
 opt <-parse_args(OptionParser(option_list = option_list))
 
-#source(file.path("scripts", "util", "pancancer_util.R"))
-source("/data/vijay/git/pancancer/scripts/util/pancancer_util.R")
+# This function returns the absolute path of the script file called by Rscript  
+# Follows symlinks via normalizePath  
+get_script_path <- function() { 
+    cmdArgs <- commandArgs(trailingOnly = FALSE)  
+    cmdArgsTrailing <- commandArgs(trailingOnly = TRUE) 
+    cmdArgs <- cmdArgs[seq.int(from=1, length.out=length(cmdArgs) - length(cmdArgsTrailing))] 
+    res <- gsub("^(?:--file=(.*)|.*)$", "\\1", cmdArgs) 
+    res <- tail(res[res != ""], 1)  
+    if (length(res) > 0)  
+        return (normalizePath(res)) 
+    NULL  
+} 
+print(get_script_path())  
+print(dirname(get_script_path())) 
+path = (dirname(get_script_path())) 
+sp  <-  strsplit(path,'/viz') 
+sp  
+source(file.path(sp,"util","pancancer_util.R"))
 set.seed(123)
 
-# results_folder <- file.path("classifiers", "RAS")
 results_folder <- opt$classifier_folder
 results <- parse_summary(file.path(results_folder, "classifier_summary.txt"))
 dir.create("figures")
@@ -429,11 +444,11 @@ if (length(colnames(a))== 1) {
                                  "SARC" = "Other", "SKCM" = "Other")
 
  pten_germ_plot_file <- file.path(results_folder, "figures",
-                            "pten_R130X_R233X_gain_distribution.pdf")
+                            "PTEN_R130X_R233X_gain_distribution.pdf")
 
  pten_germ <- ggplot(pten_germ_df, aes(Weight, fill = Disease)) + 
          geom_density(alpha = 0.4) + theme_bw() +
-         ylab("Density") + xlab("PTEN_Germline Classifier Score")
+         ylab("Density") + xlab("Classifier Score")
  
  ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
  
@@ -460,11 +475,11 @@ if (length(colnames(b))== 1) {
                                  "HNSC" = "Other", "STAD" = "Other", 
                                  "SARC" = "Other", "SKCM" = "Other")
  pten_germ_plot_file <- file.path(results_folder, "figures",
-                            "pten_R130X_R233X_loss_distribution.pdf")
+                            "PTEN_R130X_R233X_loss_distribution.pdf")
 
  pten_germ <- ggplot(pten_germ_df, aes(Weight, fill = Disease)) +
   geom_density(alpha = 0.4) + theme_bw() +
-  ylab("Density") + xlab("PTEN_Germline Classifier Score")
+  ylab("Density") + xlab("Classifier Score")
 
  ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
  
@@ -638,4 +653,3 @@ t_test_file <- file.path(results_folder, "tables",
 sink(t_test_file)
 t.test(targene_pathway_genes_aupr$AUPRC, other_genes_aupr$AUPRC, alternative = "greater")
 sink()
-print("targene_summary figures done")
