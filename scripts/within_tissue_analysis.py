@@ -118,8 +118,6 @@ for acronym in disease_types:
     else:
         alt_folder = os.path.join(folder, acronym)
    
-#   command = ['python', os.path.join('scripts', 'pancancer_classifier.py'),
-
     command = ['pancancer_classifier.py',
                  '--genes', genes, '--diseases', acronym, '--drop',
                '--copy_number', '--alphas', alphas, '--l1_ratios', l1_ratios,

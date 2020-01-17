@@ -31,7 +31,6 @@ args = parser.parse_args()
 
 # load targene classifier summary file
 
-# classifier_file = os.path.join('..', 'classifiers', 'RAS', 'classifier_summary.txt')
 classifier = args.classifier
 classifier_file = os.path.join( classifier , "classifier_summary.txt")
 all_coef_df = pd.read_table(os.path.join( classifier , "classifier_coefficients.tsv"), index_col=0)
@@ -77,8 +76,10 @@ result = apply_weights.T.dot(vlog_df.T)
 result = 1 / (1 + np.exp(-1 * result))
 
 result2 = result.T.sort_values(by='weight')
+
 result = result2.assign(name=result2.index)
 result = result.sort_values(by='name')
+print(result) # printing the result table
 
 # load status of the external-sample tumors :+1 normal : -1
 from csv import reader
@@ -112,24 +113,24 @@ p = (gg.ggplot(output,
                gg.aes(x='weight', y='dummy_y', color='factor(mut_status)')) +
      gg.geom_hline(gg.aes(yintercept=0), linetype='solid') +
      gg.geom_point(size=4) +
-     gg.scale_color_manual(values=["#377eb8", "#ff7f00"], labels=['Normal', 'Mutant']) +
+     gg.scale_color_manual(values=["#377eb8", "#ff7f00"], labels=['WT', 'Mutant']) +
      gg.ylim([-0.1, 0.1]) +
      gg.xlim([-0.001, 1.001]) +
      gg.theme_seaborn(style='whitegrid') +
-     gg.xlab('targene Classifier Score') +
+     gg.xlab('Targene Classifier Score') +
      gg.ylab('') +
-     gg.labs(color='mut_status') +
-     gg.ggtitle('external_samples\n') +
+     gg.labs(color='Sample_status') +
+     gg.ggtitle('Mutant vs WT \n') +
      gg.theme(
         plot_title=gg.element_text(size=22),
         axis_title_x=gg.element_text(size=16),
-        axis_text_x=gg.element_text(size=14),
+        axis_text_x=gg.element_text(size=16),
         axis_text_y=gg.element_blank(),
         axis_ticks_length=4,
         axis_ticks_major_y=gg.element_blank(),
         axis_ticks_minor_y=gg.element_blank(),
         axis_ticks_minor_x=gg.element_blank(),
-        legend_position=(1.0, 0.5),
+        legend_position=(1.02, 0.8),
         legend_background=gg.element_blank(),
         legend_key=gg.element_rect(fill='white'),
         legend_text=gg.element_text(size=9),
@@ -145,23 +146,25 @@ p
 # graphical output for predictions
 
 from matplotlib.pyplot import figure
-figure(num=None, figsize=(4, 3), dpi=150, facecolor='w', edgecolor='k')
+figure(num=None, figsize=(4, 4), dpi=300, facecolor='w', edgecolor='k')
 x = targene_geo_mutant['weight']
 y = targene_geo_wt['weight']
 
 plt.title('Mutant vs WT')
 
-sns.distplot(x, hist = False, kde = True,  rug=True, rug_kws={"color": "green"},
-                 kde_kws = {'shade': True, 'linewidth': 2}, 
+sns.distplot(x, hist = False, kde = True,  rug=True, rug_kws={"color": "darkblue"},
+                 kde_kws = {'shade': True, 'linewidth': 2, 'clip': (0.0, 1.0) }, 
                   label = 'Mutant', color = 'blue')
-sns.distplot(y, hist = False, kde = True, rug=True, rug_kws={"color": "red"},
-                 kde_kws = {'shade': True, 'linewidth': 2}, 
+sns.distplot(y, hist = False, kde = True, rug=True, rug_kws={"color": "darkorange"},
+                 kde_kws = {'shade': True, 'linewidth': 2, 'clip': (0.0, 1.0)},
                   label = 'WT', axlabel = 'Classifier Score', color = 'orange')
 
+plt.xlim(left = -0.1)
+plt.xlim(right = 1.1)
 locs_x, labels_x = plt.xticks(np.arange(0,1.25,0.25))
 plt.axvline(0.5, color='black', linestyle='dashed', linewidth=1)
-# plt.savefig(os.path.join('..', 'figures', 'cell_line', 'targene_external_sample_predictions_1.pdf'))
 plt.savefig(os.path.join(classifier, 'figures','targene_external_sample_predictions_1.pdf'))
+plt.close()
 
 l_x = len(x)
 l_y = len(y)

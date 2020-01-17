@@ -54,8 +54,7 @@ get_script_path <- function() {
         return (normalizePath(res))
     NULL
 }
-print(get_script_path())
-print(dirname(get_script_path()))
+
 source(file.path(dirname(get_script_path()),"util", "pancancer_util.R"))
 
 # Process PanCancer Classifier and summary files
@@ -74,15 +73,16 @@ within_disease_files <- list.files(within_dir,
 
 within_disease_auroc <- data.frame()
 within_disease_aupr <- data.frame()
+
 for (file in within_disease_files) {
   disease_summary <- parse_summary(file)
   dis_auroc_df <- process_classifier_summary(summary_list = disease_summary,
-                                             model_type = "Within",
+                                             model_type = "Pan_within",
                                              perf_type = "AUROC")
   within_disease_auroc <- rbind(within_disease_auroc, dis_auroc_df)
   
   dis_aupr_df <- process_classifier_summary(summary_list = disease_summary,
-                                            model_type = "Within",
+                                            model_type = "Pan_within",
                                             perf_type = "AUPR")
   within_disease_aupr <- rbind(within_disease_aupr, dis_aupr_df)
 }
@@ -90,11 +90,11 @@ for (file in within_disease_files) {
 # Plot a comparison of within disease classifiers to pan cancer classifier
 auroc_plot <- plyr::rbind.fill(within_disease_auroc, pancan_auroc_df)
 auroc_plot$AUROC <- as.numeric(paste(auroc_plot$Performance_type))
-auroc_plot$Model <- factor(auroc_plot$Model, levels = c('Within', 'Pan'))
+auroc_plot$Model <- factor(auroc_plot$Model, levels = c('Pan_within', 'Pan'))
 
 aupr_plot <- plyr::rbind.fill(within_disease_aupr, pancan_aupr_df)
 aupr_plot$AUPR <- as.numeric(paste(aupr_plot$Performance_type))
-aupr_plot$Model <- factor(aupr_plot$Model, levels = c('Within', 'Pan'))
+aupr_plot$Model <- factor(aupr_plot$Model, levels = c('Pan_within', 'Pan'))
 
 base_comparison_theme <- theme_bw() + within_theme +
   theme(legend.position = c(1.07, 0.65),
@@ -105,10 +105,11 @@ base_comparison_theme <- theme_bw() + within_theme +
 dir.create(file.path(pan_summary_dir, "figures"))
 
 # AUROC comparison figure
+options(repr.plot.res= 300)
 auroc_comparison_plot <- ggplot(auroc_plot, aes(x = Disease, y = AUROC,
                                                 fill = Model)) +
   base_comparison_theme +
-  geom_bar(position = "dodge", stat = "identity") +
+  geom_bar(position = position_dodge2(preserve = "single"), stat = "identity", width = 0.8) +
   scale_fill_manual(values = c("brown", "gold")) +
   geom_hline(yintercept = 0.5, linetype = "longdash", size = 0.4,
              color = "black") +
@@ -117,79 +118,83 @@ auroc_comparison_plot <- ggplot(auroc_plot, aes(x = Disease, y = AUROC,
   scale_y_continuous(breaks = seq(0.4, 1, 0.1))
 
 auroc_comp_fig <- file.path(pan_summary_dir, "figures", "auroc_comparison.pdf")
-pdf(auroc_comp_fig, width = 4.2, height = 1.4)
+pdf(auroc_comp_fig, width = 4.2, height = 1.5)
 auroc_comparison_plot
 dev.off()
 
 # AUPR comparison figure
+options(repr.plot.res= 300)
 aupr_comparison_plot <- ggplot(aupr_plot, aes(x = Disease, y = AUPR,
                                               fill = Model)) +
   base_comparison_theme +
-  geom_bar(position = "dodge", stat = "identity") +
+  geom_bar(position = position_dodge2(preserve = "single"), stat = "identity", width = 0.8) +
   scale_fill_manual(values = c("brown", "gold")) +
   ylab("CV AUPR") +
-  coord_cartesian(ylim = c(0, 1)) +
-  scale_y_continuous(breaks = seq(0, 1, 0.1))
+  coord_cartesian(ylim = c(0.4, 1)) +
+  scale_y_continuous(breaks = seq(0.4, 1, 0.1))
 
 aupr_comp_fig <- file.path(pan_summary_dir, "figures", "aupr_comparison.pdf")
-pdf(aupr_comp_fig, width = 4.2, height = 1.4)
+pdf(aupr_comp_fig, width = 4.2, height = 1.5)
 aupr_comparison_plot
 dev.off()
 
+# processing altgene classifier summary and altgene within disease summary
+
 if (!is.null(alt_gene_dir)) {
   # Compile alternative gene model performance dataframe
-  pan_alt_summary <- file.path(alt_gene_dir, "classifier_summary.txt")
-  pancan_alt_list <- parse_summary(pan_alt_summary)
+  pan_altgene_summary <- file.path(alt_gene_dir, "classifier_summary.txt")
+  pancan_altgene_list <- parse_summary(pan_altgene_summary)
   
-  pancan_auroc_df <- process_classifier_summary(summary_list = pancan_alt_list,
+  pancan_altgene_auroc_df <- process_classifier_summary(summary_list = pancan_altgene_list,
                                                 model_type = "altgene",
                                                 perf_type = "AUROC")
-  pancan_aupr_df <- process_classifier_summary(summary_list = pancan_alt_list,
+  pancan_altgene_aupr_df <- process_classifier_summary(summary_list = pancan_altgene_list,
                                                model_type = "altgene",
                                                perf_type = "AUPR")
   
   # Process Within Cancer Results
-  within_alt_folder <- file.path(alt_gene_dir, "within_disease")
-  within_alt_disease_files <- list.files(within_alt_folder,
+  within_altgene_folder <- file.path(alt_gene_dir, "within_disease")
+  within_altgene_disease_files <- list.files(within_altgene_folder,
                                     pattern = "classifier_summary.txt",
                                     full.names = TRUE, recursive = TRUE)
   
-  within_disease_alt_auroc <- data.frame()
-  within_disease_alt_aupr <- data.frame()
+  within_disease_altgene_auroc <- data.frame()
+  within_disease_altgene_aupr <- data.frame()
 
-  for (file in within_alt_disease_files) {
+  for (file in within_altgene_disease_files) {
     dis_alt_summary <- parse_summary(file)
     dis_auroc_df <- process_classifier_summary(summary_list = dis_alt_summary,
-                                            model_type = "Within",
+                                            model_type = "alt_within",
                                             perf_type = "AUROC")
-    within_disease_alt_auroc <- rbind(within_disease_alt_auroc, dis_auroc_df)
+    within_disease_altgene_auroc <- rbind(within_disease_altgene_auroc, dis_auroc_df)
     
     dis_aupr_df <- process_classifier_summary(summary_list = dis_alt_summary,
-                                              model_type = "Within",
+                                              model_type = "alt_within",
                                               perf_type = "AUPR")
-    within_disease_alt_aupr <- rbind(within_disease_alt_aupr, dis_aupr_df)
+    within_disease_altgene_aupr <- rbind(within_disease_altgene_aupr, dis_aupr_df)
   }
   
-  pancan_auroc_df <- plyr::rbind.fill(within_disease_alt_auroc, pancan_auroc_df)
-  pancan_aupr_df <- plyr::rbind.fill(within_disease_alt_aupr, pancan_aupr_df)
+  pancan_auroc_df <- plyr::rbind.fill(within_disease_altgene_auroc, pancan_altgene_auroc_df)
+  pancan_aupr_df <- plyr::rbind.fill(within_disease_altgene_aupr, pancan_altgene_aupr_df)
   
+  # processin pancan_alt_summary file
   # Determine alternative classifier prediction performance on alternative gene
   
   #classifier_gene <- paste(pancan_list[["Genes"]], collapse = "_")
   
-  alt_auroc_df <- process_classifier_summary(summary_list = pancan_list,
-                                             model_type = "targene",
+  Pan_alt_auroc_df <- process_classifier_summary(summary_list = pancan_list,
+                                             model_type = "Pan_alt",
                                              gene_type = "Alt gene performance",
                                              gene_class = "Alternative Genes",
                                              perf_type = "AUROC")
-  alt_aupr_df <- process_classifier_summary(summary_list = pancan_list,
-                                            model_type = "targene",
+  Pan_alt_aupr_df <- process_classifier_summary(summary_list = pancan_list,
+                                            model_type = "Pan_alt",
                                             gene_type = "Alt gene performance",
                                             gene_class = "Alternative Genes",
                                             perf_type = "AUPR")
 
-  plot_auroc_alt <- rbind(alt_auroc_df, pancan_auroc_df)
-  plot_aupr_alt <- rbind(alt_aupr_df, pancan_aupr_df)
+  plot_auroc_alt <- rbind(Pan_alt_auroc_df, pancan_auroc_df)
+  plot_aupr_alt <- rbind(Pan_alt_aupr_df, pancan_aupr_df)
   
   options(repr.plot.res= 300)
   # subjecting to specific cancer types
@@ -197,9 +202,9 @@ if (!is.null(alt_gene_dir)) {
   # plot_aupr_alt$Model <- dplyr::recode(plot_aupr_alt$Model)
   
   plot_auroc_alt$Model <- factor(plot_auroc_alt$Model,
-                                   levels = c('Within', 'altgene', 'targene'))
+                                   levels = c('alt_within', 'altgene', 'Pan_alt'))
   plot_aupr_alt$Model <- factor(plot_aupr_alt$Model,
-                                  levels = c('Within', 'altgene', 'targene'))
+                                  levels = c('alt_within', 'altgene', 'Pan_alt'))
   # Subset to specific cancer_types
   # use_dis <- c("GBM", "LGG", "PCPG", "COAD", "OV", "UCEC")
   # plot_auroc_alt <- plot_auroc_alt %>% dplyr::filter(Disease %in% use_dis)
@@ -210,7 +215,7 @@ if (!is.null(alt_gene_dir)) {
   
   alt_auroc_plot <- ggplot(plot_auroc_alt, aes(x = Disease, y = AUROC,
                                                fill = Model)) +
-    geom_bar(position = "dodge", stat = "identity") +
+    geom_bar(position = position_dodge2(preserve = "single"), stat = "identity", width = 0.8) +
     theme_bw() + within_theme +
     theme(legend.position = c(1.1, 0.65),
           legend.background = element_rect(fill = alpha("white", 0)),
@@ -224,25 +229,25 @@ if (!is.null(alt_gene_dir)) {
   
   alt_auroc_figure <- file.path(pan_summary_dir, "figures",
                                "alt_gene_auroc_comparison.pdf")
-  pdf(alt_auroc_figure, width = 3, height = 1.5)
+  pdf(alt_auroc_figure, width = 4.2, height = 1.5)
   print(alt_auroc_plot)
   dev.off()
   
   alt_aupr_plot <- ggplot(plot_aupr_alt, aes(x = Disease, y = AUPR,
                                              fill = Model)) +
-    geom_bar(position = "dodge", stat = "identity") +
+    geom_bar(position = position_dodge2(preserve = "single"), stat = "identity", width = 0.8) +
     theme_bw() + within_theme +
     theme(legend.position = c(1.1, 0.65),
           legend.background = element_rect(fill = alpha("white", 0)),
           plot.margin = unit(c(0.2, 1.5, 0, 0.1), "cm")) +
     scale_fill_manual(values = c("brown", "gold", "cyan3")) +
     ylab("CV AUPR") +
-    coord_cartesian(ylim = c(0, 1)) +
-    scale_y_continuous(breaks = seq(0, 1, 0.1))
+    coord_cartesian(ylim = c(0.4, 1)) +
+    scale_y_continuous(breaks = seq(0.4, 1, 0.1))
   
   alt_aupr_figure <- file.path(pan_summary_dir, "figures",
                                "alt_gene_aupr_comparison.pdf")
-  pdf(alt_aupr_figure, width = 3 , height = 1.5)
+  pdf(alt_aupr_figure, width = 4.2 , height = 1.5)
   print(alt_aupr_plot)
   dev.off()
 }

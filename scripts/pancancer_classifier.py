@@ -120,7 +120,6 @@ if drop_x_genes is not None:
     drop_x_genes_df = pd.read_table(drop_x_genes)
     drop_x_genes = patho_genes_df['drop_x_genes'].tolist()
 
-#diseases = args.diseases.split(',')
 folds = int(args.folds)
 drop = args.drop
 drop_rasopathy = args.drop_rasopathy
@@ -756,7 +755,7 @@ if alt_genes is not None:
         # If there are not enough classes do not proceed to plot
         if y_sub.sum() < 1:
             continue
-
+        
         neg, pos = y_sub.value_counts()
         val_x_type[disease] = [category, neg, pos]
         y_pred_alt = cv_pipeline.decision_function(x_sub)
