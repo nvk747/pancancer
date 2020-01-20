@@ -27,8 +27,17 @@
         #if $ccle_maf and $ccle_maf is not None:
         --ccle_maf '$ccle_maf'
         #end if
-        #if $phar_data and $phar_data is not None:
-        --phar_data '$phar_data'
+        #if $gdsc_rnaseq and $gdsc_rnaseq is not None:
+        --gdsc_rnaseq '$gdsc_rnaseq'
+        #end if
+        #if $gdsc_mut and $gdsc_mut is not None:
+        --gdsc_mut '$gdsc_mut'
+        #end if
+        #if $gdsc1_phar and $gdsc1_phar is not None:
+        --gdsc1_phar '$gdsc1_phar'
+        #end if
+        #if $gdsc2_phar and $gdsc2_phar is not None:
+        --gdsc2_phar '$gdsc2_phar'
         #end if
         &&
         @OUTPUT_ALT_FOLDER_HTML@
@@ -41,7 +50,10 @@
         <param argument="--ccle_rnaseq" label="Filename ccle rnaseq data" name="ccle_rnaseq" optional="false" type="data" format="csv" help="data/ccle_rnaseq_genes_rpkm_20180929_mod.gct"/>
         <param argument="--ccle_mut" label="Filename ccle mutational data" name="ccle_mut" optional="true" type="data" format="csv" help="data/CCLE_MUT_CNA_AMP_DEL_binary_Revealer.gct"/>
         <param argument="--ccle_maf" label="Filename ccle variant data" name="ccle_maf"  optional="true" type="data" format="txt" help="data/CCLE_DepMap_18Q1_maf_20180207.txt" />
-        <param argument="----phar_data" label="Filename for ccle pharmacological data file" name="phar_data" optional="false" type="data" format="csv" help="data/CCLE_NP24.2009_Drug_data_2015.02.24.csv"/>
+        <param argument="--gdsc_rnaseq" label="Filename gdsc rnaseq data" name="gdsc_rnaseq" optional="false" type="data" format="csv" help="data/GDSC_EXP_CCLE_converted_name.csv"/>
+        <param argument="--gdsc_mut" label="Filename gdsc mutational data" name="gdsc_mut" optional="true" type="data" format="csv" help="data/GDSC_CCLE_common_mut_cnv_binary.csv"/>
+        <param argument="--gdsc1_phar" label="Filename for gdsc1 pharmacological data file" name="gdsc1_phar" optional="false" type="data" format="txt" help="data/gdsc1_ccle_pharm_fitted_dose_data.txt"/>
+        <param argument="--gdsc2_phar" label="Filename for gdsc1 pharmacological data file" name="gdsc2_phar" optional="false" type="data" format="txt" help="data/gdsc2_ccle_pharm_fitted_dose_data.txt"/>
     </inputs>
     <outputs>
         <expand macro="output_alt_folder" />

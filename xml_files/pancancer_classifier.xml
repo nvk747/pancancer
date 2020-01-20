@@ -6,10 +6,10 @@
     <expand macro="requirements"/>
     <expand macro="stdio"/>
     <version_command>
-        <![CDATA['python /data/vijay/git/pancancer/scripts/pancancer_classifier.py' --version]]>
+        <![CDATA[cd $pancancer && python scripts/pancancer_classifier.py --version]]>
     </version_command>
     <command detect_errors="exit_code"><![CDATA[
-        python /data/vijay/git/pancancer/scripts/pancancer_classifier.py
+        cd $pancancer && python scripts/pancancer_classifier.py
         #if $folds and $folds is not None:
         --folds '$folds'
         #end if

@@ -12,15 +12,19 @@
         && 
         Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_ccle_pharmacology.R
         --classifier '${output_alt_folder.extra_files_path}'
+        #if $comound and str($compound):
+        --compound '$compound'
+        #end if
         &&
         @OUTPUT_ALT_FOLDER_HTML@
         ]]>
     </command>
     <inputs>
         <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html" />
+        <param argument="--compound" label="Filename list of compounds" name="compound" optional="false" type="data" format="csv" help="data/compounds.csv"/>
     </inputs>
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
     <help><![CDATA[TODO: Write help]]></help>
-</tool>
+</toolc
