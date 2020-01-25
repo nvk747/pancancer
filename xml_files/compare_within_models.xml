@@ -5,12 +5,12 @@
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['scripts/compare_within_models.R' --version]]>
+    <version_command><![CDATA['compare_within_models.R' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$pancan_summary.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        scripts/compare_within_models.R
+        compare_within_models.R
         --pancan_summary '${output_alt_folder.extra_files_path}'
         --within_dir '${output_alt_folder.extra_files_path}/within_disease'
         --alt_gene '${output_alt_folder.extra_files_path}'
@@ -26,5 +26,17 @@
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
-    <help><![CDATA[TODO: Write help]]></help>
+    <help><![CDATA[
+
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/compare_within_models.R:
+
+        --within_dir        String of the Directory location of where pan within cancer-type data is
+        --pancan_summary    String of the Directory location of where pan classifier summary is
+        --alt_gene          String of the Directory location of classifier summary for alt gene
+
+      Output:
+      - Process PanCancer Classifier and within disease/cancertype summary files and generate AUROC and AUPR comparion files ("auroc_comparison.pdf" and "aupr_comparison.pdf")
+      - Process altgene classifier summary and altgene within disease/cancertypes summary files and process pancan_alt_summary file to determine alternative classifier prediction performance on alternative gene ("alt_gene_auroc_comparison.pdf" and "alt_gene_aupr_comparison.pdf") 
+
+        ]]></help>
 </tool>

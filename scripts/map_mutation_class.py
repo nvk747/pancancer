@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Gregory Way 2017
-PanCancer Classifier
+Pancancer_Aberrant_Pathway_Activity_Analysis
 scripts/map_mutation_class.py
 
 Merge per sample classifier scores with mutation types present in each sample

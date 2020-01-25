@@ -5,11 +5,11 @@
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command0><![CDATA[--vanilla scripts/viz/targene_summary_figures.R --version]]></version_command0>
+  <version_command0><![CDATA['targene_summary_figures.R' --version]]></version_command0>
   <command><![CDATA[
     cp -R '$classifier_folder.extra_files_path' '${output_alt_folder.extra_files_path}'
     &&
-    --vanilla scripts/viz/targene_summary_figures.R
+    targene_summary_figures.R
     --classifier_folder '${output_alt_folder.extra_files_path}'
     &&
     @OUTPUT_ALT_FOLDER_HTML@

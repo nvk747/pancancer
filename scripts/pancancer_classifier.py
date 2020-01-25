@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Gregory Way 2017
-PanCancer Classifier
+Pancancer_Aberrant_Pathway_Activity_Analysis
 scripts/pancancer_classifier.py
 
 Usage: Run in command line with required command argument:

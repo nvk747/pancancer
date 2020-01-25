@@ -5,11 +5,11 @@
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA[scripts/within_disease_analysis.py --version]]></version_command>
+  <version_command><![CDATA['within_disease_analysis.py' --version]]></version_command>
   <command><![CDATA[
 @INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@
 && 
-/scripts/within_tissue_analysis.py
+within_tissue_analysis.py
 @INPUTS_ALPHAS@
 @INPUTS_L1_RATIOS@
 @OUTPUT_ALT_FOLDER_WITHIN_DISEASE@

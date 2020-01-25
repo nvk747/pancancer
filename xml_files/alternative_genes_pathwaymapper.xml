@@ -1,16 +1,16 @@
-<tool id="alternative_genes_pathwaymapper" name="PanCancer_alternative_genes_pathwaymapper" version="@VERSION@">
+<tool id="PanCancer_alternative_genes_pathwaymapper" name="PanCancer_alternative_genes_pathwaymapper" version="@VERSION@">
     <description>alternative genes pathwaymapper</description>
     <macros>
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['/scripts/targene_alternative_genes_pathwaymapper.py' --version]]>
+    <version_command><![CDATA['targene_alternative_genes_pathwaymapper.py' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        /scripts/targene_alternative_genes_pathwaymapper.py
+        targene_alternative_genes_pathwaymapper.py
         --scores '${output_alt_folder.extra_files_path}'
         #if $genes and str($genes):
         --genes '$genes'
@@ -40,5 +40,24 @@
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
-    <help><![CDATA[TODO: Write help]]></help>
+    <help><![CDATA[
+
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_alternative_genes_pathwaymapper.py:
+
+      --genes                               comma separated string of HUGO symbols for target genes or targenes_list.csv file
+      --path_genes                          comma separated string of HUGO symbols for all genes in the target pathway or path_genes.csv file
+      --scores                              String of the location of classifier scores/alt_folder
+      --filename_mut                        Filename of sample/gene mutations to use in model
+      --filename_mut_burden                 Filename of sample mutation burden to use in model
+      --filename_sample                     Filename of patient/samples to use in model
+      --filename_copy_loss                  Filename of copy number loss
+      --filename_copy_gain                  Filename of copy number gain
+
+      Output:
+      - calculate and display metrics for targen classification
+      - calulate and display pathway metrics ("pathway_metrics_pathwaymapper.txt")
+      - Visualize Distribution of AUROC and AUPRC for all genes and Get Metrics for All Genes ("all_gene_metric_ranks.tsv")
+
+
+        ]]></help>
 </tool>

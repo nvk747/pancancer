@@ -5,12 +5,12 @@
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['/scripts/viz/external_sample_pred_targene_classifier.py' --version]]>
+    <version_command><![CDATA['external_sample_pred_targene_classifier.py' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        /scripts/viz/external_sample_pred_targene_classifier.py
+        external_sample_pred_targene_classifier.py
         --classifier '${output_alt_folder.extra_files_path}'
         #if $ex_vlog and str($ex_vlog):
         --ex_vlog '$ex_vlog'
@@ -25,10 +25,21 @@
     <inputs>
         <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html"/>
         <param argument="--ex_vlog" label="external sample gene expression data" name="ex_vlog" optional="false" type="data" format="txt" help="data/vlog_trans.csv" />
-        <param argument="--sign" label="given sample status" name="sign" optional="false" type="data" format="txt" help="data/sign.csv" />
+        <param argument="--sign" label="given mutational status" name="sign" optional="false" type="data" format="txt" help="data/sign.csv" />
     </inputs>
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
-    <help><![CDATA[TODO: Write help]]></help>
+    <help><![CDATA[
+
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_alternative_genes_pathwaymapper.py:
+
+      --classifier          String of the location of classifier scores/alt_folder
+      --ex_vlog             File path for external sample expression data file[fpkm/rlog/vlog values]
+      --sign                assigned tumor [1] or normal [-1] sample mutational status
+      
+      Output:
+      - compare and perform t-test significance calculation of perdicted scores between external normal and tumor samples ("targene_external_sample_predictions.pdf and targene_external_sample_predictions_1.pdf")
+
+    ]]></help>
 </tool>

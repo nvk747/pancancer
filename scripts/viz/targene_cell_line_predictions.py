@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+# Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_cell_line_predictions.py
 # # Cell Line Analysis
 # 
-# We sought to validate the Ras classifier trained on TCGA pan-cancer data by generating predictions on cell line data. A good classifier should generalize to predicting Ras status in other samples. We apply the classifier on two datasets:
+# We sought to validate the targene classifier trained on TCGA pan-cancer data by generating predictions on cell line data. A good classifier should generalize to predicting targene status in other samples. We apply the classifier on two datasets:
 # 
 # 1. [Cancer Cell Line Encyclopedia (CCLE)](https://software.broadinstitute.org/software/cprg/?q=node/11) Gene Expression data.
 #   * 1020 cell lines with matching gene expression and mutation calls
@@ -106,7 +106,7 @@ apply_weights.index = common_ccle_coef.feature
 result_ccle = apply_weights.T.dot(ccle_df)
 result_ccle = 1 / (1 + np.exp(-1 * result_ccle))
 
-# Distribution of predictions of the Ras Classifier applied to CCLE data
+# Distribution of predictions of the Targene Classifier applied to CCLE data
 result_ccle.T.hist();
 r = os.path.join(classifier,'figures','ccle_histogram.png')
 plt.savefig(r)
@@ -122,8 +122,6 @@ ccle_all_mut_df = pd.read_table(ccle_mut_file_name, skiprows=2, index_col=0)
 #ccle_maf_file = 'https://data.broadinstitute.org/ccle/CCLE_DepMap_18Q1_maf_20180207.txt'
 ccle_maf_file = args.ccle_maf or os.path.join('..','data','CCLE_DepMap_18Q1_maf_20180207.txt')
 ccle_maf_df = pd.read_table(ccle_maf_file, index_col=15)
-
-# Identify all cell lines with mutations in targene genes, also subset braf mutant samples
 
 targenes = args.targenes.split(',')
 targene_status = ccle_all_mut_df.loc[targenes, :].T.apply(max, axis=1)
@@ -318,7 +316,7 @@ data_s4_df = data_s4_df.merge(nuc_change_df, left_on = ['Hugo_Symbol', 'HGVSc'],
 updated_data_s4_df = data_s4_df.sort_values(by='count', ascending=False)
 
 #updated_data_s4_file = os.path.join('..', 'classifiers', 'ERBB2_PIK3CA_KRAS_AKT1', 'tables', 'updated_Data_S4.csv')
-updated_data_s4_file = os.path.join(classifier,'tables','updated_Data_S4.csv')
+updated_data_s4_file = os.path.join(classifier,'tables','updated_Data_nucleotide_scores.csv')
 updated_data_s4_df.to_csv(updated_data_s4_file, sep=',', index=False)
 
 # Get the mean classifier scores for CCLE variants
@@ -379,7 +377,7 @@ updated_data_s5_df = (
     data_s5_df.drop(['Protein_Change'], axis=1).sort_values(by='count', ascending=False)
 )
 
-updated_data_s5_file = os.path.join(classifier,'tables', 'updated_Data_S5.csv')
+updated_data_s5_file = os.path.join(classifier,'tables', 'updated_Data_aminoacid_scores.csv')
 updated_data_s5_df.to_csv(updated_data_s5_file, sep=',', index=False)
 
 # GDSC cellline expression and pharmacological evaluation:
@@ -418,7 +416,7 @@ plt.close()
 gdsc_mut_file_name = args.gdsc_mut or os.path.join('..','data', 'GDSC_CCLE_common_mut_cnv_binary.csv')
 gdsc_all_mut_df = pd.read_csv(gdsc_mut_file_name, index_col=0)
 
-# Identify all cell lines with mutations in Ras genes, also subset BRAF mutant samples
+# Identify all cell lines with mutations in targene genes, also subset BRAF mutant samples
 targene_status = gdsc_all_mut_df.loc[targenes, :].T.apply(max, axis=1)
 gdsc_mut_df = (
     gdsc_all_mut_df.loc[targenes, :].T

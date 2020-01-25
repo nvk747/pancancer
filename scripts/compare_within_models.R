@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Gregory Way 2017
+# Pancancer_Aberrant_Pathway_Activity_Analysis
 # PanCancer Classifier
 # scripts/compare_within_models.R
 #
@@ -177,7 +177,7 @@ if (!is.null(alt_gene_dir)) {
   pancan_auroc_df <- plyr::rbind.fill(within_disease_altgene_auroc, pancan_altgene_auroc_df)
   pancan_aupr_df <- plyr::rbind.fill(within_disease_altgene_aupr, pancan_altgene_aupr_df)
   
-  # processin pancan_alt_summary file
+  # processing pancan_alt_summary file
   # Determine alternative classifier prediction performance on alternative gene
   
   #classifier_gene <- paste(pancan_list[["Genes"]], collapse = "_")

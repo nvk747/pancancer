@@ -1,5 +1,6 @@
 
 #!/usr/bin/env python3
+# Pancancer_Aberrant_Pathway_Activity_Analysis scripts/alternative_genes_pathwaymapper.py
 
 import os
 import sys

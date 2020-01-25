@@ -1,15 +1,14 @@
-# Gregory Way 2017
-# PanCancer Classifier
-# scripts/viz/ras_summary_figures.R
+# Pancancer_Aberrant_Pathway_Activity_Analysis
+# scripts/viz/targene_summary_figures.R
 #
-# Visualize summary for Ras Classifier Scores
+# Visualize summary for targene Classifier Scores
 #
 # Usage: Run in command line
 #
-#     Rscript --vanilla scripts/viz/ras_summary_figures.R
+#     Rscript --vanilla scripts/viz/targene_summary_figures.R
 #
 # Output:
-# Several figures to summarize Ras findings
+# Several figures to summarize targene findings
 
 library(dplyr)
 library(pheatmap)
@@ -59,8 +58,6 @@ results <- parse_summary(file.path(results_folder, "classifier_summary.txt"))
 dir.create("figures")
 
 # 1) Heatmap of the distribution of aberrant events across tumors
-#heatmap_plot_file <- file.path(results_folder, "figures", "ras_heatmap.pdf")
-#ras_heatmap_file <- file.path(results_folder, "figures", "all_ras_heatmap.pdf")
 
 heatmap_plot_file <- file.path(results_folder, "figures", "targene_heatmap.pdf")
 gene_heatmap_file <- file.path(results_folder, "figures", "all_targene_heatmap.pdf")
@@ -114,7 +111,7 @@ pheatmap(t(prop_matrix * 100), scale = "none", cluster_rows = FALSE,
          filename = heatmap_plot_file,
          width = 8, height = 2)
 
-# Plot heatmap without collapsing Ras genes
+# Plot heatmap without collapsing targene genes
 heat_targene_df <- as.matrix(cbind(gain,loss,prop))
 rownames(heat_targene_df) <- heat_df$DISEASE
 
@@ -562,9 +559,6 @@ metric_ranks <- readr::read_tsv(perf_metric_file,
                                                  "AUROC Rank" = "i",
                                                  "AUPRC Rank" = "i"))
 
-# colnames(metric_ranks) <- c("Gene", "AUPR", "AUPR Rank", "ras", "AUROC",
-#                             "AUROC Rank")
-
 aupr_violin <- ggplot(metric_ranks, aes(y = AUPRC, x = paste(targene),
                                         fill = paste(targene))) +
   geom_violin() +
@@ -633,7 +627,7 @@ pdf(auroc_distribution_fig, width = 11, height = 7.5)
 plot_grid(auroc_plot, auroc_violin, align = "h", ncol = 2)
 dev.off()
 
-# T-Test for AUPR between Ras pathway genes and Other genes
+# T-Test for AUPR between targene pathway genes and Other genes
 targene_pathway_genes_aupr <- metric_ranks %>%
   dplyr::filter(targene == 1) %>%
   dplyr::select(AUPRC)

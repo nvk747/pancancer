@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gregory Way 2017
+Pancancer_Aberrant_Pathway_Activity_Analysis
 PanCancer Classifier
 scripts/copy_burden_merge.py
 

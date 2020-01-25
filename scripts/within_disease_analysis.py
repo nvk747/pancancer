@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Gregory Way 2017
-PanCancer NF1/RAS Classifier
+Pancancer_Aberrant_Pathway_Activity_Analysis
 scripts/within_tissue_analysis.py
 
 Usage: Run in command line

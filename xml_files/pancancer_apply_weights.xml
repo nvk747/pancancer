@@ -1,15 +1,15 @@
-<tool id="pancancer_apply_weights" name="PanCancer_apply_weights" version="@VERSION@">
+<tool id="PanCancer_apply_weights" name="PanCancer_apply_weights" version="@VERSION@">
   <description>apply weights</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA[cd $'scripts/apply_weights.py' --version]]></version_command>
+  <version_command><![CDATA[cd $'apply_weights.py' --version]]></version_command>
   <command><![CDATA[
 cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}'
 &&
-scripts/apply_weights.py 
+apply_weights.py 
 #if $classifier and $classifier is not None:
 --classifier '${output_alt_folder.extra_files_path}'
 #end if

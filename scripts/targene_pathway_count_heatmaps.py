@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_count_heatmaps.py
 
 import os
 import sys
@@ -43,15 +44,6 @@ copy_loss_file = args.filename_copy_loss or os.path.join('data', 'copy_number_lo
 copy_gain_file = args.filename_copy_gain or os.path.join('data', 'copy_number_gain_status.tsv')
 mutation_burden_file = args.filename_mut_burden or os.path.join('data', 'mutation_burden_freeze.tsv')
 
-# Get the current working directory
-# cwd = os.getcwd()
-
-# Ensure that the path is starting in the scripts directory
-# if not cwd.split('/')[-1] == 'scripts':
-#    os.chdir(os.path.join(cwd, 'scripts'))
-
-# get_ipython().run_line_magic('matplotlib', 'inline')
-# plt.style.use('seaborn-notebook')
 
 mutation_df = pd.read_table(mut_file, index_col=0)
 sample_freeze = pd.read_table(sample_freeze_file, index_col=0)
@@ -59,13 +51,8 @@ copy_loss_df = pd.read_table(copy_loss_file, index_col=0)
 copy_gain_df = pd.read_table(copy_gain_file, index_col=0)
 cancer_genes_df = pd.read_table(cancer_gene_file)
 
-
-# Load Ras Pathway Genes
-#results_path = os.path.join('..', 'classifiers', 'RAS')
 results_path = alt_folder
 
-# Load Ras Pathway Genes
-#genes_file = os.path.join('..', 'data', 'ras_genes.csv')
 
 try:
     genes = args.genes
@@ -195,15 +182,11 @@ pathway_mapper_file = os.path.join(results_path, 'tables',
                                    'pathway_mapper_percentages.txt')
 summary_score_df.to_csv(pathway_mapper_file, sep='\t')
 
-# ## Output number of Ras events per sample
+# ## Output number of targene events per sample
 
 decision_file = os.path.join(results_path, 'classifier_decisions.tsv')
 decisions_df = pd.read_table(decision_file)
 decisions_df.head()
-
-#other_ras_df = mutation_sub_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
-#other_ras_copy_df = copy_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
-#other_ras_all_df = comb_heat_df.drop(['KRAS', 'HRAS', 'NRAS'], axis=1)
 
 other_genes_df = mutation_sub_df.drop(genes, axis=1)
 other_genes_copy_df = copy_df.drop(genes, axis=1)
@@ -216,7 +199,7 @@ total_genes_all = pd.DataFrame(other_genes_all_df.sum(axis=1), columns=['all_cou
 total_genes_all.index = comb_heat_df['SAMPLE_BARCODE']
 
 
-# Define output summary of mutation, copy, and total counts per sample by Ras pathway
+# Define output summary of mutation, copy, and total counts per sample by targene pathway
 count_summary = (
     decisions_df[['SAMPLE_BARCODE', 'DISEASE', 'weight']]
     .merge(total_genes_mutations, left_on='SAMPLE_BARCODE', right_index=True)
