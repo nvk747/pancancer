@@ -1,32 +1,9 @@
 <macros>
-    <token name="@VERSION@">0.1.4</token>
+    <token name="@VERSION@">0.1.5</token>
 
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="3.6.5">python</requirement>
-            <requirement type="package" version="1.0.0">jupyter</requirement>
-            <requirement type="package" version="4.8.1">ipykernel</requirement>
-            <requirement type="package" version="1.0.0">r-irkernel</requirement>
-            <requirement type="package" version="2.1.0">nb_conda_kernels</requirement>
-            <requirement type="package" version="2.0.0">widgetsnbextension</requirement>
-            <requirement type="package" version="1.14.3">numpy</requirement>
-            <requirement type="package" version="0.23.0">pandas</requirement>
-            <requirement type="package" version="0.19.1">scikit-learn</requirement>
-            <requirement type="package" version="0.8.1">seaborn</requirement>
-            <requirement type="package" version="0.9.0">statsmodels</requirement>
-            <requirement type="package" version="2.6.5">numexpr</requirement>
-            <requirement type="package" version="0.3.0">plotnine</requirement>
-            <requirement type="package" version="0.2.0">dask-searchcv</requirement>
-            <requirement type="package" version="3.0.0">r-ggplot2</requirement>
-            <requirement type="package" version="0.7.6">r-dplyr</requirement>
-            <requirement type="package" version="1.1.1">r-readr</requirement>
-            <requirement type="package" version="1.6.1">r-optparse</requirement>
-            <requirement type="package" version="1.0.10">r-pheatmap</requirement>
-            <requirement type="package" version="0.3.0">r-ggpmisc</requirement>
-            <requirement type="package" version="0.8.0">r-ggrepel</requirement>
-            <requirement type="package" version="0.9.3">r-cowplot</requirement>
-            <requirement type="package" version="4.1_1">r-hmisc</requirement>
-            <requirement type="package" version="1.70">biopython</requirement>
+            <requirement type="package" version="@VERSION@">PAPAA</requirement>
         </requirements>
     </xml>
 
