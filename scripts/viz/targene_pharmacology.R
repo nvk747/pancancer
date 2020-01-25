@@ -1,4 +1,4 @@
-
+#!/usr/bin/env Rscript
 suppressPackageStartupMessages({
     library(dplyr)
     library(ggplot2)

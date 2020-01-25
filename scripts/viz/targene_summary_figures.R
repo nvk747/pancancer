@@ -424,7 +424,7 @@ write.table(nuc_df, file = file.path(results_folder, "tables",
                                      "nucleotide_mutation_scores.tsv"),
             sep = "\t", row.names = FALSE)
 
-# Plot summary distribution of variant classes prediction scores for gain
+# Plot summary distribution of PTEN variants R130X and R233X prediction scores using OG based classifer
 
 a = mut_df[,grepl("targene_gain",colnames(mut_df))]
 if (length(colnames(a))== 1) {
@@ -452,12 +452,9 @@ if (length(colnames(a))== 1) {
  
  ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
  
- # pdf(pten_germ_plot_file, width = 4, height = 3)
- # Pten_germ
- # dev.off()   
 }
 
-# Plot summary distribution of variant classes prediction scores for loss
+# Plot summary distribution of PTEN variants R130X and R233X prediction scores using TSG based classifer
 
 b = mut_df[,grepl("targene_loss",colnames(mut_df))]
 if (length(colnames(b))== 1) {
@@ -482,10 +479,7 @@ if (length(colnames(b))== 1) {
   ylab("Density") + xlab("Classifier Score")
 
  ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
- 
- #pdf(pten_germ_plot_file, width = 4, height = 3)
- #pten_germ
- #dev.off()   
+
 }
 
 # 5) Targene Summary Counts Distribution

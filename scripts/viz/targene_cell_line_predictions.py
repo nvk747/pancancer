@@ -199,7 +199,6 @@ pl.text(.6, y1+h, "{:.2E}".format(Decimal(t_results_ccle_targene.pvalue)),
          ha='center', va='bottom', color="black")
 
 pl.tight_layout()
-#ccle_fig_file = os.path.join('..', 'figures', 'cell_line', 'ccle_pi3k_GAIN_wild_mut_predictions.pdf')
 ccle_fig_file = os.path.join(classifier, 'figures', 'cell_line', 'ccle_targene_WT_MUT_predictions.pdf')
 pl.savefig(ccle_fig_file)
 plt.close()
@@ -380,7 +379,6 @@ updated_data_s5_df = (
     data_s5_df.drop(['Protein_Change'], axis=1).sort_values(by='count', ascending=False)
 )
 
-#updated_data_s5_file = os.path.join('..', 'classifiers', 'ERBB2_PIK3CA_KRAS_AKT1','tables', 'updated_Data_S5.csv')
 updated_data_s5_file = os.path.join(classifier,'tables', 'updated_Data_S5.csv')
 updated_data_s5_df.to_csv(updated_data_s5_file, sep=',', index=False)
 
