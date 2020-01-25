@@ -1,16 +1,16 @@
-<tool id="external_sample_status_prediction" name="PanCancer external sample status prediction" version="@VERSION@">
+<tool id="external_sample_status_prediction" name="PanCancer_external_sample_status_prediction" version="@VERSION@">
     <description>external sample status</description>
     <macros>
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/viz/external_sample_pred_targene_classifier.py' --version]]>
+    <version_command><![CDATA['/scripts/viz/external_sample_pred_targene_classifier.py' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        python /data/vijay/git/pancancer/scripts/viz/external_sample_pred_targene_classifier.py
+        /scripts/viz/external_sample_pred_targene_classifier.py
         --classifier '${output_alt_folder.extra_files_path}'
         #if $ex_vlog and str($ex_vlog):
         --ex_vlog '$ex_vlog'

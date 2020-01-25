@@ -1,16 +1,16 @@
-<tool id="targene_ccle_cell_line_predictions" name="PanCancer targene ccle cell line predictions" version="@VERSION@">
+<tool id="PanCancer_targene_cell_line_predictions" name="PanCancer_targene_cell_line_predictions" version="@VERSION@">
     <description>targene status in ccle cell lines </description>
     <macros>
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/viz/targene_cell_line_predictions.py' --version]]>
+    <version_command><![CDATA['scripts/viz/targene_cell_line_predictions.py' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        python /data/vijay/git/pancancer/scripts/viz/targene_cell_line_predictions.py
+        /scripts/viz/targene_cell_line_predictions.py
         --classifier '${output_alt_folder.extra_files_path}'
         #if $targenes and str($targenes):
         --targenes '$targenes'
@@ -58,5 +58,33 @@
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
-    <help><![CDATA[TODO: Write help]]></help>
+    <help><![CDATA[
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_cell_line_predictions_mod.py:
+
+      --targenes        comma separated string of HUGO symbols for target genes or targenes_list.csv file
+      --path_genes      comma separated string of HUGO symbols for all genes in the target pathway or path_genes.csv file
+      --classifier      String of the location of classifier_summary file
+      --ccle_rnaseq     Filename of CCLE gene expression data file
+      --ccle_mut        Filename of CCLE cell lines/gene mutations data file
+      --ccle_maf        Filename of CCLE mutational variant level data file
+      --gdsc_rnaseq     Filename of GDSC gene expression data file
+      --gdsc_mut        Filename of GDSC cell lines/gene mutations data file
+      --gdsc1_phar      Filename of GDSC1 pharmocological response data
+      --gdsc2_phar      Filename of GDSC2 pharmocological response data
+
+      Output:
+      - Generate predictions for CCLE data using targene classifier(ccle_histogram.png)
+      - Generate classifier scores for CCLE cell lines and combines CCLE mutational data and variant data with classifier scores (ccle_targene_classifier_scores.tsv).
+      - Performes t-test on classifier weights across targene mutant vs targene wildtype cell-line groups(ccle_targene_WT_MUT_predictions.pdf)
+      - add CCLE nucleotide scores at variant level and update nucleotide_mutation_scores.tsv (updated_Data_nucleotide_scores.csv)
+      - add CCLE protein scores at variant level and update aminoacid_mutation_scores.tsv (updated_Data_aminoacid_scores.csv)
+      - Generate predictions for GDSC data using targene classifier(gdsc_scores_histogram.png)
+      - Generate classifier scores for GDSC cell lines and combines CCLE mutational data and variant data with classifier scores (gdsc_targene_classifier_scores.tsv).
+      - Performes t-test on classifier weights across targene mutant vs targene wildtype cell-line groups(gdsc_targene_WT_MUT_predictions.pdf)
+      -Apply GDSC classifier scores to evaluate GDSC1 pharmacologial data response(gdsc1_targene_pharmacology_predictions.tsv)
+      -Apply GDSC classifier scores to evaluate GDSC2 pharmacologial data response(gdsc2_targene_pharmacology_predictions.tsv)
+      -Apply CCLE classifier scores to evaluate GDSC1 pharmacologial data response(gdsc1_ccle_targene_pharmacology_predictions.tsv)
+      -Apply CCLE classifier scores to evaluate GDSC2 pharmacologial data response(gdsc2_ccle_targene_pharmacology_predictions.tsv) 
+
+      ]]></help>
 </tool>

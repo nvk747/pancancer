@@ -1,16 +1,16 @@
-<tool id="targene_ccle_pharmacology" name="PanCancer targene ccle pharmacology" version="@VERSION@">
+<tool id="PanCancer_targene_pharmacology" name="PanCancer_targene_pharmacology" version="@VERSION@">
     <description>ccle pharmocology predictions </description>
     <macros>
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_ccle_pharmacology.R' --version]]>
+    <version_command><![CDATA['--vanilla scripts/viz/targene_ccle_pharmacology.R' --version]]>
     </version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_ccle_pharmacology.R
+        --vanilla scripts/viz/targene_ccle_pharmacology.R
         --classifier '${output_alt_folder.extra_files_path}'
         #if $comound and str($compound):
         --compound '$compound'
@@ -26,5 +26,17 @@
     <outputs>
         <expand macro="output_alt_folder" />
     </outputs>
-    <help><![CDATA[TODO: Write help]]></help>
+    <help><![CDATA[
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_pharmacology.R:
+
+      --classifier    String of the location of classifier folder
+      --compound      Filename of list of pharmocological compounds for evaluation
+
+      Output:
+      - Scatter plots with visualizing drug response compared to GDSC targene classifier scores for GDSC1 pharmacological dataset (GDSC1_targene_all_drug_response.pdf)  
+      - Scatter plots with visualizing drug response compared to CCLE targene classifier scores for GDSC1 pharmacological dataset (GDSC1_ccle_targene_all_drug_response.pdf)
+      - Scatter plots with visualizing drug response compared to GDSC targene classifier scores for GDSC2 pharmacological dataset (GDSC2_targene_all_drug_response.pdf)  
+      - Scatter plots with visualizing drug response compared to CCLE targene classifier scores for GDSC2 pharmacological dataset (GDSC2_ccle_targene_all_drug_response.pdf)
+
+    ]]></help>
 </tool>

@@ -1,15 +1,15 @@
-<tool id="targene_summary_figures" name=" PanCancer " version="@VERSION@">
+<tool id="PanCancer_targene_summary_figures" name="PanCancer_targene_summary_figures" version="@VERSION@">
   <description>Visualize targene summary</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command0><![CDATA[Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_summary_figures.R --version]]></version_command0>
+  <version_command0><![CDATA[--vanilla scripts/viz/targene_summary_figures.R --version]]></version_command0>
   <command><![CDATA[
     cp -R '$classifier_folder.extra_files_path' '${output_alt_folder.extra_files_path}'
     &&
-    Rscript --vanilla /data/vijay/git/pancancer/scripts/viz/targene_summary_figures.R
+    --vanilla scripts/viz/targene_summary_figures.R
     --classifier_folder '${output_alt_folder.extra_files_path}'
     &&
     @OUTPUT_ALT_FOLDER_HTML@
@@ -21,5 +21,22 @@
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_pharmacology.R:
+
+      --classifier_folder   String of the location of classifier data
+      
+      Output:
+      - Heatmaps of the distribution of aberrant events across tumors ("targene_heatmap.pdf" and "all_targene_heatmap.pdf")
+      - Gene weights/Coefficients contributing to the model (targene_coef_plot.pdf)
+      - Plot distributions of predictions according to variant classification for OG and TSG ("variant_gain_fill_map.pdf" and "variant_loss_fill_map.pdf")
+      - Plot summary distribution of PTEN variants R130X and R233X prediction scores using OG based classifer("PTEN_R130X_R233X_gain_distribution.pdf")
+      - Plot summary distribution of PTEN variants R130X and R233X prediction scores using TSG based classifer("PTEN_R130X_R233X_loss_distribution.pdf")
+      - Targene Summary Counts Distribution ("path_events_per_sample.tsv")
+      - Targene pathway events counts ("targene_pathway_events_counts.pdf")
+      - Performance Metrics Distribution across pathway members ("aupr_distribution.pdf" and "auroc_distribution.pdf")
+      - T-Test for AUPR between targene pathway genes and Other genes ("targene_pathway_variant_AUPR_ttest.txt")
+
+    ]]></help>
 </tool>

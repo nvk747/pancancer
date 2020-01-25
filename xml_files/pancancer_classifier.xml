@@ -1,4 +1,4 @@
-<tool id="pancancer_classifier" name="pancancer classifier" version="0.1.0" python_template_version="3.5">
+<tool id="PanCancer_classifier" name="PanCancer_classifier" version="0.1.4" python_template_version="3.5">
     <description>classifier for pathway aberrant activity</description>
     <macros>
         <import>macros.xml</import>
@@ -6,10 +6,10 @@
     <expand macro="requirements"/>
     <expand macro="stdio"/>
     <version_command>
-        <![CDATA[cd $pancancer && python scripts/pancancer_classifier.py --version]]>
+        <![CDATA[scripts/pancancer_classifier.py --version]]>
     </version_command>
     <command detect_errors="exit_code"><![CDATA[
-        cd $pancancer && python scripts/pancancer_classifier.py
+        scripts/pancancer_classifier.py
         #if $folds and $folds is not None:
         --folds '$folds'
         #end if
@@ -86,10 +86,10 @@
         <expand macro="output_alt_folder" />
     </outputs>
     <help><![CDATA[
-        Gregory Way 2017 PanCancer Classifier scripts/pancancer_classifier.py:
+        Pancancer_Aberrant_Pathway_Activity_Analysis scripts/pancancer_classifier.py:
 
-        --genes             comma separated string of genes
-        --diseases          comma separated string of disease types for classifier
+        --genes             comma separated string of HUGO symbols for target genes or targenes_list.csv file
+        --diseases          comma separated string of disease types/TCGA acronyms for classifier
                             default: Auto (will pick diseases from filter args)
         --folds             number of cross validation folds
                             default: 5
@@ -123,8 +123,14 @@
                             default: False if flag omitted
         --x_matrix          string of which feature matrix to use
                             default: raw
+        --classifier_folder String of the location of classifier data
+                            default: Auto
+        --remove_hyper      store_true: remove hypermutated samples
+                            default: False if flag omitted
+        --keep_intermediate store_true: keep intermediate roc curve items
+                            default: False if flag omitted
+        
         Output:
-        ROC curves, AUROC across diseases, and classifier coefficients
-        ]]>
+        ROC curves, AUROC across diseases, and classifier coefficients]]>
     </help>
 </tool>

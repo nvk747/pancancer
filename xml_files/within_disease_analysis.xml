@@ -1,16 +1,15 @@
-<tool id="pancancer_within_tissue_analysis" name="PanCancer Tissue" version="@VERSION@">
-  <description>within tissue analysis</description>
+<tool id="PanCancer_within_disease_analysis" name="PanCancer_within_disease_analysis" version="@VERSION@">
+  <description>within disease analysis</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA[python /data/vijay/git/pancancer/scripts/within_tissue_analysis.py --version]]></version_command>
+  <version_command><![CDATA[scripts/within_disease_analysis.py --version]]></version_command>
   <command><![CDATA[
 @INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@
-&&
-##cd \$PANCANCER_DIR && 
-python /data/vijay/git/pancancer/scripts/within_tissue_analysis.py
+&& 
+/scripts/within_tissue_analysis.py
 @INPUTS_ALPHAS@
 @INPUTS_L1_RATIOS@
 @OUTPUT_ALT_FOLDER_WITHIN_DISEASE@
@@ -34,6 +33,27 @@ python /data/vijay/git/pancancer/scripts/within_tissue_analysis.py
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_pathway_count_heatmaps.py:
+
+      --genes                               comma separated string of HUGO symbols for target genes or targenes_list.csv file
+      --diseases                            Comma seperated diseases list in a file
+      --alphas                              The alphas for parameter sweep
+      --l1_ratios                           The l1 ratios for parameter sweep
+      --remove_hyper                        Remove hypermutated samples
+      --alt_folder                          String of location to classification folder extending to individual diseases  
+      --x_matrix                            Filename of features to use in model
+      --x_as_raw                            Option to treat x_matrix as raw
+      --filename_mut                        Filename of sample/gene mutations to use in model
+      --filename_mut_burden                 Filename of sample mutation burden to use in model
+      --filename_sample                     Filename of patient/samples to use in model
+      --filename_copy_loss                  Filename of copy number loss
+      --filename_copy_gain                  Filename of copy number gain
+      --filename_cancer_gene_classification Filename of cancer gene classification table
+
+      Output:
+      - ROC curves, AUROC across diseases, and classifier coefficients for individual diseases
+
+  ]]></help>
 </tool>
 

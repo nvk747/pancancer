@@ -1,4 +1,4 @@
-<tool id="pancancer_copy_burden_merge" name="PanCancer copy burden merge" version="@VERSION@">
+<tool id="PanCancer_copy_burden_merge" name="PanCancer_copy_burden_merge" version="@VERSION@">
   <description>copy burden merge</description>
   <macros>
     <import>macros.xml</import>
@@ -23,5 +23,15 @@
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/copy_burden_merge.py:
+
+        --classifier_folder String of the location of classifier data
+        --filename_burden   Filename of burden
+        
+        Output:
+        - Merge per sample classifier scores with segment based scores and generate "copy_burden_predictions.tsv" file
+
+    ]]></help>
 </tool>

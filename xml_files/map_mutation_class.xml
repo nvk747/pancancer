@@ -1,16 +1,16 @@
-<tool id="pancancer_map_mutation_class" name="PanCancer map mutation class" version="@VERSION@">
+<tool id="PanCancer_map_mutation_class" name="PanCancer_map_mutation_class" version="@VERSION@">
   <description>map mutation class</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/map_mutation_class.py' --version]]>
+  <version_command><![CDATA['scripts/map_mutation_class.py' --version]]>
   </version_command>
   <command><![CDATA[
       cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}'
       && 
-      python /data/vijay/git/pancancer/scripts/map_mutation_class.py
+      scripts/map_mutation_class.py
       --scores '${output_alt_folder.extra_files_path}'
       #if $path_genes and str($path_genes):
       --path_genes '$path_genes'
@@ -30,5 +30,18 @@
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/map_mutation_class.py:
+
+      --scores              String of the location of folder containing classifier_decisions.tsv
+      --path_genes          comma separated string of HUGO symbols for all genes in the pathway or Pathway genes list file
+      --filename_copy_loss  Filename of copy number loss
+      --filename_copy_gain  Filename of copy number gain
+      --filename_raw_mut    Filename of raw mut MAF
+        
+      Output:
+      - Merge per sample classifier scores with mutation types present in each sample and generate "mutation_classification_scores.tsv" file
+
+      ]]></help>
 </tool>

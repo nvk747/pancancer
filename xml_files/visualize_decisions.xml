@@ -1,15 +1,15 @@
-<tool id="pancancer_visualize_decisions" name="PanCancer visualize decisions" version="@VERSION@">
+<tool id="pancancer_visualize_decisions" name="PanCancer_visualize_decisions" version="@VERSION@">
   <description>visualize decisions</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA['python /data/vijay/git/pancancer/scripts/visualize_decisions.py' --version]]></version_command>
+  <version_command><![CDATA['scripts/visualize_decisions.py' --version]]></version_command>
   <command><![CDATA[
       cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}'
       &&
-      python /data/vijay/git/pancancer/scripts/visualize_decisions.py
+      /scripts/visualize_decisions.py
       --scores '${output_alt_folder.extra_files_path}'
       #if $custom and $custom is not None:
       --custom '$custom'
@@ -25,5 +25,17 @@
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/visualize_decisions.py:
+
+        --scores  String of the folder location of classifier_decisions.tsv
+        --custom  comma separated list of columns to plot
+                  (optional: True)
+      
+      Output:
+      - Visualize decision function for all samples ("total_decisions.pdf") 
+      - Plot disease type specific decision functions ("decision_plot_{}.pdf")
+      - Visualize decision function for hyper mutated tumors ("hyper_mutated.pdf")
+
+    ]]></help>
 </tool>

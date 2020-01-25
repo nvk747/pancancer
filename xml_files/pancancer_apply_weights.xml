@@ -1,15 +1,15 @@
-<tool id="pancancer_apply_weights" name="PanCancer Apply Weights" version="@VERSION@">
+<tool id="pancancer_apply_weights" name="PanCancer_apply_weights" version="@VERSION@">
   <description>apply weights</description>
   <macros>
     <import>macros.xml</import>
   </macros>
   <expand macro="requirements"/>
   <expand macro="stdio"/>
-  <version_command><![CDATA[cd $'python /data/vijay/git/pancancer/scripts/apply_weights.py' --version]]></version_command>
+  <version_command><![CDATA[cd $'scripts/apply_weights.py' --version]]></version_command>
   <command><![CDATA[
 cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}'
 &&
-python /data/vijay/git/pancancer/scripts/apply_weights.py 
+scripts/apply_weights.py 
 #if $classifier and $classifier is not None:
 --classifier '${output_alt_folder.extra_files_path}'
 #end if
@@ -26,5 +26,21 @@ python /data/vijay/git/pancancer/scripts/apply_weights.py
   <outputs>
     <expand macro="output_alt_folder" />
   </outputs>
-  <help><![CDATA[TODO: Write help]]></help>
+  <help><![CDATA[
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/apply_weights.py:
+
+      --classifier                          String of the location of classifier file
+      --copy_number                         Supplement Y matrix with copy number events
+      --x_matrix                            Filename of features to use in model
+      --filename_mut                        Filename of sample/gene mutations to use in model
+      --filename_mut_burden                 Filename of sample mutation burden to use in model
+      --filename_sample                     Filename of patient/samples to use in model
+      --filename_copy_loss                  Filename of copy number loss
+      --filename_copy_gain                  Filename of copy number gain
+      --filename_cancer_gene_classification Filename of cancer gene classification table
+
+      Output:
+      - Generates .tsv file of classifier scores and other covariate info for plotting creates " classifier_decisions.tsv" file and Apply a logit transform [y = 1/(1+e^(-wX))] to output probabilities
+
+      ]]></help>
 </tool>
