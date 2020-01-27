@@ -3,7 +3,7 @@
 
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="@VERSION@">PAPAA</requirement>
+            <requirement type="package" version="@VERSION@">papaa</requirement>
         </requirements>
     </xml>
 

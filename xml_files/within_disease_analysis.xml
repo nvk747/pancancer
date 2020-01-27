@@ -9,7 +9,7 @@
   <command><![CDATA[
 @INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@
 && 
-within_tissue_analysis.py
+within_disease_analysis.py
 @INPUTS_ALPHAS@
 @INPUTS_L1_RATIOS@
 @OUTPUT_ALT_FOLDER_WITHIN_DISEASE@
