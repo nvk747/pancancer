@@ -1,4 +1,4 @@
-<tool id="PanCancer_map_mutation_class" name="PanCancer_map_mutation_class" version="@VERSION@">
+<tool id="pancancer_map_mutation_class" name="PanCancer_map_mutation_class" version="@VERSION@">
   <description>map mutation class</description>
   <macros>
     <import>macros.xml</import>
