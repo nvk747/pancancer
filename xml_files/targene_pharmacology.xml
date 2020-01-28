@@ -1,4 +1,4 @@
-<tool id="PanCancer_targene_pharmacology" name="PanCancer_targene_pharmacology" version="@VERSION@">
+<tool id="pancancer_targene_pharmacology" name="PanCancer_targene_pharmacology" version="@VERSION@">
     <description>ccle pharmocology predictions </description>
     <macros>
         <import>macros.xml</import>

@@ -1,4 +1,4 @@
-<tool id="PanCancer_targene_cell_line_predictions" name="PanCancer_targene_cell_line_predictions" version="@VERSION@">
+<tool id="pancancer_targene_cell_line_predictions" name="PanCancer_targene_cell_line_predictions" version="@VERSION@">
     <description>targene status in ccle cell lines </description>
     <macros>
         <import>macros.xml</import>

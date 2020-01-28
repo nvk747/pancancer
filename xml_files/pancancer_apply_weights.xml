@@ -1,4 +1,4 @@
-<tool id="PanCancer_apply_weights" name="PanCancer_apply_weights" version="@VERSION@">
+<tool id="pancancer_apply_weights" name="PanCancer_apply_weights" version="@VERSION@">
   <description>apply weights</description>
   <macros>
     <import>macros.xml</import>
