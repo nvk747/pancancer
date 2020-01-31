@@ -29,7 +29,7 @@ gdsc1_ccle_full_df <- readr::read_tsv(gdsc1_ccle_file)
 gdsc2_ccle_file <- file.path(classifier,"tables", "gdsc2_ccle_targene_pharmacology_predictions.tsv")
 gdsc2_ccle_full_df <- readr::read_tsv(gdsc2_ccle_file)
 
-comp_list <- as.matrix(read.csv(opt$compound, sep = ',',header = F))
+comp_list <- as.matrix(read.table(opt$compound, sep = '\t',header = F))
 
 setwd(file.path(classifier,"figures","cell_line"))
 

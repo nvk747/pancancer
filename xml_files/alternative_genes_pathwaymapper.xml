@@ -5,12 +5,11 @@
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['targene_alternative_genes_pathwaymapper.py' --version]]>
-    </version_command>
+    <version_command><![CDATA['alternative_genes_pathwaymapper.py' --version]]></version_command>
     <command><![CDATA[
         cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        targene_alternative_genes_pathwaymapper.py
+        alternative_genes_pathwaymapper.py
         --scores '${output_alt_folder.extra_files_path}'
         #if $genes and str($genes):
         --genes '$genes'
@@ -42,10 +41,10 @@
     </outputs>
     <help><![CDATA[
 
-      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_alternative_genes_pathwaymapper.py:
+      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/alternative_genes_pathwaymapper.py:
 
       --genes                               comma separated string of HUGO symbols for target genes or targenes_list.csv file
-      --path_genes                          comma separated string of HUGO symbols for all genes in the target pathway or path_genes.csv file
+      --path_genes                          comma separated string of HUGO symbols for all genes in the target pathway or path_genes.txt file
       --scores                              String of the location of classifier scores/alt_folder
       --filename_mut                        Filename of sample/gene mutations to use in model
       --filename_mut_burden                 Filename of sample mutation burden to use in model

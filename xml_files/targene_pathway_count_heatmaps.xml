@@ -33,11 +33,10 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html"/>
-        <param argument="--alt_folder" label="Classifier folder data" name="input_alt_folder" optional="true" type="data" format="html" help="Extend existing classifer"/>
+        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html" help="Extend existing classifer"/>
         <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
-        <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
-        <expand macro="inputs_basic" />
+        <param argument="--path_genes" label="String of the pathway genes to extract" name="path_genes" optional="true" type= "data" format="txt"/>
+        <expand macro="inputs_basic"/>
         <param argument="--filename_mut" label="Filename mutations" name="filename_mut" optional="true" type="data" format="tabular" help="data/pancan_mutation_freeze.tsv"/>
         <param argument="--filename_sample" label="Filename of sample" name="filename_sample" optional="true" type="data" format="tabular" help="data/sample_freeze.tsv"/>
         <param argument="--filename_copy_loss" label="File with Copy number loss" name="filename_copy_loss" optional="false" type="data" format="tabular" help="data/copy_number_loss_status.tsv"/>
@@ -45,14 +44,14 @@
         <param argument="--filename_cancer_gene_classification" label="File with cancer gene classification table" name="filename_cancer_gene_classification" optional="false" type="data" format="tabular" help="data/vogelstein_cancergenes.tsv"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <expand macro="output_alt_folder"/>
     </outputs>
     <help><![CDATA[
 
      Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_pathway_count_heatmaps.py:
 
       --genes                               comma separated string of HUGO symbols for target genes or targenes_list.csv file
-      --path_genes                          comma separated string of HUGO symbols for all genes in the target pathway or path_genes.csv file
+      --path_genes                          comma separated string of HUGO symbols for all genes in the target pathway or path_genes.txt file
       --scores                              String of the location of classifier scores/alt_folder
       --x_matrix                            Filename of features to use in model
       --filename_mut                        Filename of sample/gene mutations to use in model

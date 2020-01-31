@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Pancancer_Aberrant_Pathway_Activity_Analysis
-PanCancer Classifier
 scripts/copy_burden_merge.py
 
 Merge per sample classifier scores with segment based scores

@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # Pancancer_Aberrant_Pathway_Activity_Analysis scripts/alternative_genes_pathwaymapper.py
 
@@ -10,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import argparse
 from sklearn.metrics import roc_auc_score, average_precision_score
+
 sys.path.insert(0, os.path.join('scripts', 'util'))
 
 cwd = os.getcwd()

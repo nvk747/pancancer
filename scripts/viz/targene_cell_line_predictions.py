@@ -68,7 +68,7 @@ args = parser.parse_args()
 # Only non-zero coefficients contribute to model performance
 
 classifier = args.classifier
-classifier_file = os.path.join( classifier , "classifier_summary.txt")
+classifier_file = os.path.join(classifier , "classifier_summary.txt")
 all_coef_df = pd.read_table(os.path.join( classifier , "classifier_coefficients.tsv"), index_col=0)
 coef_df = all_coef_df[all_coef_df['abs'] > 0]
 coef_df.head(10)
@@ -81,7 +81,7 @@ coef_df.head(10)
 #                              'rpkm__gene_x_ccle_cellline.gct')
 
 ccle_file_name = args.ccle_rnaseq or os.path.join('..','data','ccle_rnaseq_genes_rpkm_20180929_mod.gct')
-ccle_df = pd.read_csv(ccle_file_name, skiprows=2, index_col=0)
+ccle_df = pd.read_table(ccle_file_name, skiprows=2, index_col=0)
 #ccle_df = ccle_df.drop_duplicates(subset='Description',keep = 'first')
 ccle_df = ccle_df[~ccle_df.index.duplicated()]
 
@@ -387,8 +387,8 @@ updated_data_s5_df.to_csv(updated_data_s5_file, sep=',', index=False)
 # /Data/preprocessed/Cell_line_RMA_proc_basalExp.txt.zip and RNA expression for 17737 genes from 382 cellines
 # among CCLE and GDSC was used. All GDSC cellines names are replaced by CCLE celllines
 
-gdsc_file_name = args.gdsc_rnaseq or os.path.join('..','data','GDSC_EXP_CCLE_converted_name.csv')
-gdsc_df = pd.read_csv(gdsc_file_name,sep=',', index_col=0)
+gdsc_file_name = args.gdsc_rnaseq or os.path.join('..','data','GDSC_EXP_CCLE_converted_name.tsv')
+gdsc_df = pd.read_table(gdsc_file_name,sep='\t', index_col=0)
 
 # Subset to common genes in the classifier and gdsc data
 common_genes = list(set(coef_df['feature']) & set(gdsc_df.index))
@@ -413,8 +413,8 @@ r = os.path.join(classifier,'figures','gdsc_scores_histogram.png')
 plt.savefig(r)
 plt.close()
 
-gdsc_mut_file_name = args.gdsc_mut or os.path.join('..','data', 'GDSC_CCLE_common_mut_cnv_binary.csv')
-gdsc_all_mut_df = pd.read_csv(gdsc_mut_file_name, index_col=0)
+gdsc_mut_file_name = args.gdsc_mut or os.path.join('..','data', 'GDSC_CCLE_common_mut_cnv_binary.tsv')
+gdsc_all_mut_df = pd.read_table(gdsc_mut_file_name, index_col=0)
 
 # Identify all cell lines with mutations in targene genes, also subset BRAF mutant samples
 targene_status = gdsc_all_mut_df.loc[targenes, :].T.apply(max, axis=1)

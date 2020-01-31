@@ -5,14 +5,13 @@
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['--vanilla scripts/viz/targene_ccle_pharmacology.R' --version]]>
-    </version_command>
+    <version_command><![CDATA['targene_pharmacology.R' --version]]></version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
-        --vanilla scripts/viz/targene_ccle_pharmacology.R
+        targene_pharmacology.R
         --classifier '${output_alt_folder.extra_files_path}'
-        #if $comound and str($compound):
+        #if $compound and str($compound):
         --compound '$compound'
         #end if
         &&
@@ -21,7 +20,7 @@
     </command>
     <inputs>
         <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html" />
-        <param argument="--compound" label="Filename list of compounds" name="compound" optional="false" type="data" format="csv" help="data/compounds.csv"/>
+        <param argument="--compound" label="Filename list of compounds" name="compound" optional="false" type="data" format="txt" help="data/compounds_of_interest.txt"/>
     </inputs>
     <outputs>
         <expand macro="output_alt_folder" />

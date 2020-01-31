@@ -5,8 +5,7 @@
     </macros>
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    <version_command><![CDATA['external_sample_pred_targene_classifier.py' --version]]>
-    </version_command>
+    <version_command><![CDATA['external_sample_pred_targene_classifier.py' --version]]></version_command>
     <command><![CDATA[
         cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
@@ -24,8 +23,8 @@
     </command>
     <inputs>
         <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html"/>
-        <param argument="--ex_vlog" label="external sample gene expression data" name="ex_vlog" optional="false" type="data" format="txt" help="data/vlog_trans.csv" />
-        <param argument="--sign" label="given mutational status" name="sign" optional="false" type="data" format="txt" help="data/sign.csv" />
+        <param argument="--ex_vlog" label="external sample gene expression data" name="ex_vlog" optional="false" type="data" format="csv" help="data/vlog_trans.csv" />
+        <param argument="--sign" label="given mutational status" name="sign" optional="false" type="data" format="txt" help="data/sign.txt" />
     </inputs>
     <outputs>
         <expand macro="output_alt_folder" />

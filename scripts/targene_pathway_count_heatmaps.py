@@ -5,6 +5,8 @@ import os
 import sys
 import pandas as pd
 import argparse
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -66,7 +68,6 @@ try:
     path_genes = args.path_genes
     pathgenes_df = pd.read_table(path_genes)
     path_genes = pathgenes_df['genes'].tolist()
-    print(path_genes)
 except:
     path_genes = path_genes.split(',')
 
@@ -111,7 +112,7 @@ plt.autoscale(enable=True, axis ='y', tight = True)
 plt.ylabel('Cancer Types', fontsize=16)
 plt.xlabel('Pathway Genes', fontsize=16)
 plt.savefig(os.path.join(results_path, 'mut_df.pdf'))
-plt.savefig(os.path.join(results_path, 'mut_df.jpeg'))
+plt.savefig(os.path.join(results_path, 'mut_df.png'))
 
 copy_df = pd.concat([copy_gain_sub_df, copy_loss_sub_df], axis=1)
 copy_total_df = copy_df.assign(Total=copy_df.max(axis=1))
@@ -133,7 +134,7 @@ plt.xlabel('Pathway Genes', fontsize=16)
 plt.autoscale(enable=True, axis ='x', tight = True)
 plt.autoscale(enable=True, axis ='y', tight = True)
 plt.savefig(os.path.join(results_path, 'copy_df.pdf'))
-plt.savefig(os.path.join(results_path, 'copy_df.jpeg'))
+plt.savefig(os.path.join(results_path, 'copy_df.png'))
 
 # Combined heatmap
 comb_heat = mutation_sub_df + copy_df
@@ -158,7 +159,7 @@ plt.autoscale(enable=True, axis ='x', tight = True)
 plt.autoscale(enable=True, axis ='y', tight = True)
 plt.tight_layout()
 plt.savefig(os.path.join(results_path, 'combined_df.pdf'))
-plt.savefig(os.path.join(results_path, 'combined_df.jpeg'))
+plt.savefig(os.path.join(results_path, 'combined_df.png'))
 
 # ## Generating Pathway Mapper Text Files
 
