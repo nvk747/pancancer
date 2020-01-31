@@ -6,6 +6,8 @@ tcga_util.py
 Usage: For import only
 """
 
+__VERSION__ = '1.5'
+__NAME_PREFIX__ = 'PAPAA'
 
 def get_args():
     """
@@ -15,6 +17,8 @@ def get_args():
     
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--version', action='version', version=__NAME_PREFIX__+': %(prog)s @ '+__VERSION__,
+                        help='Print version and quit')
     parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
                         help='string of the genes to extract or genelist file')
     
