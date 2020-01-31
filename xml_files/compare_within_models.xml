@@ -10,8 +10,9 @@
         cp -R '$pancan_summary.extra_files_path' '${output_alt_folder.extra_files_path}' 
         && 
         compare_within_models.R
+        
         --pancan_summary '${output_alt_folder.extra_files_path}'
-        --within_dir '${within_dir.extra_files_path}/within_disease'
+
         #if $alt_gene:
         --alt_gene '${alt_gene.extra_files_path}'
         #end if
@@ -21,7 +22,6 @@
     </command>
     <inputs>
         <param argument="--pancan_summary" label="pancancer summary folder data" name="pancan_summary" optional="false" type="data" format="papaa_within"/>
-        <param argument="--within_dir" label="Classifier within folder data" name="within_dir" optional="false" type="data" format="html"/>
         <param argument="--alt_gene" label="alt_gene folder data" name="alt_gene" optional="true" type="data" format="papaa_within"/>
     </inputs>
     <outputs>
@@ -31,13 +31,12 @@
 
       Pancancer_Aberrant_Pathway_Activity_Analysis scripts/compare_within_models.R:
 
-        --within_dir        String of the Directory location of where pan within cancer-type data is
         --pancan_summary    String of the Directory location of where pan classifier summary is
         --alt_gene          String of the Directory location of classifier summary for alt gene
 
       Output:
-      - Process PanCancer Classifier and within disease/cancertype summary files and generate AUROC and AUPR comparion files ("auroc_comparison.pdf" and "aupr_comparison.pdf")
-      - Process altgene classifier summary and altgene within disease/cancertypes summary files and process pancan_alt_summary file to determine alternative classifier prediction performance on alternative gene ("alt_gene_auroc_comparison.pdf" and "alt_gene_aupr_comparison.pdf") 
+      - Process PanCancer Classifier and within disease/cancertypes summary files and generate AUROC and AUPR comparion files ("auroc_comparison.pdf" and "aupr_comparison.pdf")
+      - Process Altgene Classifier summary and altgene within disease/cancertypes summary files and process PanCancer Classifier _altgene_summary file to determine alternative classifier prediction performance on alternative gene generate AUROC and AUPR comparion files ("alt_gene_auroc_comparison.pdf" and "alt_gene_aupr_comparison.pdf") 
 
         ]]></help>
 </tool>

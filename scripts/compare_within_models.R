@@ -20,14 +20,14 @@
 #
 # Output:
 # Bar Plots for each comparison
+# script scripts/compare_within_models.R --pancan_summary $gene_dir \
+#        --within_dir $gene_dir'/within_disease' \
+#        --alt_gene 'classifiers/TP53_ALT'
 
 library(ggplot2)
 library(dplyr)
 
-option_list <- list(optparse::make_option(c("-w", "--within_dir"),
-                                          type = "character",
-                                          help = "Location of within files"),
-                    optparse::make_option(c("-p", "--pancan_summary"),
+option_list <- list(optparse::make_option(c("-p", "--pancan_summary"),
                                           type = "character",
                                           help = "location of pancan summary"),
                     optparse::make_option(c("-a", "--alt_gene"),
@@ -38,7 +38,6 @@ option_list <- list(optparse::make_option(c("-w", "--within_dir"),
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-within_dir <- opt$within_dir
 pan_summary_dir <- opt$pancan_summary
 alt_gene_dir <- opt$alt_gene
 
@@ -67,6 +66,7 @@ pancan_aupr_df <- process_classifier_summary(summary_list = pancan_list,
                                              model_type = "Pan",
                                              perf_type = "AUPR")
 # Process Within Cancer Results
+within_dir = file.path(opt$pancan_summary,"within_disease")
 within_disease_files <- list.files(within_dir,
                                    pattern = "classifier_summary.txt",
                                    full.names = TRUE, recursive = TRUE)
