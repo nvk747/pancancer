@@ -24,11 +24,16 @@ Results of single tissue classifier run through pancancer_classifier.py
 """
 
 import os
+import sys
 import subprocess
 import argparse
 import pandas as pd
 
+sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
+from tcga_util import add_version_argument
+
 parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-g', '--genes',
                     help='string of the genes to extract or genelist file')
 parser.add_argument('-d', '--diseases', default='Auto',
