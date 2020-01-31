@@ -15,12 +15,17 @@ Output:
 """
 
 import os
+import sys
 import argparse
 import pandas as pd
 import matplotlib
 matplotlib.use('agg')
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+
+sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
+from tcga_util import add_version_argument
 
 
 def plot_decision_function(subset_df, filename, title):
@@ -51,6 +56,7 @@ def plot_decision_function(subset_df, filename, title):
     plt.close()
 
 parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-s', '--scores',
                     help='folder location of classifier scores')
 parser.add_argument('-c', '--custom',

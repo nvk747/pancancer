@@ -10,8 +10,11 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-parser = argparse.ArgumentParser()
+sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
+from tcga_util import add_version_argument
 
+parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',
                     help='string of the genes to extract or gene list file')
 parser.add_argument('-p', '--path_genes',

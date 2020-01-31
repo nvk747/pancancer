@@ -15,10 +15,16 @@ Output:
 .tsv file of classifier scores merged with segment based copy number scores
 """
 import os
+import sys
 import argparse
 import pandas as pd
 
+sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
+from tcga_util import add_version_argument
+
+
 parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-c', '--classifier_folder',
                     help='string of the location of classifier data')
 parser.add_argument( '--filename_burden', default=None,

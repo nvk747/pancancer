@@ -10,13 +10,10 @@ import seaborn as sns
 import argparse
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-sys.path.insert(0, os.path.join('scripts', 'util'))
+sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
 
-cwd = os.getcwd()
+from tcga_util import add_version_argument
 
-# Ensure that the path is starting in the scripts directory
-if not cwd.split('/')[-1] == 'scripts':
-    sys.path.append(os.path.join(cwd, 'scripts'))
 
 def get_gene_auroc(x, w):
     score = roc_auc_score(x, w, average='weighted')
@@ -28,6 +25,7 @@ def get_gene_auprc(x, w):
 
 # argument passing 
 parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-s', '--scores',
                     help='string of the location of classifier scores/alt_folder')
 parser.add_argument('-g', '--genes', default= 'KRAS,NRAS,HRAS',

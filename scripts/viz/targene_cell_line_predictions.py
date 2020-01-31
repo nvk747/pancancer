@@ -17,6 +17,7 @@
 #  GDSC1_data: ftp://ftp.sanger.ac.uk/pub/project/cancerrxgene/releases/current_release/GDSC2_fitted_dose_response_15Oct19.xlsx
 #  we replaced all the GDSC celllines with CCLE cell line names and for convenient processing. 
 import os
+import sys
 import numpy as np
 import pandas as pd
 from decimal import Decimal
@@ -29,12 +30,15 @@ import seaborn as sns
 import plotnine as gg
 import argparse
 
+sys.path.insert(0, os.path.join(os.path.split(os.path.split(os.path.realpath(__file__))[0])[0], 'util'))
+from tcga_util import add_version_argument
+
 # Store protein change dictionary
 aa = IUPACData.protein_letters_1to3_extended
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
 parser = argparse.ArgumentParser()
-
+add_version_argument(parser)
 parser.add_argument('-t', '--targenes', default= 'KRAS_MUT,NRAS_MUT,HRAS_MUT',
                     help='string of the genes to extract or gene list file')
 parser.add_argument('-p', '--path_genes',

@@ -26,9 +26,10 @@ from sklearn.preprocessing import StandardScaler
 
 sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
 
-from tcga_util import integrate_copy_number
+from tcga_util import integrate_copy_number, add_version_argument
 
 parser = argparse.ArgumentParser()
+add_version_argument(parser)
 parser.add_argument('-c', '--classifier',
                     help='folder location of classifier file')
 parser.add_argument('-u', '--copy_number', action='store_true',
