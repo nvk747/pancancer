@@ -19,11 +19,11 @@
       ]]>
   </command>
   <inputs>
-    <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html"/>
+    <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="papaa_within"/>
     <param area="false" argument="--custom" label="comma separated list of columns to plot" name="custom" optional="true" type="text"/>
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder" />
+    <expand macro="output_alt_folder_within" />
   </outputs>
   <help><![CDATA[
     Pancancer_Aberrant_Pathway_Activity_Analysis scripts/visualize_decisions.py:

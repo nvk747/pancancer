@@ -225,8 +225,30 @@
     <token name="@INPUT_REMOVE_HYPER@"><![CDATA[$remove_hyper]]></token>
 
     <xml name="input_alt_folder">
-        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="html" help="To optionally Extend existing classifer"/>
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa" help="To optionally Extend existing classifer"/>
     </xml>
+
+    <xml name="input_alt_folder_within">
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa_with" help="To optionally Extend existing classifer"/>
+    </xml>
+
+    <xml name="input_alt_folder_weighted">
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa_weighted" help="To optionally Extend existing classifer"/>
+    </xml>
+
+    <xml name="input_alt_folder_map">
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa_map" help="To optionally Extend existing classifer"/>
+    </xml>
+
+    <xml name="input_alt_folder_sum">
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa_sum" help="To optionally Extend existing classifer"/>
+    </xml>
+
+    <xml name="input_alt_folder_cell">
+        <param argument="--alt_folder" label="Classifier data" name="input_alt_folder" optional="true" type="data" format="papaa_cell" help="To optionally Extend existing classifer"/>
+    </xml>
+
+
     <token name="@INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@"><![CDATA[
         #if $input_alt_folder and $input_alt_folder is not None:
         cp -R '$input_alt_folder.extra_files_path' '${output_alt_folder.extra_files_path}'
@@ -235,8 +257,38 @@
     </token>
 
     <xml name="output_alt_folder">
-        <data format="html" name="output_alt_folder"/>
+        <data format="papaa" name="output_alt_folder"/>
     </xml>
+
+    <xml name="output_alt_folder_within">
+        <data format="papaa_within" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_weighted">
+        <data format="papaa_weighted" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_map">
+        <data format="papaa_map" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_sum">
+        <data format="papaa_sum" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_cell">
+        <data format="papaa_cell" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_input">
+        <data format_source="input_alt_folder" name="output_alt_folder"/>
+    </xml>
+
+    <xml name="output_alt_folder_scores">
+        <data format_source="scores" name="output_alt_folder"/>
+    </xml>
+
+
 
     <token name="@OUTPUT_ALT_FOLDER_HTML@"><![CDATA[tree -H '.'  --noreport --charset utf-8 '${output_alt_folder.extra_files_path}' > '${output_alt_folder}']]></token>
     <token name="@OUTPUT_ALT_FOLDER@"><![CDATA[--alt_folder '${output_alt_folder.extra_files_path}']]></token>

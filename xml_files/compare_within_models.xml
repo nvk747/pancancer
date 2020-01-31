@@ -20,12 +20,12 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--pancan_summary" label="pancancer summary folder data" name="pancan_summary" optional="false" type="data" format="html"/>
+        <param argument="--pancan_summary" label="pancancer summary folder data" name="pancan_summary" optional="false" type="data" format="papaa_within"/>
         <param argument="--within_dir" label="Classifier within folder data" name="within_dir" optional="false" type="data" format="html"/>
-        <param argument="--alt_gene" label="alt_gene folder data" name="alt_gene" optional="true" type="data" format="html"/>
+        <param argument="--alt_gene" label="alt_gene folder data" name="alt_gene" optional="true" type="data" format="papaa_within"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <expand macro="output_alt_folder_within" />
     </outputs>
     <help><![CDATA[
 

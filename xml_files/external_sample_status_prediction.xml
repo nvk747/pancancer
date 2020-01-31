@@ -22,7 +22,7 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html"/>
+        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="papaa"/>
         <param argument="--ex_vlog" label="external sample gene expression data" name="ex_vlog" optional="false" type="data" format="csv" help="data/vlog_trans.csv" />
         <param argument="--sign" label="given mutational status" name="sign" optional="false" type="data" format="txt" help="data/sign.txt" />
     </inputs>

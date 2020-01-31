@@ -29,7 +29,7 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html"/>
+        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="papaa_within"/>
         <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
         <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
         <param argument="--filename_mut" label="Filename mutations" name="filename_mut" optional="true" type="data" format="tabular" help="data/pancan_mutation_freeze.tsv"/>
@@ -37,7 +37,7 @@
         <expand macro="inputs_copy_number_file_conditional" />
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <expand macro="output_alt_folder_scores" />
     </outputs>
     <help><![CDATA[
 

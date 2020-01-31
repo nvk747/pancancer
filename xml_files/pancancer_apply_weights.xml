@@ -19,12 +19,12 @@ apply_weights.py
 @OUTPUT_ALT_FOLDER_HTML@
 ]]></command>
   <inputs>
-    <param argument="--classifier" label="Classifier data" name="classifier" optional="false" type="data" format="html"/>
+    <param argument="--classifier" label="Classifier data" name="classifier" optional="false" type="data" format="papaa_within"/>
     <expand macro="inputs_basic" />
     <expand macro="inputs_copy_number_class_file_conditional" />
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder" />
+    <expand macro="output_alt_folder_weighted" />
   </outputs>
   <help><![CDATA[
     Pancancer_Aberrant_Pathway_Activity_Analysis scripts/apply_weights.py:

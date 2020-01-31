@@ -19,11 +19,11 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="html" />
+        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="papaa_cell" />
         <param argument="--compound" label="Filename list of compounds" name="compound" optional="false" type="data" format="txt" help="data/compounds_of_interest.txt"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <expand macro="output_alt_folder_cell" />
     </outputs>
     <help><![CDATA[
       Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_pharmacology.R:

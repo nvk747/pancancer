@@ -31,7 +31,7 @@ within_disease_analysis.py
     <expand macro="input_remove_hyper" />
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder" />
+    <expand macro="output_alt_folder_within" />
   </outputs>
   <help><![CDATA[
     Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_pathway_count_heatmaps.py:

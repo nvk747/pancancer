@@ -21,13 +21,13 @@
     ]]> 
   </command>
   <inputs>
-    <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html" />
+    <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="papaa_within" />
     <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" value="PIK3CA,PIK3CB,PIK3R2,AKT1,AKT2,AKT3,RHEB,RPTOR,RICTOR,MTOR,ERBB2,KRAS,HRAS,NRAS,NFE2L2,PTEN,PIK3R1,PIK3R3,INPP4B,STK11,PPP2R1A,TSC1,TSC2,NF1" />
     <expand macro="inputs_copy_number_file_conditional" />
     <expand macro="input_filename_raw_mut" />
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder" />
+    <expand macro="output_alt_folder_map" />
   </outputs>
   <help><![CDATA[
 

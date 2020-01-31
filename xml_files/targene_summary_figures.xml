@@ -16,10 +16,10 @@
     ]]>
   </command>
   <inputs>
-    <param argument="--classifier_folder" label="Classifier score data" name="classifier_folder" optional="false" type="data" format="html"/>
+    <param argument="--classifier_folder" label="Classifier score data" name="classifier_folder" optional="false" type="data" format="papaa_map"/>
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder" />
+    <expand macro="output_alt_folder_sum" />
   </outputs>
   <help><![CDATA[
 

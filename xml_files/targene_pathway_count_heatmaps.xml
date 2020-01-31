@@ -32,7 +32,7 @@
         ]]>
     </command>
     <inputs>
-        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="html" help="Extend existing classifer"/>
+        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="papaa_within" help="Extend existing classifer"/>
         <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
         <param argument="--path_genes" label="String of the pathway genes to extract" name="path_genes" optional="true" type= "data" format="txt"/>
         <expand macro="inputs_basic"/>
@@ -43,7 +43,7 @@
         <param argument="--filename_cancer_gene_classification" label="File with cancer gene classification table" name="filename_cancer_gene_classification" optional="false" type="data" format="tabular" help="data/vogelstein_cancergenes.tsv"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder"/>
+        <expand macro="output_alt_folder_scores"/>
     </outputs>
     <help><![CDATA[
 
