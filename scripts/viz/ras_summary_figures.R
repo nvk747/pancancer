@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 # Gregory Way 2017
 # PanCancer Classifier
 # scripts/viz/ras_summary_figures.R
