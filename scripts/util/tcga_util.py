@@ -11,8 +11,8 @@ import json, os
 
 with open(os.path.join(os.path.dirname(__file__), 'VERSION')) as fh:
     info = json.load(fh)
-    __VERSION__ = info.get('__VERSION__')
-    __NAME_PREFIX__ = info.get('__NAME_PREFIX__')
+    __VERSION__ = info.get('VERSION')
+    __NAME_PREFIX__ = info.get('NAME_PREFIX')
 
 VERSION_STRING = __NAME_PREFIX__+': %(prog)s @ '+__VERSION__
 

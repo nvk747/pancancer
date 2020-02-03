@@ -5,15 +5,35 @@ suppressPackageStartupMessages({
     library(ggplot2)
     library(ggpmisc)})
 
+
+# This function returns the absolute path of the script file called by Rscript  
+# Follows symlinks via normalizePath  
+get_script_path <- function() { 
+    cmdArgs <- commandArgs(trailingOnly = FALSE)  
+    cmdArgsTrailing <- commandArgs(trailingOnly = TRUE) 
+    cmdArgs <- cmdArgs[seq.int(from=1, length.out=length(cmdArgs) - length(cmdArgsTrailing))] 
+    res <- gsub("^(?:--file=(.*)|.*)$", "\\1", cmdArgs) 
+    res <- tail(res[res != ""], 1)  
+    if (length(res) > 0)  
+        return (normalizePath(res)) 
+    NULL  
+} 
+path = (dirname(get_script_path())) 
+sp  <-  strsplit(path,'/viz') 
+source(file.path(sp,"util","pancancer_util.R"))
+
 option_list <- list(optparse::make_option(c("-c", "--classifier"),
                                           type = "character",
                                           help = "Location of classifier"),
                     optparse::make_option(c("-p", "--compound"),
                                           type = "character",
-                                          help = "list of compounds"))
+                                          help = "list of compounds"),
+                    make_papaa_version_option())
 
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+
+do_papaa_version_option(opt)
 
 classifier <- opt$classifier
 
