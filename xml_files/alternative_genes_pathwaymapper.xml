@@ -1,4 +1,4 @@
-<tool id="pancancer_alternative_genes_pathwaymapper" name="PanCancer_alternative_genes_pathwaymapper" version="@VERSION@">
+<tool id="pancancer_alternative_genes_pathwaymapper" name="PanCancer alternative genes pathwaymapper" version="@VERSION@">
     <description>alternative genes pathwaymapper</description>
     <macros>
         <import>macros.xml</import>

@@ -1,4 +1,4 @@
-<tool id="pancancer_external_sample_status_prediction" name="PanCancer_external_sample_status_prediction" version="@VERSION@">
+<tool id="pancancer_external_sample_status_prediction" name="PanCancer external sample status prediction" version="@VERSION@">
     <description>external sample status</description>
     <macros>
         <import>macros.xml</import>
