@@ -21,18 +21,6 @@ library(gridExtra)
 library(Hmisc)
 library(optparse)
 
-# parse options
-option_list = list(
-  make_option(
-    c("--classifier_folder"),
-    action = "store",
-    default = NA,
-    type = 'character',
-    help = "Classifier base folder"
-  )
-)
-
-opt <-parse_args(OptionParser(option_list = option_list))
 
 # This function returns the absolute path of the script file called by Rscript  
 # Follows symlinks via normalizePath  
@@ -46,13 +34,28 @@ get_script_path <- function() {
         return (normalizePath(res)) 
     NULL  
 } 
-print(get_script_path())  
-print(dirname(get_script_path())) 
 path = (dirname(get_script_path())) 
 sp  <-  strsplit(path,'/viz') 
 sp  
 source(file.path(sp,"util","pancancer_util.R"))
-set.seed(123)
+set.seed(123) # FIXME: set seed by argument
+
+# parse options
+option_list = list(
+  make_option(
+    c("--classifier_folder"),
+    action = "store",
+    default = NA,
+    type = 'character',
+    help = "Classifier base folder"
+  ),
+  make_papaa_version_option()
+)
+
+opt <-parse_args(OptionParser(option_list = option_list))
+
+do_papaa_version_option(opt)
+
 
 results_folder <- opt$classifier_folder
 results <- parse_summary(file.path(results_folder, "classifier_summary.txt"))

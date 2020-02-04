@@ -10,6 +10,39 @@
 # Usage: sourced by scripts using function
 
 library(ggplot2)
+library(jsonlite)
+library(optparse)
+
+
+do_papaa_version_option <- function(opt) {
+    if (opt$version) {
+      cmdArgs <- commandArgs(trailingOnly = FALSE)
+      cmdArgsTrailing <- commandArgs(trailingOnly = TRUE)
+      cmdArgs <- cmdArgs[seq.int(from=1, length.out=length(cmdArgs) - length(cmdArgsTrailing))]
+      path <- gsub("^(?:--file=(.*)|.*)$", "\\1", cmdArgs)
+      path <- tail(path[path != ""], 1)
+      prog <- basename(path)
+      path <- dirname(normalizePath(path))
+      path <- strsplit(path,'/viz')[[1]]
+      version_info <- read_json(file.path(path, "util", "VERSION"))
+      VERSION <- version_info$VERSION
+      NAME_PREFIX <- version_info$NAME_PREFIX
+      VERSION_STRING <- paste(NAME_PREFIX,': ', prog, ' @ ', VERSION, sep = "")
+      cat(VERSION_STRING)
+      cat("\n")
+      quit(save='no', status=0)
+    }
+}
+
+make_papaa_version_option <- function() {
+    return (make_option(
+    c("--version"),
+    action = "store_true",
+    default = FALSE,
+    help = "Print version and exit"
+  ))
+}
+
 
 # ggplot2 themes to be used in various contexts
 base_theme <- ggplot2::theme(title = element_text(size = rel(0.6)),

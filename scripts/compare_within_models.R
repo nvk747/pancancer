@@ -26,20 +26,6 @@
 library(ggplot2)
 library(dplyr)
 
-option_list <- list(optparse::make_option(c("-p", "--pancan_summary"),
-                                          type = "character",
-                                          help = "location of pancan summary"),
-                    optparse::make_option(c("-a", "--alt_gene"),
-                                          type = "character",
-                                          help = "location of alt gene summary",
-                                          default = NULL))
-
-opt_parser <- optparse::OptionParser(option_list = option_list)
-opt <- optparse::parse_args(opt_parser)
-
-pan_summary_dir <- opt$pancan_summary
-alt_gene_dir <- opt$alt_gene
-
 # This function returns the absolute path of the script file called by Rscript
 # Follows symlinks via normalizePath
 get_script_path <- function() {
@@ -54,6 +40,23 @@ get_script_path <- function() {
 }
 
 source(file.path(dirname(get_script_path()),"util", "pancancer_util.R"))
+
+option_list <- list(optparse::make_option(c("-p", "--pancan_summary"),
+                                          type = "character",
+                                          help = "location of pancan summary"),
+                    optparse::make_option(c("-a", "--alt_gene"),
+                                          type = "character",
+                                          help = "location of alt gene summary",
+                                          default = NULL),
+                    make_papaa_version_option())
+
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
+
+do_papaa_version_option(opt)
+
+pan_summary_dir <- opt$pancan_summary
+alt_gene_dir <- opt$alt_gene
 
 # Process PanCancer Classifier and summary files
 pan_summary <- file.path(pan_summary_dir, "classifier_summary.txt")
