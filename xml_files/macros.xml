@@ -257,27 +257,27 @@
     </token>
 
     <xml name="output_alt_folder">
-        <data format="papaa" name="output_alt_folder"/>
+        <data format="papaa" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa)" />
     </xml>
 
     <xml name="output_alt_folder_within">
-        <data format="papaa_within" name="output_alt_folder"/>
+        <data format="papaa_within" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa within)"/>
     </xml>
 
     <xml name="output_alt_folder_weighted">
-        <data format="papaa_weighted" name="output_alt_folder"/>
+        <data format="papaa_weighted" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa_weighted)"/>
     </xml>
 
     <xml name="output_alt_folder_map">
-        <data format="papaa_map" name="output_alt_folder"/>
+        <data format="papaa_map" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa_map)"/>
     </xml>
 
     <xml name="output_alt_folder_sum">
-        <data format="papaa_sum" name="output_alt_folder"/>
+        <data format="papaa_sum" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa_sum)"/>
     </xml>
 
     <xml name="output_alt_folder_cell">
-        <data format="papaa_cell" name="output_alt_folder"/>
+        <data format="papaa_cell" name="output_alt_folder" label="${tool.name} on ${on_string} (papaa_cell)"/>
     </xml>
 
     <xml name="output_alt_folder_input">
@@ -287,7 +287,6 @@
     <xml name="output_alt_folder_scores">
         <data format_source="scores" name="output_alt_folder"/>
     </xml>
-
 
 
     <token name="@OUTPUT_ALT_FOLDER_HTML@"><![CDATA[tree -H '.'  --noreport --charset utf-8 '${output_alt_folder.extra_files_path}' > '${output_alt_folder}']]></token>

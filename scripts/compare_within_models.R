@@ -12,8 +12,7 @@
 #     Rscript scripts/compare_within_models.R 
 #
 #     with the required flags:
-#         --pancan_summary      Directory of where classifier summary is
-#         --within_dir          Directory of where within cancer-type data is
+#         --pancan_summary      Directory of where classifier summary for pan and within models
 #
 #     and optional flags:
 #         --alt_gene            Directory of classifier summary for alt gene
