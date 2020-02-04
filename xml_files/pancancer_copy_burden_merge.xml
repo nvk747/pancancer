@@ -1,4 +1,4 @@
-<tool id="pancancer_copy_burden_merge" name="PanCancer_copy_burden_merge" version="@VERSION@">
+<tool id="pancancer_copy_burden_merge" name="PanCancer copy burden merge" version="@VERSION@">
   <description>copy burden merge</description>
   <macros>
     <import>macros.xml</import>

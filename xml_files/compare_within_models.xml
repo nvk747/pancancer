@@ -1,4 +1,4 @@
-<tool id="pancancer_compare_within_models" name="PanCancer_compare_within_models" version="@VERSION@">
+<tool id="pancancer_compare_within_models" name="PanCancer compare within models" version="@VERSION@">
     <description>compare within models</description>
     <macros>
         <import>macros.xml</import>
