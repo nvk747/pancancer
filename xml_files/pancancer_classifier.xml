@@ -36,7 +36,7 @@
         #if $alt_filter_prop and $alt_filter_prop is not None:
         --alt_filter_prop '$alt_filter_prop'
         #end if
-        @OUTPUT_ALT_FOLDER@
+        --alt_folder 'classifier'
         @INPUT_REMOVE_HYPER@
         $keep_intermediate
         @INPUTS_BASIC_RAW@
@@ -52,8 +52,7 @@
         $drop_expression
         $drop_covariates
         @INPUTS_COPY_NUMBER_CLASS_FILE_CONDITIONAL@
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        > '${log}'
         ]]>
     </command>
     <inputs>
@@ -82,7 +81,23 @@
         <param argument="--drop_covariates" checked="false" label="Decision to drop covariate information from X" name="drop_covariates" type="boolean" truevalue="--drop_covariates" falsevalue=""/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
+        <data format="tabular" name="alt_gene_alt_disease_summary" label="${tool.name} on ${on_string} (alt_gene_alt_disease_summary.tsv)" from_work_dir="classifier/alt_gene_alt_disease_summary.tsv"/>
+        <data format="csv" name="alt_summary_counts" label="${tool.name} on ${on_string} (alt_summary_counts.csv" from_work_dir="classifier/alt_summary_counts.csv"/>
+        <data format="tabular" name="classifier_coefficients" label="${tool.name} on ${on_string} (classifier_coefficients.tsv)" from_work_dir="classifier/classifier_coefficients.tsv"/>
+        <data format="txt" name="classifier_summary" label="${tool.name} on ${on_string} (classifier_summary.txt)" from_work_dir="classifier/classifier_summary.txt"/>
+        <data format="tabular" name="pancan_roc_results" label="${tool.name} on ${on_string} (pancan_roc_results.tsv)" from_work_dir="classifier/pancan_roc_results.tsv"/>
+        <data format="csv" name="summary_counts" label="${tool.name} on ${on_string} (summary_counts.csv)" from_work_dir="classifier/summary_counts.csv"/>
+        <data format="pdf" name="cv_heatmap" label="${tool.name} on ${on_string} (cv_heatmap.pdf)" from_work_dir="classifier/cv_heatmap.pdf"/>
+        <collection name="disease_figures" type="list:list" label="Disease classifier figures">
+          <discover_datasets pattern="classifier_(?P&lt;identifier_1&gt;.+)__pred_(?P&lt;identifier_0&gt;.+)\.pdf" format="pdf" directory="classifier/disease" visible="false" />
+        </collection>
+        <data format="pdf" name="all_disease_pr" label="${tool.name} on ${on_string} (all_disease_pr.pdf)" from_work_dir="classifier/all_disease_pr.pdf"/>
+        <data format="pdf" name="all_disease_roc" label="${tool.name} on ${on_string} (all_disease_roc.pdf)" from_work_dir="classifier/all_disease_roc.pdf"/>
+        <data format="pdf" name="alt_gene_alt_disease_aupr_bar" label="${tool.name} on ${on_string} (alt_gene_alt_disease_aupr_bar.pdf)" from_work_dir="classifier/alt_gene_alt_disease_aupr_bar.pdf"/>
+        <data format="pdf" name="alt_gene_alt_disease_auroc_bar" label="${tool.name} on ${on_string} (alt_gene_alt_disease_auroc_bar.pdf)" from_work_dir="classifier/alt_gene_alt_disease_auroc_bar.pdf"/>
+        <data format="pdf" name="disease_aupr" label="${tool.name} on ${on_string} (disease_aupr.pdf)" from_work_dir="classifier/disease_aupr.pdf"/>
+        <data format="pdf" name="disease_auroc" label="${tool.name} on ${on_string} (disease_auroc.pdf)" from_work_dir="classifier/disease_auroc.pdf"/>
     </outputs>
     <help><![CDATA[
         Pancancer_Aberrant_Pathway_Activity_Analysis scripts/pancancer_classifier.py:
