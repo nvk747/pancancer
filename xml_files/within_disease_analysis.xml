@@ -7,22 +7,19 @@
   <expand macro="stdio"/>
   <version_command><![CDATA['within_disease_analysis.py' --version]]></version_command>
   <command><![CDATA[
-@INPUT_ALT_FOLDER_TO_OUTPUT_ALT_FOLDER@
-&& 
-within_disease_analysis.py
-@INPUTS_ALPHAS@
-@INPUTS_L1_RATIOS@
-@OUTPUT_ALT_FOLDER_WITHIN_DISEASE@
-@INPUT_REMOVE_HYPER@
-@INPUTS_BASIC_RAW@
-@INPUTS_GENES_DISEASES@
-@INPUTS_COPY_NUMBER_CLASS_FILE_PREFIX@
-@INPUTS_COPY_NUMBER_CLASS_FILE@
-&&
-@OUTPUT_ALT_FOLDER_HTML@
+    within_disease_analysis.py
+    @INPUTS_ALPHAS@
+    @INPUTS_L1_RATIOS@
+    @INPUT_REMOVE_HYPER@
+    @INPUTS_BASIC_RAW@
+    @INPUTS_GENES_DISEASES@
+    @INPUTS_COPY_NUMBER_CLASS_FILE_PREFIX@
+    @INPUTS_COPY_NUMBER_CLASS_FILE@
+    --alt_folder 'classifier'
+    > '${log}'
+    && flatten_classifier_directory.py -i 'classifier' -o 'classifier_within'
 ]]></command>
   <inputs>
-    <expand macro="input_alt_folder" />
     <expand macro="inputs_basic_raw" />
     <expand macro="inputs_genes_diseases" />
     <expand macro="inputs_copy_number_class_file" />
@@ -31,7 +28,25 @@ within_disease_analysis.py
     <expand macro="input_remove_hyper" />
   </inputs>
   <outputs>
-    <expand macro="output_alt_folder_within" />
+    <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
+    <collection name="classifier_summary" type="list" label="classifier_summary.txt">
+      <discover_datasets pattern="(?P&lt;identifier_0&gt;.+)_classifier_summary\.txt" format="txt" directory="classifier_within/within_disease" visible="false" />
+    </collection>
+    <collection name="classifier_coefficients" type="list" label="classifier_coefficients.tsv">
+      <discover_datasets pattern="(?P&lt;identifier_0&gt;.+)_classifier_coefficients\.tsv" format="tabular" directory="classifier_within/within_disease" visible="false" />
+    </collection>
+    <collection name="pancan_roc_results" type="list" label="pancan_roc_results.tsv">
+      <discover_datasets pattern="(?P&lt;identifier_0&gt;.+)_pancan_roc_results\.tsv" format="tabular" directory="classifier_within/within_disease" visible="false" />
+    </collection>
+    <collection name="summary_counts" type="list" label="summary_counts.csv">
+      <discover_datasets pattern="(?P&lt;identifier_0&gt;.+)_summary_counts\.csv" format="csv" directory="classifier_within/within_disease" visible="false" />
+    </collection>
+    <collection name="within_disease" type="list:list" label="Within disease figures">
+      <discover_datasets pattern="(?P&lt;identifier_0&gt;[^_]+)_(?P&lt;identifier_1&gt;.+)\.pdf" format="pdf" directory="classifier_within/within_disease" visible="false" />
+    </collection>
+    <collection name="disease_figures" type="list:list" label="Disease classifier figures">
+      <discover_datasets pattern="classifier_(?P&lt;identifier_1&gt;.+)__pred_(?P&lt;identifier_0&gt;.+)\.pdf" format="pdf" directory="classifier_within/disease" visible="false" />
+    </collection>
   </outputs>
   <help><![CDATA[
     Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_pathway_count_heatmaps.py:
