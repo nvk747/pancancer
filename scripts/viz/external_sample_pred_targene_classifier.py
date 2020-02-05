@@ -9,6 +9,8 @@ from statsmodels.stats.proportion import proportions_chisquare
 from sklearn.preprocessing import StandardScaler
 from Bio.SeqUtils import IUPACData
 # from openpyxl import load_workbook
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotnine as gg
@@ -32,6 +34,10 @@ parser.add_argument('-e', '--ex_vlog',default= None,
                     help='path for external sample expression data file[fpkm/rlog/vlog')
 parser.add_argument('-s', '--sign',
                     help='assigned tumor [1] or normal sample status[-1]')
+parser.add_argument('--figure1', default=None,
+                    help='Path to save to figure 1')
+parser.add_argument('--figure2', default=None,
+                    help='Path to save to figure 2')
 args = parser.parse_args()
 
 # load targene classifier summary file
@@ -144,8 +150,12 @@ p = (gg.ggplot(output,
         panel_grid_major=gg.element_blank(),
         panel_grid_minor=gg.element_blank()))
 # targene_fig_file = os.path.join('..', 'figures', 'cell_line', 'targene_external_sample_predictions.pdf')
-targene_fig_file = os.path.join(classifier, 'figures','targene_external_sample_predictions.pdf')
-p.save(targene_fig_file, width=6, height=0.5)
+if args.figure1:
+    targene_fig_file = args.figure1
+else:
+    targene_fig_file = os.path.join(classifier, 'figures','targene_external_sample_predictions.pdf')
+    os.makedirs(os.path.dirname(targene_fig_file), exist_ok=True)
+p.save(targene_fig_file, format="pdf", width=6, height=0.5)
 p
 
 # graphical output for predictions
@@ -168,7 +178,12 @@ plt.xlim(left = -0.1)
 plt.xlim(right = 1.1)
 locs_x, labels_x = plt.xticks(np.arange(0,1.25,0.25))
 plt.axvline(0.5, color='black', linestyle='dashed', linewidth=1)
-plt.savefig(os.path.join(classifier, 'figures','targene_external_sample_predictions_1.pdf'))
+if args.figure2:
+    targene_fig_file = args.figure2
+else:
+    targene_fig_file = os.path.join(classifier, 'figures','targene_external_sample_predictions_1.pdf')
+    os.makedirs(os.path.dirname(targene_fig_file), exist_ok=True)
+plt.savefig(targene_fig_file, format="pdf")
 plt.close()
 
 l_x = len(x)

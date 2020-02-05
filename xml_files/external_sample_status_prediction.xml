@@ -7,18 +7,17 @@
     <expand macro="stdio"/>
     <version_command><![CDATA['external_sample_pred_targene_classifier.py' --version]]></version_command>
     <command><![CDATA[
-        cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
-        && 
         external_sample_pred_targene_classifier.py
-        --classifier '${output_alt_folder.extra_files_path}'
+        --classifier '${classifier.extra_files_path}'
         #if $ex_vlog and str($ex_vlog):
         --ex_vlog '$ex_vlog'
         #end if
         #if $sign and str($sign):
         --sign '$sign'
         #end if
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        --figure1 '${figure1}'
+        --figure2 '${figure2}'
+        > '${log}'
         ]]>
     </command>
     <inputs>
@@ -27,7 +26,9 @@
         <param argument="--sign" label="given mutational status" name="sign" optional="false" type="data" format="txt" help="data/sign.txt" />
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder" />
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
+        <data format="pdf" name="figure1" label="${tool.name} on ${on_string} (Figure 1)" />
+        <data format="pdf" name="figure2" label="${tool.name} on ${on_string} (Figure 2)" />
     </outputs>
     <help><![CDATA[
 
