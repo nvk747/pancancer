@@ -145,6 +145,7 @@ p = (gg.ggplot(output,
         panel_grid_minor=gg.element_blank()))
 # targene_fig_file = os.path.join('..', 'figures', 'cell_line', 'targene_external_sample_predictions.pdf')
 targene_fig_file = os.path.join(classifier, 'figures','targene_external_sample_predictions.pdf')
+os.makedirs(os.path.dirname(targene_fig_file), exist_ok=True)
 p.save(targene_fig_file, width=6, height=0.5)
 p
 
