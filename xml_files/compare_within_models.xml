@@ -7,25 +7,37 @@
     <expand macro="stdio"/>
     <version_command><![CDATA['compare_within_models.R' --version 2>&1 | grep PAPAA]]></version_command>
     <command><![CDATA[
-        cp -R '$pancan_summary.extra_files_path' '${output_alt_folder.extra_files_path}' 
-        && 
+        mkdir 'classifier' &&
+        ln -s '${pancan_summary}' 'classifier/classifier_summary.txt' &&
+        ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
+        #for $within_summary in $alt_gene:
+            mkdir -p 'classifier/${within_summary.element_identifier}' &&
+            ln -s '${within_summary}' 'classifier/${within_summary.element_identifier}/classifier_summary.txt' &&
+        #end for
+        #for $within_coefficient in $alt_gene_classifier_coefficients:
+            mkdir -p 'classifier/${within_coefficient.element_identifier}' &&
+            ln -s '${within_coefficient}' 'classifier/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
+        #end for
         compare_within_models.R
         
-        --pancan_summary '${output_alt_folder.extra_files_path}'
+        --pancan_summary 'classifier'
 
         #if $alt_gene:
-        --alt_gene '${alt_gene.extra_files_path}'
+        --alt_gene 'classifier'
         #end if
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        > '${log}'
         ]]>
     </command>
     <inputs>
-        <param argument="--pancan_summary" label="pancancer summary folder data" name="pancan_summary" optional="false" type="data" format="papaa_within"/>
-        <param argument="--alt_gene" label="alt_gene folder data" name="alt_gene" optional="true" type="data" format="papaa_within"/>
+        <param argument="--pancan_summary" label="pancancer classifier summary" name="pancan_summary" optional="false" type="data" format="txt" help="single classifer_summary.txt"/>
+        <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="single classifier_coefficients.tsv"/>
+        <param argument="--alt_gene" label="alt_gene classifier summary" name="alt_gene" optional="true" type="data" format="txt" multiple="true" help="single classifier_coefficients.tsv"/>
+        <param label="alt_gene classifier coefficients" name="alt_gene_classifier_coefficients" optional="true" type="data" format="txt" multiple="true" help="multiple classifier_coefficients.tsv"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder_within" />
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
+        <data format="pdf" name="aupr_comparison" label="${tool.name} on ${on_string} (aupr_comparison.pdf)" from_work_dir="classifier/figures/aupr_comparison.pdf"/>
+        <data format="pdf" name="auroc_comparison" label="${tool.name} on ${on_string} (auroc_comparison.pdf)" from_work_dir="classifier/figures/auroc_comparison.pdf"/>
     </outputs>
     <help><![CDATA[
 
