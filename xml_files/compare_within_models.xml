@@ -31,8 +31,8 @@
     <inputs>
         <param argument="--pancan_summary" label="pancancer classifier summary" name="pancan_summary" optional="false" type="data" format="txt" help="single classifer_summary.txt"/>
         <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="single classifier_coefficients.tsv"/>
-        <param argument="--alt_gene" label="alt_gene classifier summary" name="alt_gene" optional="true" type="data" format="txt" multiple="true" help="single classifier_coefficients.tsv"/>
-        <param label="alt_gene classifier coefficients" name="alt_gene_classifier_coefficients" optional="true" type="data" format="txt" multiple="true" help="multiple classifier_coefficients.tsv"/>
+        <param argument="--alt_gene" label="alt_gene classifier summary" name="alt_gene" optional="true" type="data" format="txt" multiple="true" help="multiple classifer_summary.txt"/>
+        <param label="alt_gene classifier coefficients" name="alt_gene_classifier_coefficients" optional="true" type="data" format="tabular" multiple="true" help="multiple classifier_coefficients.tsv"/>
     </inputs>
     <outputs>
         <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
