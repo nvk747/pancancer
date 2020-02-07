@@ -49,7 +49,7 @@
     </collection>
   </outputs>
   <help><![CDATA[
-    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/targene_pathway_count_heatmaps.py:
+    Pancancer_Aberrant_Pathway_Activity_Analysis scripts/within_disease_analysis.py:
 
       --genes                               comma separated string of HUGO symbols for target genes or targenes_list.csv file
       --diseases                            Comma seperated diseases list in a file

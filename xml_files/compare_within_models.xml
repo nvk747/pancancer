@@ -10,29 +10,58 @@
         mkdir 'classifier' &&
         ln -s '${pancan_summary}' 'classifier/classifier_summary.txt' &&
         ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
-        #for $within_summary in $alt_gene:
+        #for $within_summary in $pancan_summary:
             mkdir -p 'classifier/${within_summary.element_identifier}' &&
             ln -s '${within_summary}' 'classifier/${within_summary.element_identifier}/classifier_summary.txt' &&
         #end for
-        #for $within_coefficient in $alt_gene_classifier_coefficients:
+        #for $within_coefficient in $pancan_summary_classifier_coefficients:
             mkdir -p 'classifier/${within_coefficient.element_identifier}' &&
             ln -s '${within_coefficient}' 'classifier/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
         #end for
+        #if $include_alt.include_alt_select == 'true':
+        &&
+        mkdir 'alt_classifier' &&
+        ln -s '${include_alt.alt_gene}' 'alt_classifier/classifier_summary.txt' &&
+        ln -s '${include_alt.alt_gene_coefficients}' 'alt_classifier/classifier_coefficients.tsv' &&
+        #for $within_summary in $include_alt.alt_gene:
+            mkdir -p 'alt_classifier/${within_summary.element_identifier}' &&
+            ln -s '${within_summary}' 'alt_classifier/${within_summary.element_identifier}/classifier_summary.txt' &&
+        #end for
+        #for $within_coefficient in $include_alt.alt_gene_classifier_coefficients:
+            mkdir -p 'alt_classifier/${within_coefficient.element_identifier}' &&
+            ln -s '${within_coefficient}' 'alt_classifier/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
+        #end for
+        #end if
         compare_within_models.R
         
         --pancan_summary 'classifier'
 
-        #if $alt_gene:
-        --alt_gene 'classifier'
+        #if $include_alt.include_alt_select == 'true':
+        --alt_gene 'alt_classifier'
         #end if
         > '${log}'
+        && ls -lahR .
         ]]>
     </command>
     <inputs>
-        <param argument="--pancan_summary" label="pancancer classifier summary" name="pancan_summary" optional="false" type="data" format="txt" help="single classifer_summary.txt"/>
-        <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="single classifier_coefficients.tsv"/>
-        <param argument="--alt_gene" label="alt_gene classifier summary" name="alt_gene" optional="true" type="data" format="txt" multiple="true" help="multiple classifer_summary.txt"/>
-        <param label="alt_gene classifier coefficients" name="alt_gene_classifier_coefficients" optional="true" type="data" format="tabular" multiple="true" help="multiple classifier_coefficients.tsv"/>
+        <param argument="--pancan_summary" label="pancancer classifier summary" name="pancan_summary" optional="false" type="data" format="txt" help="classifer_summary.txt"/>
+        <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="classifier_coefficients.tsv"/>
+        <param label="pan_within classifier summary" name="pan_within_classifier_summary" optional="false" type="data" format="txt" multiple="true" help="multiple classifer_summary.txt"/>
+        <param label="pan_within classifier coefficients" name="pan_within_classifier_coefficients" optional="false" type="data" format="tabular" multiple="true" help="multiple classifier_coefficients.tsv"/>
+        <conditional name="include_alt">
+          <param name="include_alt_select" type="select" label="Would you want to compare given model with alt gene model?" help="Built-ins were indexed using default options. See `Indexes` section of help below">
+            <option value="false" selected="true">do not do alt gene</option>
+            <option value="true">do alt gene</option>
+          </param>
+          <when value="true">
+                <param argument="--pancan_summary" label="pancancer classifier summary" name="pancan_summary" optional="false" type="data" format="txt" help="alt classifer_summary.txt"/>
+                <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="alt classifier_coefficients.tsv"/>
+                <param argument="pan_within classifier summary" label="pan_within_classifier_summary" name="alt_gene" optional="true" type="data" format="txt" multiple="true" help="multiple alt classifer_summary.txt"/>
+                <param label="pan_within classifier coefficients" name="pan_within_classifier_coefficients" optional="true" type="data" format="tabular" multiple="true" help="multiple alt classifier_coefficients.tsv"/>
+            </when>
+            <when value="false">
+            </when>
+        </conditional>
     </inputs>
     <outputs>
         <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)" />
