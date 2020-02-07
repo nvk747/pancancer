@@ -12,10 +12,10 @@
         mkdir -p 'classifier/figures/cell_line' &&  
         mkdir -p 'classifier/tables' &&
         mkdir -p 'classifier/results' &&
-        ln -s '${classifier`}' 'classifier/classifier_summary.txt' &&
+        ln -s '${classifier}' 'classifier/classifier_summary.txt' &&
         ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
         ln -s '${nucleotide_mutation_scores}' 'classifier/tables/nucleotide_mutation_scores.tsv' &&
-        ln -s '${aminoacid_mutation_scores}' 'classifier/tables/aminoacid_mutation_scores.tsv' &&
+        ln -s '${amino_acid_mutation_scores}' 'classifier/tables/amino_acid_mutation_scores.tsv' &&
         targene_cell_line_predictions.py
         --classifier 'classifier'
         #if $targenes and str($targenes):
@@ -52,7 +52,7 @@
         <param argument="--classifier" label="Classifier data" name="classifier" optional="false" type="data" format="txt" help="classifer_summary.txt"/>
         <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="classifier_coefficients.tsv"/>
         <param label="nucleotide mutation scores" name="nucleotide_mutation_scores" optional="false" type="data" format="tabular" help="nucleotide_mutation_scores.tsv"/>
-        <param label="aminoacid mutation scores" name="aminoacid_mutation_scores" optional="false" type="data" format="tabular" help="aminoacid_mutation_scores.tsv"/>
+        <param label="amino acid mutation scores" name="amino_acid_mutation_scores" optional="false" type="data" format="tabular" help="amino_acid_mutation_scores.tsv"/>
         <param argument="--targenes" label="Comma separated string of HUGO targene symbols" name="targenes" optional="False" type="text" value="KRAS_MUT,NRAS_MUT,HRAS_MUT"/>
         <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
         <param argument="--ccle_rnaseq" label="Filename ccle rnaseq data" name="ccle_rnaseq" optional="false" type="data" format="tabular" help="data/ccle_rnaseq_genes_rpkm_20180929_mod.tsv"/>
