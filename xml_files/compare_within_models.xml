@@ -47,7 +47,7 @@
         <param label="pan_within classifier summary" name="pan_within_classifier_summary" optional="false" type="data" format="txt" multiple="true" help="multiple classifer_summary.txt"/>
         <param label="pan_within classifier coefficients" name="pan_within_classifier_coefficients" optional="false" type="data" format="tabular" multiple="true" help="multiple classifier_coefficients.tsv"/>
         <conditional name="include_alt">
-          <param name="include_alt_select" type="select" label="Would you want to compare given model with alt gene model?" help="Built-ins were indexed using default options. See `Indexes` section of help below">
+          <param name="include_alt_select" type="select" label="Would you want to compare given model with alt gene model?" help="output of pancancer classifier and pancancer within disease for alt gene">
             <option value="false" selected="true">do not do alt gene</option>
             <option value="true">do alt gene</option>
           </param>
