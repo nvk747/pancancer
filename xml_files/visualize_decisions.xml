@@ -1,4 +1,4 @@
-<tool id="pancancer_visualize_decisions" name="PanCancer visualize decisions" version="@VERSION@">
+<tool id="pancancer_visualize_decisions" name="PAPAA: PanCancer visualize decisions" version="@VERSION@">
   <description>visualize decisions</description>
   <macros>
     <import>macros.xml</import>

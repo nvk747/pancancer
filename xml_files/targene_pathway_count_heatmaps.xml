@@ -1,4 +1,4 @@
-<tool id="pancancer_pathway_count_heatmaps" name="PanCancer pathway count heatmaps" version="@VERSION@">
+<tool id="pancancer_pathway_count_heatmaps" name="PAPAA: PanCancer pathway count heatmaps" version="@VERSION@">
     <description>pathway count heatmaps</description>
     <macros>
         <import>macros.xml</import>
