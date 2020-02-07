@@ -198,3 +198,11 @@ def shuffle_columns(gene):
     """
     import numpy as np
     return np.random.permutation(gene.tolist())
+
+def get_coefficients_filename_for_summary_filename(filename):
+    # FIXME: tools should accept the tsv file as an argument.
+    # We assume that the classifier_coefficients.tsv that is next to the summary_info
+    # is the correct one, and then default to the directory that may no longer exist.
+    rval = os.path.join(os.path.dirname(filename), 'classifier_coefficients.tsv')
+    assert os.path.exists(rval), ValueError("Cannot determine classifier_coefficients.tsv")
+    return rval

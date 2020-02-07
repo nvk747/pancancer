@@ -26,7 +26,7 @@ from sklearn.preprocessing import StandardScaler
 
 sys.path.insert(0, os.path.join(os.path.split(os.path.realpath(__file__))[0], 'util'))
 
-from tcga_util import integrate_copy_number, add_version_argument
+from tcga_util import integrate_copy_number, add_version_argument, get_coefficients_filename_for_summary_filename
 
 parser = argparse.ArgumentParser()
 add_version_argument(parser)
@@ -83,10 +83,7 @@ with open(classifier_file) as class_fh:
         if line[0] == 'Diseases:':
             diseases = line[1:]
         if line[0] == 'Coefficients:':
-            coef_df = line[1]
-            # If file DNE (e.g. jobs executed with file staging), fallback to local copy
-            if not os.path.exists(coef_df):
-                coef_df = os.path.join(args.classifier, 'classifier_coefficients.tsv')
+            coef_df = get_coefficients_filename_for_summary_filename(classifier_file)
             coef_df = pd.read_table(coef_df)
 
 # Subset matrix that indicates mutation status (y)

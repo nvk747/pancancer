@@ -109,9 +109,12 @@ parse_summary <- function(summary_info) {
       next
     }
     if (line[1] == "Coefficients:") {
-      tmp_fn <- line[2]
+      # FIXME: tools should accept the tsv file as an argument.
+      # We assume that the classifier_coefficients.tsv that is next to the summary_info
+      # is the correct one
+      tmp_fn <- file.path( base_dir, 'classifier_coefficients.tsv' )
       if ( ! file.exists(tmp_fn)){
-        tmp_fn <- file.path( base_dir, 'classifier_coefficients.tsv' ) # maybe should use basename of not found file
+        stop("A proximal classifier_coefficients.tsv was not found. See FIXME.")
       }
       summary_list[[sub(":", "", line[1])]] <-
         suppressMessages(readr::read_tsv(tmp_fn))
