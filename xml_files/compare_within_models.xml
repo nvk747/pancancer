@@ -11,24 +11,24 @@
         ln -s '${pancan_summary}' 'classifier/classifier_summary.txt' &&
         ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
         #for $within_summary in $pan_within_classifier_summary:
-            mkdir -p 'classifier/${within_summary.element_identifier}' &&
-            ln -s '${within_summary}' 'classifier/${within_summary.element_identifier}/classifier_summary.txt' &&
+            mkdir -p 'classifier/within_disease/${within_summary.element_identifier}' &&
+            ln -s '${within_summary}' 'classifier/within_disease/${within_summary.element_identifier}/classifier_summary.txt' &&
         #end for
         #for $within_coefficient in $pan_within_classifier_coefficients:
-            mkdir -p 'classifier/${within_coefficient.element_identifier}' &&
-            ln -s '${within_coefficient}' 'classifier/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
+            mkdir -p 'classifier/within_disease/${within_coefficient.element_identifier}' &&
+            ln -s '${within_coefficient}' 'classifier/within_disease/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
         #end for
         #if $include_alt.include_alt_select == 'true':
         mkdir 'alt_classifier' &&
         ln -s '${include_alt.alt_pancan_summary}' 'alt_classifier/classifier_summary.txt' &&
         ln -s '${include_alt.alt_pancan_classifier_coefficients}' 'alt_classifier/classifier_coefficients.tsv' &&
         #for $within_summary in $include_alt.alt_pan_within_classifier_summary:
-            mkdir -p 'alt_classifier/${within_summary.element_identifier}' &&
-            ln -s '${within_summary}' 'alt_classifier/${within_summary.element_identifier}/classifier_summary.txt' &&
+            mkdir -p 'alt_classifier/within_disease/${within_summary.element_identifier}' &&
+            ln -s '${within_summary}' 'alt_classifier/within_disease/${within_summary.element_identifier}/classifier_summary.txt' &&
         #end for
         #for $within_coefficient in $include_alt.alt_pan_within_classifier_coefficients:
-            mkdir -p 'alt_classifier/${within_coefficient.element_identifier}' &&
-            ln -s '${within_coefficient}' 'alt_classifier/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
+            mkdir -p 'alt_classifier/within_disease/${within_coefficient.element_identifier}' &&
+            ln -s '${within_coefficient}' 'alt_classifier/within_disease/${within_coefficient.element_identifier}/classifier_coefficients.tsv' &&
         #end for
         #end if
         compare_within_models.R
