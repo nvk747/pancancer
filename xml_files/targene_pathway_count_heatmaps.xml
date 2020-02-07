@@ -7,10 +7,13 @@
     <expand macro="stdio"/>
     <version_command><![CDATA['targene_pathway_count_heatmaps.py' --version]]></version_command>
     <command><![CDATA[
-        cp -R '$scores.extra_files_path' '${output_alt_folder.extra_files_path}' 
-        && 
+        mkdir 'classifier' &&
+        mkdir -p 'classifier/tables' &&
+        ln -s '${scores}' 'classifier/classifier_decisions.tsv' &&
+        ln -s '${pathway_metrics}' 'classifier/tables/pathway_metrics_pathwaymapper.txt' &&
+        ln -s '${all_gene_metric_ranks}' 'classifier/tables/all_gene_metric_ranks.tsv' &&
         targene_pathway_count_heatmaps.py
-        --scores '${output_alt_folder.extra_files_path}'
+        --scores 'classifier'
         #if $genes and str($genes):
         --genes '$genes'
         #end if
@@ -27,12 +30,13 @@
         #if $filename_cancer_gene_classification and $filename_cancer_gene_classification is not None:
         --filename_cancer_gene_classification '$filename_cancer_gene_classification'
         #end if
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        > '${log}'
         ]]>
     </command>
     <inputs>
-        <param argument="--scores" label="Classifier score data" name="scores" optional="false" type="data" format="papaa_within" help="Extend existing classifer"/>
+        <param argument="--scores" label="pancancer decisions" name="scores" optional="false" type="data" format="tabular" help="classifier_decisions.tsv"/>
+        <param label="pancancer metrics pathwaymapper" name="pathway_metrics" optional="false" type="data" format="txt" help="pathway_metrics_pathwaymapper.txt"/>
+        <param label="pancancer gene metric ranks" name="all_gene_metric_ranks" optional="false" type="data" format="tabular" help="all_gene_metric_ranks.tsv"/>
         <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
         <param argument="--path_genes" label="String of the pathway genes to extract" name="path_genes" optional="true" type= "data" format="txt"/>
         <expand macro="inputs_basic"/>
@@ -43,7 +47,12 @@
         <param argument="--filename_cancer_gene_classification" label="File with cancer gene classification table" name="filename_cancer_gene_classification" optional="false" type="data" format="tabular" help="data/vogelstein_cancergenes.tsv"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder_scores"/>
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)"/>
+        <data format="pdf" name="mut_df" label="${tool.name} on ${on_string} (mut_df.pdf)" from_work_dir="classifier/mut_df.pdf"/>
+        <data format="pdf" name="copy_df" label="${tool.name} on ${on_string} (copy_df.pdf)" from_work_dir="classifier/copy_df.pdf"/>
+        <data format="pdf" name="combined_df" label="${tool.name} on ${on_string} (combined_df.pdf)" from_work_dir="classifier/combined_df.pdf"/>
+        <data format="txt" name="pathway_mapper_percentages" label="${tool.name} on ${on_string} (pathway_mapper_percentages.txt)" from_work_dir="classifier/tables/pathway_mapper_percentages.txt"/>
+        <data format="tabular" name="path_events_per_sample" label="${tool.name} on ${on_string} (path_events_per_sample.tsv)" from_work_dir="classifier/tables/path_events_per_sample.tsv"/>
     </outputs>
     <help><![CDATA[
 

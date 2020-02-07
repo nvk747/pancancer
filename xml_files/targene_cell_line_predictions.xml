@@ -7,10 +7,17 @@
     <expand macro="stdio"/>
     <version_command><![CDATA['targene_cell_line_predictions.py' --version]]></version_command>
     <command><![CDATA[
-        cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
-        && 
+        mkdir 'classifier' &&
+        mkdir -p 'classifier/figures' &&
+        mkdir -p 'classifier/figures/cell_line' &&  
+        mkdir -p 'classifier/tables' &&
+        mkdir -p 'classifier/results' &&
+        ln -s '${classifier`}' 'classifier/classifier_summary.txt' &&
+        ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
+        ln -s '${nucleotide_mutation_scores}' 'classifier/tables/nucleotide_mutation_scores.tsv' &&
+        ln -s '${aminoacid_mutation_scores}' 'classifier/tables/aminoacid_mutation_scores.tsv' &&
         targene_cell_line_predictions.py
-        --classifier '${output_alt_folder.extra_files_path}'
+        --classifier 'classifier'
         #if $targenes and str($targenes):
         --targenes '$targenes'
         #end if
@@ -38,12 +45,14 @@
         #if $gdsc2_phar and $gdsc2_phar is not None:
         --gdsc2_phar '$gdsc2_phar'
         #end if
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        > '${log}'
         ]]>
     </command>
     <inputs>
-        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="papaa_sum" />
+        <param argument="--classifier" label="Classifier data" name="classifier" optional="false" type="data" format="txt" help="classifer_summary.txt"/>
+        <param label="pancancer classifier coefficients" name="pancan_classifier_coefficients" optional="false" type="data" format="tabular" help="classifier_coefficients.tsv"/>
+        <param label="nucleotide mutation scores" name="nucleotide_mutation_scores" optional="false" type="data" format="tabular" help="nucleotide_mutation_scores.tsv"/>
+        <param label="aminoacid mutation scores" name="aminoacid_mutation_scores" optional="false" type="data" format="tabular" help="aminoacid_mutation_scores.tsv"/>
         <param argument="--targenes" label="Comma separated string of HUGO targene symbols" name="targenes" optional="False" type="text" value="KRAS_MUT,NRAS_MUT,HRAS_MUT"/>
         <param argument="--path_genes" label="string of the genes to extract or genelist file" name="path_genes" optional="true" type= "data" format="txt"/>
         <param argument="--ccle_rnaseq" label="Filename ccle rnaseq data" name="ccle_rnaseq" optional="false" type="data" format="tabular" help="data/ccle_rnaseq_genes_rpkm_20180929_mod.tsv"/>
@@ -55,7 +64,19 @@
         <param argument="--gdsc2_phar" label="Filename for gdsc2 pharmacological data file" name="gdsc2_phar" optional="false" type="data" format="txt" help="data/gdsc2_ccle_pharm_fitted_dose_data.txt"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder_cell" />
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)"/>
+        <data format="png" name="ccle_histogram" label="${tool.name} on ${on_string} (ccle_histogram.png)" from_work_dir="classifier/figures/ccle_histogram.png"/>
+        <data format="tabular" name="ccle targene classifier scores" label="${tool.name} on ${on_string} (ccle_targene_classifier_scores.tsv)" from_work_dir="classifier/tables/ccle_targene_classifier_scores.tsv"/>
+        <data format="pdf" name="ccle targene WT MUT predictions" label="${tool.name} on ${on_string} (ccle_targene_WT_MUT_predictions.pdf)" from_work_dir="classifier/figures/cell_line/ccle_targene_WT_MUT_predictions.pdf"/>
+        <data format="csv" name="updated_data_nucleotide_scores" label="${tool.name} on ${on_string} (updated_data_nucleotide_scores.csv)" from_work_dir="classifier/tables/updated_data_nucleotide_scores.csv"/>
+        <data format="csv" name="updated_data_aminoacid_scores" label="${tool.name} on ${on_string} (updated_data_aminoacid_scores.csv)" from_work_dir="classifier/tables/updated_data_aminoacid_scores.csv"/>
+        <data format="png" name="gdsc_scores_histogram" label="${tool.name} on ${on_string} (gdsc_scores_histogram.png)" from_work_dir="classifier/figures/gdsc_scores_histogram.png"/>
+        <data format="tabular" name="gdsc targene classifier scores" label="${tool.name} on ${on_string} (gdsc_targene_classifier_scores.tsv)" from_work_dir="classifier/tables/gdsc_targene_classifier_scores.tsv"/>
+        <data format="pdf" name="gdsc targene WT MUT predictions" label="${tool.name} on ${on_string} (gdsc_targene_WT_MUT_predictions.pdf)" from_work_dir="classifier/figures/cell_line/gdsc_targene_WT_MUT_predictions.pdf"/>
+        <data format="tabular" name="gdsc1 targene pharmacology predictions" label="${tool.name} on ${on_string} (gdsc1_targene_pharmacology_predictions.tsv)" from_work_dir="classifier/tables/gdsc1_targene_pharmacology_predictions.tsv"/>
+        <data format="tabular" name="gdsc2 targene pharmacology predictions" label="${tool.name} on ${on_string} (gdsc2_targene_pharmacology_predictions.tsv)" from_work_dir="classifier/tables/gdsc2_targene_pharmacology_predictions.tsv"/>
+        <data format="tabular" name="gdsc1 ccle targene pharmacology predictions" label="${tool.name} on ${on_string} (gdsc1_ccle_targene_pharmacology_predictions.tsv)" from_work_dir="classifier/tables/gdsc1_ccle_targene_pharmacology_predictions.tsv"/>
+        <data format="tabular" name="gdsc2 ccle targene pharmacology predictions" label="${tool.name} on ${on_string} (gdsc2_ccle_targene_pharmacology_predictions.tsv)" from_work_dir="classifier/tables/gdsc2_ccle_targene_pharmacology_predictions.tsv"/>
     </outputs>
     <help><![CDATA[
       Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_cell_line_predictions_mod.py:
@@ -75,8 +96,8 @@
       - Generate predictions for CCLE data using targene classifier(ccle_histogram.png)
       - Generate classifier scores for CCLE cell lines and combines CCLE mutational data and variant data with classifier scores (ccle_targene_classifier_scores.tsv).
       - Performes t-test on classifier weights across targene mutant vs targene wildtype cell-line groups(ccle_targene_WT_MUT_predictions.pdf)
-      - add CCLE nucleotide scores at variant level and update nucleotide_mutation_scores.tsv (updated_Data_nucleotide_scores.csv)
-      - add CCLE protein scores at variant level and update aminoacid_mutation_scores.tsv (updated_Data_aminoacid_scores.csv)
+      - add CCLE nucleotide scores at variant level and update nucleotide_mutation_scores.tsv (updated_data_nucleotide_scores.csv)
+      - add CCLE protein scores at variant level and update aminoacid_mutation_scores.tsv (updated_data_aminoacid_scores.csv)
       - Generate predictions for GDSC data using targene classifier(gdsc_scores_histogram.png)
       - Generate classifier scores for GDSC cell lines and combines CCLE mutational data and variant data with classifier scores (gdsc_targene_classifier_scores.tsv).
       - Performes t-test on classifier weights across targene mutant vs targene wildtype cell-line groups(gdsc_targene_WT_MUT_predictions.pdf)

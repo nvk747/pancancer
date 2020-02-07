@@ -320,7 +320,7 @@ data_s4_df = data_s4_df.merge(nuc_change_df, left_on = ['Hugo_Symbol', 'HGVSc'],
 updated_data_s4_df = data_s4_df.sort_values(by='count', ascending=False)
 
 #updated_data_s4_file = os.path.join('..', 'classifiers', 'ERBB2_PIK3CA_KRAS_AKT1', 'tables', 'updated_Data_S4.csv')
-updated_data_s4_file = os.path.join(classifier,'tables','updated_Data_nucleotide_scores.csv')
+updated_data_s4_file = os.path.join(classifier,'tables','updated_data_nucleotide_scores.csv')
 updated_data_s4_df.to_csv(updated_data_s4_file, sep=',', index=False)
 
 # Get the mean classifier scores for CCLE variants
@@ -381,7 +381,7 @@ updated_data_s5_df = (
     data_s5_df.drop(['Protein_Change'], axis=1).sort_values(by='count', ascending=False)
 )
 
-updated_data_s5_file = os.path.join(classifier,'tables', 'updated_Data_aminoacid_scores.csv')
+updated_data_s5_file = os.path.join(classifier,'tables', 'updated_data_aminoacid_scores.csv')
 updated_data_s5_df.to_csv(updated_data_s5_file, sep=',', index=False)
 
 # GDSC cellline expression and pharmacological evaluation:
