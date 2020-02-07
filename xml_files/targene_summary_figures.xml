@@ -1,4 +1,4 @@
-<tool id="pancancer_targene_summary_figures" name="PanCancer targene summary figures" version="@VERSION@">
+<tool id="pancancer_targene_summary_figures" name="PAPAA: PanCancer targene summary figures" version="@VERSION@">
   <description>Visualize targene summary</description>
   <macros>
     <import>macros.xml</import>

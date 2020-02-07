@@ -1,4 +1,4 @@
-<tool id="pancancer_within_disease_analysis" name="PanCancer within disease analysis" version="@VERSION@">
+<tool id="pancancer_within_disease_analysis" name="PAPAA: PanCancer within disease analysis" version="@VERSION@">
   <description>within disease analysis</description>
   <macros>
     <import>macros.xml</import>

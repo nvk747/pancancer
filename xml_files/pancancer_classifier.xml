@@ -1,4 +1,4 @@
-<tool id="pancancer_classifier" name="PanCancer classifier" version="0.1.5" python_template_version="3.6">
+<tool id="pancancer_classifier" name="PAPAA: PanCancer classifier" version="0.1.5" python_template_version="3.6">
     <description>classifier for pathway aberrant activity</description>
     <macros>
         <import>macros.xml</import>
