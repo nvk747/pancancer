@@ -7,23 +7,35 @@
     <expand macro="stdio"/>
     <version_command><![CDATA['targene_pharmacology.R' --version 2>&1 | grep PAPAA]]></version_command>
     <command><![CDATA[
-        cp -R '$classifier.extra_files_path' '${output_alt_folder.extra_files_path}' 
-        && 
+        mkdir 'classifier' &&
+        mkdir -p 'classifier/figures' &&
+        mkdir -p 'classifier/figures/cell_line' && 
+        mkdir -p 'classifier/tables' && 
+        ln -s '${gdsc1_targene_pharmacology_predictions}' 'classifier/tables/gdsc1_targene_pharmacology_predictions.tsv' &&
+        ln -s '${gdsc2_targene_pharmacology_predictions}' 'classifier/tables/gdsc2_targene_pharmacology_predictions.tsv' &&
+        ln -s '${gdsc1_ccle_targene_pharmacology_predictions}' 'classifier/tables/gdsc1_ccle_targene_pharmacology_predictions.tsv' &&
+        ln -s '${gdsc2_ccle_targene_pharmacology_predictions}' 'classifier/tables/gdsc2_ccle_targene_pharmacology_predictions.tsv' &&
         targene_pharmacology.R
-        --classifier '${output_alt_folder.extra_files_path}'
+        --classifier 'classifier'
         #if $compound and str($compound):
         --compound '$compound'
         #end if
-        &&
-        @OUTPUT_ALT_FOLDER_HTML@
+        > '${log}'
         ]]>
     </command>
     <inputs>
-        <param argument="--classifier" label="classifier summary folder data" name="classifier" optional="false" type="data" format="papaa_cell" />
+        <param label="gdsc1 targene pharmacology predictions" name="gdsc1_targene_pharmacology_predictions" optional="false" type="data" format="tabular" help="gdsc1_targene_pharmacology_predictions.tsv"/>
+        <param label="gdsc2 targene pharmacology predictions" name="gdsc2_targene_pharmacology_predictions" optional="false" type="data" format="tabular" help="gdsc2_targene_pharmacology_predictions.tsv"/>
+        <param label="gdsc1 ccle targene pharmacology predictions" name="gdsc1_ccle_targene_pharmacology_predictions" optional="false" type="data" format="tabular" help="gdsc1_ccle_targene_pharmacology_predictions.tsv"/>
+        <param label="gdsc2 ccle targene pharmacology predictions" name="gdsc2_ccle_targene_pharmacology_predictions" optional="false" type="data" format="tabular" help="gdsc2_ccle_targene_pharmacology_predictions.tsv"/>
         <param argument="--compound" label="Filename list of compounds" name="compound" optional="false" type="data" format="txt" help="data/compounds_of_interest.txt"/>
     </inputs>
     <outputs>
-        <expand macro="output_alt_folder_cell" />
+        <data format="txt" name="log" label="${tool.name} on ${on_string} (Log)"/>
+        <data format="pdf" name="GDSC1_targene_all_drug_response" label="${tool.name} on ${on_string} (GDSC1_targene_all_drug_response.pdf)" from_work_dir="classifier/figures/cell_line/GDSC1_targene_all_drug_response.pdf"/>
+        <data format="pdf" name="GDSC2_targene_all_drug_response" label="${tool.name} on ${on_string} (GDSC2_targene_all_drug_response.pdf)" from_work_dir="classifier/figures/cell_line/GDSC2_targene_all_drug_response.pdf"/>
+        <data format="pdf" name="GDSC1_ccle_targene_all_drug_response" label="${tool.name} on ${on_string} (GDSC1_ccle_targene_all_drug_response.pdf)" from_work_dir="classifier/figures/cell_line/GDSC1_ccle_targene_all_drug_response.pdf"/>
+        <data format="pdf" name="GDSC2_ccle_targene_all_drug_response" label="${tool.name} on ${on_string} (GDSC2_ccle_targene_all_drug_response.pdf)" from_work_dir="classifier/figures/cell_line/GDSC2_ccle_targene_all_drug_response.pdf"/>
     </outputs>
     <help><![CDATA[
       Pancancer_Aberrant_Pathway_Activity_Analysis scripts/viz/targene_pharmacology.R:

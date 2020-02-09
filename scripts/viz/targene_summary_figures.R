@@ -21,7 +21,6 @@ library(gridExtra)
 library(Hmisc)
 library(optparse)
 
-
 # This function returns the absolute path of the script file called by Rscript  
 # Follows symlinks via normalizePath  
 get_script_path <- function() { 
@@ -424,64 +423,6 @@ write.table(aa_df, file = file.path(results_folder, "tables",
 write.table(nuc_df, file = file.path(results_folder, "tables",
                                      "nucleotide_mutation_scores.tsv"),
             sep = "\t", row.names = FALSE)
-
-# Plot summary distribution of PTEN variants R130X and R233X prediction scores using OG based classifer
-
-a = mut_df[,grepl("targene_gain",colnames(mut_df))]
-if (length(colnames(a))== 1) {
- pten_df <- final_gain_df[complete.cases(final_gain_df), ]
- pten_R130G_df <- pten_df[pten_df$HGVSp == "p.Arg130Gly", ]
- pten_R130E_df <- pten_df[pten_df$HGVSp == "p.Arg130Gln", ]
- pten_R130L_df <- pten_df[pten_df$HGVSp == "p.Arg130Leu", ]
- pten_R233T_df <- pten_df[pten_df$HGVSp == "p.Arg233Ter", ]
- pten_germ_df <- dplyr::bind_rows(pten_R130G_df,pten_R130L_df,pten_R130E_df,pten_R233T_df)
- print(pten_germ_df$Disease, max = 200)
- print(nrow(pten_germ_df))
- pten_germ_df$Disease <- dplyr::recode(pten_germ_df$Disease,
-                                 "BLCA" = "Other", "COAD" = "Other",
-                                 "CESC" = "Other", "COAD" = "Other",
-                                 "ESCA" = "Other", "LUAD" = "Other",
-                                 "HNSC" = "Other", "STAD" = "Other", 
-                                 "SARC" = "Other", "SKCM" = "Other")
-
- pten_germ_plot_file <- file.path(results_folder, "figures",
-                            "PTEN_R130X_R233X_gain_distribution.pdf")
-
- pten_germ <- ggplot(pten_germ_df, aes(Weight, fill = Disease)) + 
-         geom_density(alpha = 0.4) + theme_bw() +
-         ylab("Density") + xlab("Classifier Score")
- 
- ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
- 
-}
-
-# Plot summary distribution of PTEN variants R130X and R233X prediction scores using TSG based classifer
-
-b = mut_df[,grepl("targene_loss",colnames(mut_df))]
-if (length(colnames(b))== 1) {
- pten_df <- final_loss_df[complete.cases(final_loss_df), ]
- pten_R130G_df <- pten_df[pten_df$HGVSp == "p.Arg130Gly", ]
- pten_R130E_df <- pten_df[pten_df$HGVSp == "p.Arg130Gln", ]
- pten_R130L_df <- pten_df[pten_df$HGVSp == "p.Arg130Leu", ]
- pten_R233T_df <- pten_df[pten_df$HGVSp == "p.Arg233Ter", ]
- pten_germ_df <- dplyr::bind_rows(pten_R130G_df,pten_R130L_df,pten_R130E_df,pten_R233T_df)
- 
- pten_germ_df$Disease <- dplyr::recode(pten_germ_df$Disease,
-                                 "BLCA" = "Other", "COAD" = "Other",
-                                 "CESC" = "Other", "COAD" = "Other",
-                                 "ESCA" = "Other", "LUAD" = "Other",
-                                 "HNSC" = "Other", "STAD" = "Other", 
-                                 "SARC" = "Other", "SKCM" = "Other")
- pten_germ_plot_file <- file.path(results_folder, "figures",
-                            "PTEN_R130X_R233X_loss_distribution.pdf")
-
- pten_germ <- ggplot(pten_germ_df, aes(Weight, fill = Disease)) +
-  geom_density(alpha = 0.4) + theme_bw() +
-  ylab("Density") + xlab("Classifier Score")
-
- ggsave(pten_germ_plot_file,pten_germ,width = 4, height = 3, dpi= 300)
-
-}
 
 # 5) Targene Summary Counts Distribution
 targene_pathway_count_file <- file.path(results_folder, "tables",
