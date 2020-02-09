@@ -36,7 +36,7 @@
     <inputs>
         <param argument="--scores" label="pancancer decisions" name="scores" optional="false" type="data" format="tabular" help="classifier_decisions.tsv"/>
         <param label="pancancer metrics pathwaymapper" name="pathway_metrics" optional="false" type="data" format="txt" help="pathway_metrics_pathwaymapper.txt"/>
-        <param label="pancancer gene metric ranks" name="all_gene_metric_ranks" optional="false" type="data" format="tabular" help="all_gene_metric_ranks.tsv"/>
+        <param label="all gene metric ranks" name="all_gene_metric_ranks" optional="false" type="data" format="tabular" help="all_gene_metric_ranks.tsv"/>
         <param argument="--genes" label="Comma separated string of HUGO gene symbols" name="genes" optional="False" type="text" value="KRAS,NRAS,HRAS"/>
         <param argument="--path_genes" label="String of the pathway genes to extract" name="path_genes" optional="true" type= "data" format="txt"/>
         <expand macro="inputs_basic"/>

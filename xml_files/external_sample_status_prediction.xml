@@ -9,7 +9,7 @@
     <command><![CDATA[
         mkdir 'classifier' &&
         mkdir -p 'classifier/figures' &&
-        ln -s '${classifier_folder}' 'classifier/classifier_summary.txt' &&
+        ln -s '${classifier}' 'classifier/classifier_summary.txt' &&
         ln -s '${pancan_classifier_coefficients}' 'classifier/classifier_coefficients.tsv' &&
         external_sample_pred_targene_classifier.py
         --classifier 'classifier'
