@@ -68,8 +68,8 @@
         <expand macro="input_l1_ratios" />
         <param argument="--alt_genes" label="alternative genes to test performance" name="alt_genes" optional="true" type="text" />
         <param argument="--alt_diseases" label="The alternative diseases to test performance" name="alt_diseases" optional="true" type="text" />
-        <param argument="--alt_filter_count" label="Min number of mutations in disease to include" name="alt_filter_count" optional="true" type="integer" value="15"/>
-        <param argument="--alt_filter_prop" label="Min proportion of positives to include disease" name="alt_filter_prop" optional="true" type="float" value="0.05"/>
+        <param argument="--alt_filter_count" label="Min number of mutations in disease to include in alternate" name="alt_filter_count" optional="true" type="integer" value="15"/>
+        <param argument="--alt_filter_prop" label="Min proportion of positives to include disease in alternate" name="alt_filter_prop" optional="true" type="float" value="0.05"/>
         <expand macro="input_remove_hyper" />
         <param argument="--keep_intermediate" checked="false" label="Keep intermediate ROC values for plotting" name="keep_intermediate" type="boolean" truevalue="--keep_intermediate" falsevalue=""/>
         <param argument="--shuffled" checked="false" label="Shuffle the input gene exprs matrix alongside" name="shuffled" type="boolean" truevalue="--shuffled" falsevalue=""/>
